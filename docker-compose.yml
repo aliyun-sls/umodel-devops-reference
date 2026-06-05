@@ -1,25 +1,26 @@
-version: '3.8'
-
 services:
-  gitlab:
-    image: gitlab/gitlab-ce:17.6.0-ce.0
-    container_name: umodel-gitlab-demo
-    hostname: gitlab.local
+  data-generator:
+    build:
+      context: ./devops_data_generator
+      dockerfile: Dockerfile
+    container_name: umodel-devops-generator
     restart: unless-stopped
-    ports:
-      - "8080:80"
-      - "2222:22"
-    environment:
-      GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://gitlab.local'
-        gitlab_rails['gitlab_shell_ssh_port'] = 2222
-    shm_size: '256m'
     volumes:
-      - gitlab_config:/etc/gitlab
-      - gitlab_logs:/var/log/gitlab
-      - gitlab_data:/var/opt/gitlab
+      - ./devops_data_generator/config:/app/config:ro
+      - ./devops_data_generator/logs:/app/logs
+    environment:
+      PYTHONUNBUFFERED: "1"
+    command: ["python3", "main.py", "--mode", "continuous", "--config", "/app/config"]
 
-volumes:
-  gitlab_config:
-  gitlab_logs:
-  gitlab_data:
+# Usage:
+#   1. Copy the sample config for your provider:
+#      cp devops_data_generator/config/app_config.gitlab.yaml.sample \
+#         devops_data_generator/config/app_config.yaml
+#      # or
+#      cp devops_data_generator/config/app_config.codeup.yaml.sample \
+#         devops_data_generator/config/app_config.yaml
+#
+#   2. Fill in credentials in app_config.yaml
+#
+#   3. Run:
+#      docker compose up --build

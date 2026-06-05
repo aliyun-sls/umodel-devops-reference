@@ -51,10 +51,10 @@ cp devops_data_generator/config/app_config.codeup.yaml.sample \
    devops_data_generator/config/app_config.yaml
 # Edit app_config.yaml — fill in organization_id, access_key, SLS/ACR/CMS credentials
 
-docker compose -f docker-compose.codeup.yml up --build
+docker compose up --build
 ```
 
-Switch providers by changing `git_provider.type` in `app_config.yaml` — no code changes required.
+Same container, same command — which provider runs is determined by `git_provider.type` in `app_config.yaml`.
 
 ## UModel Schema
 
@@ -104,8 +104,7 @@ umodel-devops-reference/
 ├── .claude/skills/                  # 6 Claude verification skills
 ├── .codex/skills/                   # 6 Codex verification skills
 ├── shared/verification/             # Verification contracts
-├── docker-compose.yml               # GitLab mode
-├── docker-compose.codeup.yml        # Codeup mode
+├── docker-compose.yml               # Data generator (provider selected by config)
 └── docs/                            # Design + deployment + provider guides
 ```
 

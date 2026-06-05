@@ -51,10 +51,10 @@ cp devops_data_generator/config/app_config.codeup.yaml.sample \
    devops_data_generator/config/app_config.yaml
 # 编辑 app_config.yaml，填入 organization_id、access_key、SLS/ACR/CMS 凭据
 
-docker compose -f docker-compose.codeup.yml up --build
+docker compose up --build
 ```
 
-切换平台只需修改 `app_config.yaml` 中的 `git_provider.type`，无需改动代码。
+同一个容器、同一条命令——拉 GitLab 还是 Codeup 取决于 `app_config.yaml` 中的 `git_provider.type`。
 
 ## UModel 实体
 
@@ -104,8 +104,7 @@ umodel-devops-reference/
 ├── .claude/skills/                  # 6 个 Claude 验证 Skill
 ├── .codex/skills/                   # 6 个 Codex 验证 Skill
 ├── shared/verification/             # 验证契约
-├── docker-compose.yml               # GitLab 模式
-├── docker-compose.codeup.yml        # Codeup 模式
+├── docker-compose.yml               # 数据采集容器（平台由配置决定）
 └── docs/                            # 设计 + 部署 + 平台指南
 ```
 

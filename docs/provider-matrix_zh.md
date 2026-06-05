@@ -13,7 +13,7 @@
 | API 端点 | 用户自配 | 默认 `devops.cn-hangzhou.aliyuncs.com`（可覆盖）|
 | 默认分支回退 | `main` | `master` |
 | `git_provider` 字段值（写入 SLS）| `"gitlab"` | `"aliyun"` |
-| Docker Compose | `docker-compose.yml`（启动 GitLab CE）| `docker-compose.codeup.yml`（仅 data-generator）|
+| Docker Compose | `docker compose up --build` | `docker compose up --build` |
 | 配置样例 | `app_config.gitlab.yaml.sample` | `app_config.codeup.yaml.sample` |
 
 ## 切换平台
@@ -27,7 +27,7 @@ docker compose up --build
 # Codeup
 cp devops_data_generator/config/app_config.codeup.yaml.sample \
    devops_data_generator/config/app_config.yaml
-docker compose -f docker-compose.codeup.yml up --build
+docker compose up --build
 ```
 
 无需修改代码。

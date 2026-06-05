@@ -13,7 +13,7 @@ The `git_provider.type` field in `app_config.yaml` selects which git adapter to 
 | API endpoint | User-configured | Default `devops.cn-hangzhou.aliyuncs.com` (overridable) |
 | Default branch fallback | `main` | `master` |
 | `git_provider` field value in SLS | `"gitlab"` | `"aliyun"` |
-| Docker Compose | `docker-compose.yml` (starts GitLab CE) | `docker-compose.codeup.yml` (data-generator only) |
+| Docker Compose | `docker compose up --build` | `docker compose up --build` |
 | Config sample | `app_config.gitlab.yaml.sample` | `app_config.codeup.yaml.sample` |
 
 ## Switching Providers
@@ -27,7 +27,7 @@ docker compose up --build
 # Codeup
 cp devops_data_generator/config/app_config.codeup.yaml.sample \
    devops_data_generator/config/app_config.yaml
-docker compose -f docker-compose.codeup.yml up --build
+docker compose up --build
 ```
 
 No code changes required.
