@@ -381,17 +381,17 @@ GitLab 访问权限由 GitLab 自身的访问令牌控制，不通过阿里云 `
 
    ```
    # 启动服务
-   docker-compose up -d
+   docker compose up -d
 
    # 查看执行日志
-   docker-compose logs -f
+   docker compose logs -f
    ```
 
    **3. 监控和运维**
 
    ```
-   docker-compose logs -f              # 查看日志
-   docker-compose restart              # 重启服务
+   docker compose logs -f              # 查看日志
+   docker compose restart              # 重启服务
    ```
 5. 验证数据是否正确上传到EntityStore。
 
