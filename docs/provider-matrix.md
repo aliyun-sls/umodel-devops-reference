@@ -1,81 +1,88 @@
 # Provider Matrix
 
-新仓将两条 git provider 接入路径合并到同一套抽象（`IGitAdapter`）后，由
-配置文件 `git_provider.type` 字段决定运行时实际加载哪一个 adapter。本页
-描述「何时用 codeup / 何时用 gitlab」、两套配置切换方式、以及 v0.1 已知
-的覆盖范围。
+The `git_provider.type` field in `app_config.yaml` selects which git adapter to load at runtime.
 
-## 支持矩阵
+## Supported Providers
 
-| 维度 | GitLab provider | Codeup provider |
+| | GitLab | Codeup |
 |---|---|---|
-| `git_provider.type` 值 | `gitlab` | `codeup` |
-| 适用客户 | 自建/SaaS GitLab 用户 | 阿里云 codeup / 云效用户 |
-| SDK | `python-gitlab` | `alibabacloud-devops20210625` |
-| 认证 | Personal Access Token | RAM AccessKey + Organization ID |
-| API endpoint | 客户自定义 | 默认 `devops.cn-hangzhou.aliyuncs.com`，可 override |
-| 默认 branch fallback | `main` | `master` |
-| `git_provider` 字段值（写入 SLS） | `"gitlab"` | `"aliyun"` |
-| Docker Compose 入口 | `docker-compose.yml`（同时启动 GitLab CE 容器）| `docker-compose.codeup.yml`（codeup 是 SaaS，仅启动 data-generator）|
-| 配置 sample | `devops_data_generator/config/app_config.gitlab.yaml.sample` | `devops_data_generator/config/app_config.codeup.yaml.sample` |
-| 是否 v0.1 端到端真跑通 | ✅ 沿袭 demo 仓 verification PASS receipt | ❌ 待真实环境验证（v0.1 限制） |
+| `git_provider.type` | `gitlab` | `codeup` |
+| Target users | Self-hosted or SaaS GitLab | Alibaba Cloud Codeup / Yunxiao |
+| SDK | `python-gitlab 4.8.0` | `alibabacloud-devops20210625 3.0.0` |
+| Authentication | Personal / Project / Group Access Token | RAM AccessKey + Organization ID, or PAT (`auth_mode`) |
+| API endpoint | User-configured | Default `devops.cn-hangzhou.aliyuncs.com` (overridable) |
+| Default branch fallback | `main` | `master` |
+| `git_provider` field value in SLS | `"gitlab"` | `"aliyun"` |
+| Docker Compose | `docker-compose.yml` (starts GitLab CE) | `docker-compose.codeup.yml` (data-generator only) |
+| Config sample | `app_config.gitlab.yaml.sample` | `app_config.codeup.yaml.sample` |
 
-## 切换 provider 的最小步骤
+## Switching Providers
 
 ```bash
-# 选 GitLab
+# GitLab
 cp devops_data_generator/config/app_config.gitlab.yaml.sample \
    devops_data_generator/config/app_config.yaml
-docker compose -f docker-compose.yml up --build
+docker compose up --build
 
-# 选 codeup
+# Codeup
 cp devops_data_generator/config/app_config.codeup.yaml.sample \
    devops_data_generator/config/app_config.yaml
 docker compose -f docker-compose.codeup.yml up --build
 ```
 
-不需要改任何代码——配置切换即可。
+No code changes required.
 
-## 字段输出对齐
+## Codeup Authentication Modes
 
-不同 provider 跑出来的 SLS `devops.code_repository` 实体必须有相同字段集合，
-只是 `git_provider` 字段值不同：
+Codeup supports two authentication modes via `codeup.auth_mode`:
 
-| 字段 | GitLab 取值 | Codeup 取值 |
+| Mode | Repo visibility | Config fields |
 |---|---|---|
-| `repo_id` | GitLab project id（字符串化）| Codeup repository id（字符串化）|
-| `repo_name` | `path_with_namespace`（如 `root/demo-app`）| Codeup `name` 字段 |
+| `ram` (default) | Repos granted to the RAM user | `access_key_id` + `access_key_secret` |
+| `pat` | All repos visible to the PAT owner | `access_key_id` + `access_key_secret` + `access_token` |
+
+AK/SK is always required for API request signing. `auth_mode` only controls whether the PAT is sent to widen repo scope.
+
+## GitLab Token Types
+
+All three token types use the same `gitlab.access_token` config field:
+
+| Token type | Scope | Use case |
+|---|---|---|
+| Personal Access Token | User-level | Individual use |
+| Project Access Token | Project-level | Automation, not bound to a personal account |
+| Group Access Token | Group-level | Covers all projects in a group |
+
+Required scope: `api`.
+
+## Field Alignment
+
+Both providers produce the same entity field set. Only values differ:
+
+| Field | GitLab | Codeup |
+|---|---|---|
+| `repo_id` | GitLab project id (string) | Codeup repository id (string) |
+| `repo_name` | `path_with_namespace` (e.g. `root/demo-app`) | Codeup `name` |
 | `repo_url` | `web_url` | Codeup `web_url` |
 | `git_provider` | `"gitlab"` | `"aliyun"` |
-| `language` | `languages()` 排序后首位 | Codeup `language` |
-| `framework` | `""`（GitLab 不暴露此字段）| Codeup `framework`（如可用）|
-| `description` | GitLab description | Codeup description |
-| `default_branch` | GitLab default_branch；空时 fallback `main` | Codeup default_branch；空时 fallback `master` |
+| `language` | Primary language from `languages()` | Codeup `language` |
+| `framework` | `""` (not exposed by GitLab) | Codeup `framework` (if available) |
+| `default_branch` | API value; fallback `main` | API value; fallback `master` |
 
-`developer.repositories[*]` 项同时含 `access_level` + `role` 两字段：GitLab
-路径填实际 access_level（10/20/30/40/50）；Codeup 路径填 `0`（codeup 概念
-不存在 access_level，统一占位）。
+`developer.repositories[*].access_level`: GitLab fills the actual level (10–50); Codeup fills `0` (concept does not exist).
 
-`code_release.release_type` 由 `tasks/utils/release_classifier.py` 用统一
-正则归类（alpha / beta / release_candidate / hotfix / development / release /
-other），两条 provider 路径取值同口径——不再各自启发式。
+`code_release.release_type`: classified by `tasks/utils/release_classifier.py` using word-boundary regex — consistent across providers.
 
-## v0.1 已知限制
+## Pagination and Limits
 
-- 真实 Codeup 账号端到端跑通延后到 v0.2（需用户提供 ak/sk + organization）。
-  schema / 字段 / adapter 代码已就绪，可基于 mock 字段对照验证。
-- Codeup `ListRepositories` + 每仓 `GetRepository` 是 N+1 调用模式。当仓库
-  数量过大时（>500）可在配置加 `fetch_details: false` 跳过详情拉取，但会
-  丢失 language/framework/description 字段。
-- `python-gitlab` 和 `alibabacloud-devops20210625` v0.1 同时安装在
-  `requirements.txt`；v0.2 再拆 `extras_require`（`pip install .[gitlab]` /
-  `.[codeup]`）。
-- 单元测试 / contract test 未引入；v0.1 通过 docker-compose 两套 provider
-  端到端跑通作为唯一验证依据，单测留 v0.2。
-- env var 覆盖未实现：当前 `git_provider.type` 必须写在 yaml 中，v0.2
-  会加 `GIT_PROVIDER` 环境变量优先级。
+All list APIs use full pagination by default. Two config parameters under `acr:` control volume:
 
-## 未实现的 provider
+| Parameter | Default | Effect |
+|---|---|---|
+| `max_repositories` | `0` (unlimited) | Cap the number of ACR registries fetched |
+| `max_tags_per_repo` | `0` (unlimited) | Cap the number of image tags per registry |
 
-- Jenkins — 见 `adapters/jenkins/README.md`
-- GitHub Actions / Argo / Tekton — 未在 v0.1 范围
+## Providers Not Yet Implemented
+
+- Jenkins — see `adapters/jenkins/README.md`
+- GitHub Actions / Argo / Tekton

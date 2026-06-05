@@ -1,10 +1,4 @@
-"""GitLab implementation of IGitAdapter.
-
-Extracted from the original three git tasks in the demo repo
-(developer_task.py / code_repository_task.py / code_release_task.py).
-Schema-level field mapping kept identical so SLS output matches the
-pre-abstraction GitLab behaviour.
-"""
+"""GitLab implementation of IGitAdapter."""
 
 import logging
 from typing import Any, Dict, List, Optional

@@ -1,106 +1,87 @@
 # umodel-devops-reference
 
-阿里云 STAROps「代码静态资源 ↔ UModel」DevOps 接入参考实现。把
-GitLab 和 Codeup（云效）两条 git provider 路径融合到同一个 schema +
-同一套抽象 adapter + 同一套 verification skill 下，由 `git_provider.type`
-配置切换。
+UModel DevOps reference implementation for GitLab and Codeup (Alibaba Cloud DevOps).
 
-> 来源：融合自 `umodel-gitlab-devops-demo`（GitLab adapter + verification
-> skill + 4 篇官方设计文档 + docker-compose）与 `umodel_and_codes.zip`
-> （2025/10/21 阿里云官方发布的 Codeup adapter）。两套 adapter 拆到
-> `devops_data_generator/adapters/{gitlab,codeup}/`，task 层通过
-> `IGitAdapter` 接口调用，配置切换即可换 provider。
+Ingest developer, repository, release, image, and topology data from your git provider into [UModel](https://www.alibabacloud.com/help/en/cms/) entities — switch providers by changing one config field.
 
-## 仓库定位
-
-- **代码静态资源 ↔ UModel 的 demo 环境搭建**——客户拿一台机器、一份配置，
-  能跑通从 git provider 抓数据 → 写入 SLS / CMS workspace → UModel
-  Explorer 可见的完整链路。
-- **不是**整套 DevOps 富化平台、不是生产级运维系统、不涉及 K8s runtime 资源
-  细节（如 yunxiao.change_order ↔ k8s.configmap/ingress/pvc/service 的部署单
-  挂载关系）。
-
-## 目录结构
+## Architecture
 
 ```
-umodel-devops-reference/
-├── umodel/                          # UModel schema (5 EntitySet + 12 EntitySetLink)
-│   ├── entity_set/
-│   └── entity_set_link/
-├── umodel_uploader/                 # 批量上传 UModel 定义到 UModel Explorer
-├── devops_data_generator/           # 数据接入引擎
-│   ├── adapters/
-│   │   ├── base.py                  # IGitAdapter ABC
-│   │   ├── factory.py               # create_git_adapter(type, config)
-│   │   ├── gitlab/                  # GitLabAdapter
-│   │   └── codeup/                  # CodeupAdapter
-│   ├── tasks/                       # 13 task (3 个 git task 通过 adapter 调用)
-│   │   └── utils/release_classifier.py  # tag → release_type 共享分类器
-│   ├── config/
-│   │   ├── app_config.gitlab.yaml.sample
-│   │   ├── app_config.codeup.yaml.sample
-│   │   ├── data_mapping.yaml
-│   │   ├── manage_mapping.yaml
-│   │   ├── repo_image_mapping.yaml
-│   │   └── static_topo.yaml
-│   ├── orchestrator.py              # 多 provider + critical-task gating + structured result
-│   ├── sender / generator / shared
-│   ├── scripts/                     # 4 个 verification + docker / quick-start 脚本
-│   └── Dockerfile + main.py + requirements.txt
-├── .claude/skills/                  # 6 Claude verification skill
-├── .codex/skills/                   # 6 Codex verification skill (双套)
-├── shared/verification/             # verification 共享真相层 (config-contract / prerequisites / 等)
-├── adapters/jenkins/                # 占位说明 v0.1 未新增
-├── docker-compose.yml               # GitLab 模式 (启动 GitLab CE + data-generator)
-├── docker-compose.codeup.yml        # Codeup 模式 (SaaS，仅启动 data-generator)
-└── docs/
-    ├── aliyun/                      # 4 篇官方设计文档
-    ├── provider-matrix.md           # 何时用 codeup / 何时用 gitlab + 切换说明
-    └── skills/                      # verification skill 使用说明
+┌─────────────┐     ┌─────────────┐
+│   GitLab    │     │   Codeup    │
+│  (self/SaaS)│     │ (China SaaS)│
+└──────┬──────┘     └──────┬──────┘
+       │ python-gitlab      │ alibabacloud SDK
+       └────────┬───────────┘
+                │ IGitAdapter
+                ▼
+     ┌──────────────────────┐
+     │  devops_data_generator│
+     │  ├─ 13 tasks          │
+     │  ├─ SLS sender        │
+     │  └─ orchestrator      │
+     └──────────┬───────────┘
+                │ SLS / CMS write
+                ▼
+     ┌──────────────────────┐
+     │  UModel Explorer     │
+     │  5 EntitySet          │
+     │  12 EntitySetLink     │
+     └──────────────────────┘
 ```
 
 ## Quick Start
 
-### GitLab provider 路径
+### GitLab
 
 ```bash
-# 复制 sample 配置，填入 PAT / project_id 等
 cp devops_data_generator/config/app_config.gitlab.yaml.sample \
    devops_data_generator/config/app_config.yaml
+# Edit app_config.yaml — fill in url, access_token, project_id, SLS/ACR/CMS credentials
 
-# 启 GitLab CE + data-generator
-docker compose -f docker-compose.yml up --build
+docker compose up --build
 ```
 
-### Codeup provider 路径
+### Codeup
 
 ```bash
-# 复制 sample 配置，填入 organization_id / aliyun ak/sk
 cp devops_data_generator/config/app_config.codeup.yaml.sample \
    devops_data_generator/config/app_config.yaml
+# Edit app_config.yaml — fill in organization_id, access_key, SLS/ACR/CMS credentials
 
-# 仅起 data-generator（codeup 是 SaaS）
 docker compose -f docker-compose.codeup.yml up --build
 ```
 
-切 provider **只需要换配置文件**，代码层无任何改动。详见
-`docs/provider-matrix.md`。
+Switch providers by changing `git_provider.type` in `app_config.yaml` — no code changes required. See [Provider Matrix](docs/provider-matrix.md) for details.
+
+## UModel Schema
+
+| Domain | EntitySet | Description |
+|---|---|---|
+| devops | `devops.developer` | Developer / team member |
+| devops | `devops.code_repository` | Git repository |
+| devops | `devops.code_release` | Release / tag |
+| devops | `devops.image_registry` | Container image registry (ACR) |
+| devops | `devops.image` | Container image |
+
+12 EntitySetLinks connect these entities to each other and bridge to `apm.service` and `k8s.{pod,deployment,daemonset,statefulset}`.
 
 ## Verification
 
-按固定 skill 顺序自检，覆盖两条 provider 路径：
+Six verification skills validate the full pipeline:
 
-1. `verification-resource-readiness`
-2. `verification-workspace-alignment`
-3. `verification-workspace-refresh`
-4. `verification-cms-visibility`
-5. `verification-cms-field-check`
-6. `verification-cms-sls-diagnose`（仅失败时进入）
+1. `verification-resource-readiness` — config and credentials check
+2. `verification-workspace-alignment` — SLS project / logstore alignment
+3. `verification-workspace-refresh` — run the data ingestion cycle
+4. `verification-cms-visibility` — confirm entities appear in CMS
+5. `verification-cms-field-check` — validate field values per provider
+6. `verification-cms-sls-diagnose` — failure-only diagnostics
 
-每个 skill 入口在 `.claude/skills/<name>/SKILL.md` / `.codex/skills/<name>/SKILL.md`，
-共享真相层在 `shared/verification/`。
+Skills are provider-aware: they read `git_provider.type` and assert the correct field values (`gitlab` vs `aliyun`).
 
-## 上传 UModel 定义
+Entry points: `.claude/skills/<name>/SKILL.md` and `.codex/skills/<name>/SKILL.md`.
+
+## Upload UModel Definitions
 
 ```bash
 python3 umodel_uploader/umodel_batch_uploader.py umodel \
@@ -108,21 +89,102 @@ python3 umodel_uploader/umodel_batch_uploader.py umodel \
   --workspace <YOUR_WORKSPACE>
 ```
 
-## v0.1 已知限制
+## Project Structure
 
-- Codeup 端到端真实跑通延后到 v0.2（需 ak/sk + organization）。
-- `python-gitlab` 和 `alibabacloud-devops20210625` v0.1 同时安装；v0.2 再
-  拆 extras_require。
-- 单元测试 / contract test 未引入；v0.1 接受标准 = 双 provider docker-compose
-  端到端跑通。
-- Jenkins / GitHub Actions / Argo / Tekton 不在 v0.1 范围。
+```
+umodel-devops-reference/
+├── umodel/                          # 5 EntitySet + 12 EntitySetLink definitions
+├── umodel_uploader/                 # Batch upload tool
+├── devops_data_generator/
+│   ├── adapters/                    # IGitAdapter abstraction
+│   │   ├── gitlab/                  # GitLab implementation
+│   │   └── codeup/                  # Codeup implementation
+│   ├── tasks/                       # 13 data ingestion tasks
+│   ├── config/                      # Sample configs for each provider
+│   ├── orchestrator.py              # Task scheduling + structured results
+│   ├── sender/                      # SLS data sender
+│   └── scripts/                     # Verification + deployment scripts
+├── .claude/skills/                  # 6 Claude verification skills
+├── .codex/skills/                   # 6 Codex verification skills
+├── shared/verification/             # Verification contracts and prerequisites
+├── docker-compose.yml               # GitLab mode (starts GitLab CE container)
+├── docker-compose.codeup.yml        # Codeup mode (data-generator only)
+└── docs/
+    ├── aliyun/                      # UModel design + deployment guides
+    └── provider-matrix.md           # Provider comparison and switching guide
+```
 
-详见 `docs/provider-matrix.md` § v0.1 已知限制。
+## Documentation
 
-## 关键设计文档
+- [Provider Matrix](docs/provider-matrix.md) — provider comparison, switching guide, field alignment
+- [UModel Design](docs/aliyun/devops-enriched-umodel-design.md)
+- [Deployment Guide](docs/aliyun/devops-process-enriched-deployment-guide.md)
+- [Implementation Guide](docs/aliyun/devops-process-enrichment-development-implementation-guide.md)
+- [Scenario Overview](docs/aliyun/microservice-scenario-devops-process-enrichment-overview.md)
 
-- `docs/aliyun/devops-enriched-umodel-design.md` —— UModel 设计
-- `docs/aliyun/devops-process-enriched-deployment-guide.md` —— 部署指南
-- `docs/aliyun/devops-process-enrichment-development-implementation-guide.md` —— 实现指南
-- `docs/aliyun/microservice-scenario-devops-process-enrichment-overview.md` —— 场景总览
-- `docs/provider-matrix.md` —— provider 矩阵 + 切换 + 已知限制
+## License
+
+Internal use.
+
+---
+
+# umodel-devops-reference（中文）
+
+面向 GitLab 和 Codeup（阿里云云效）的 UModel DevOps 接入参考实现。
+
+将开发者、代码仓库、发布版本、容器镜像及拓扑关系从 Git 平台采集到 [UModel](https://help.aliyun.com/zh/cms/) 实体中，通过修改一个配置字段即可切换 Git 平台。
+
+## 快速开始
+
+### GitLab
+
+```bash
+cp devops_data_generator/config/app_config.gitlab.yaml.sample \
+   devops_data_generator/config/app_config.yaml
+# 编辑 app_config.yaml，填入 url、access_token、project_id、SLS/ACR/CMS 凭据
+
+docker compose up --build
+```
+
+### Codeup
+
+```bash
+cp devops_data_generator/config/app_config.codeup.yaml.sample \
+   devops_data_generator/config/app_config.yaml
+# 编辑 app_config.yaml，填入 organization_id、access_key、SLS/ACR/CMS 凭据
+
+docker compose -f docker-compose.codeup.yml up --build
+```
+
+切换平台只需修改 `app_config.yaml` 中的 `git_provider.type`，无需改动代码。详见 [Provider Matrix](docs/provider-matrix.md)。
+
+## UModel 实体
+
+| 域 | 实体 | 说明 |
+|---|---|---|
+| devops | `devops.developer` | 开发者 |
+| devops | `devops.code_repository` | 代码仓库 |
+| devops | `devops.code_release` | 发布版本 / Tag |
+| devops | `devops.image_registry` | 容器镜像仓库（ACR）|
+| devops | `devops.image` | 容器镜像 |
+
+12 条 EntitySetLink 连接上述实体，并桥接 `apm.service` 和 `k8s.{pod,deployment,daemonset,statefulset}`。
+
+## 验证
+
+6 个验证 Skill 覆盖完整链路，按 `git_provider.type` 智能判断检查项：
+
+1. `verification-resource-readiness` — 配置与凭据检查
+2. `verification-workspace-alignment` — SLS project / logstore 对齐
+3. `verification-workspace-refresh` — 执行数据采集
+4. `verification-cms-visibility` — 确认实体在 CMS 可见
+5. `verification-cms-field-check` — 按平台验证字段值
+6. `verification-cms-sls-diagnose` — 仅失败时进入
+
+## 文档
+
+- [Provider Matrix](docs/provider-matrix.md) — 平台对比、切换指南、字段对齐
+- [UModel 设计文档](docs/aliyun/devops-enriched-umodel-design.md)
+- [部署指南](docs/aliyun/devops-process-enriched-deployment-guide.md)
+- [实现指南](docs/aliyun/devops-process-enrichment-development-implementation-guide.md)
+- [场景总览](docs/aliyun/microservice-scenario-devops-process-enrichment-overview.md)

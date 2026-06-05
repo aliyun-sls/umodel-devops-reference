@@ -1,10 +1,4 @@
-"""Codeup (Alibaba Cloud DevOps) implementation of IGitAdapter.
-
-Extracted from the original three git tasks in
-``umodel_and_codes/devops_data_generator/tasks/`` (zip 2).
-Field mapping kept identical so SLS output matches the
-pre-abstraction codeup behaviour.
-"""
+"""Codeup (Alibaba Cloud DevOps) implementation of IGitAdapter."""
 
 import logging
 from datetime import datetime
