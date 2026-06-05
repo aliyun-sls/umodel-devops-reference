@@ -1,0 +1,174 @@
+kind: entity_set
+metadata:
+    description:
+        en_us: Container Image entity representing the fundamental deployment unit for applications, capturing the complete runtime environment and dependencies. Through image entities, complete tracking from code construction to container deployment can be achieved, supporting image integrity verification, multi-architecture deployment, and seamless integration with K8s workloads.
+        zh_cn: 容器镜像实体是应用部署的基本单元，记录了应用的完整运行环境和依赖。通过镜像实体，可以实现从代码构建到容器部署的完整追踪，支持镜像完整性校验、多架构部署以及与K8s工作负载的无缝集成，为微服务架构提供可靠的部署基础。
+    display_name:
+        en_us: Container Image
+        zh_cn: 容器镜像
+    domain: devops
+    kind: entity_set
+    name: devops.image
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dynamic: false
+    fields:
+        - description:
+            en_us: Unique image identifier serving as primary key for container image management
+            zh_cn: 镜像唯一标识，作为主键用于容器镜像管理
+          display_name:
+            en_us: Image ID
+            zh_cn: 镜像ID
+          filterable: true
+          name: image_id
+          orderable: true
+          short_description:
+            en_us: Image ID
+            zh_cn: 镜像ID
+          type: string
+        - description:
+            en_us: Business identifier for image, typically corresponding to application name
+            zh_cn: 镜像的业务标识，通常对应应用名
+          display_name:
+            en_us: Image Name
+            zh_cn: 镜像名称
+          filterable: true
+          name: image_name
+          orderable: true
+          short_description:
+            en_us: Image Name
+            zh_cn: 镜像名称
+          type: string
+        - description:
+            en_us: Version identifier supporting multi-version management
+            zh_cn: 版本标识，支持多版本管理
+          display_name:
+            en_us: Image Tag
+            zh_cn: 镜像标签
+          filterable: true
+          name: image_tag
+          orderable: true
+          short_description:
+            en_us: Image Tag
+            zh_cn: 镜像标签
+          type: string
+        - description:
+            en_us: SHA256 hash value ensuring image integrity and authenticity
+            zh_cn: SHA256哈希值，确保镜像完整性
+          display_name:
+            en_us: Image Digest
+            zh_cn: 镜像摘要
+          filterable: true
+          name: image_digest
+          orderable: true
+          short_description:
+            en_us: Image Digest
+            zh_cn: 镜像摘要
+          type: string
+        - description:
+            en_us: Associated image registry identifier for storage location tracking
+            zh_cn: 关联到具体的镜像仓库
+          display_name:
+            en_us: Registry ID
+            zh_cn: 仓库ID
+          filterable: true
+          name: registry_id
+          orderable: true
+          short_description:
+            en_us: Registry ID
+            zh_cn: 仓库ID
+          type: string
+        - description:
+            en_us: Complete image name including registry address for deployment reference
+            zh_cn: 包含仓库地址的完整镜像名
+          display_name:
+            en_us: Full Image Name
+            zh_cn: 完整镜像名
+          filterable: true
+          name: full_image_name
+          orderable: true
+          short_description:
+            en_us: Full Image Name
+            zh_cn: 完整镜像名
+          type: string
+        - description:
+            en_us: Image build timestamp for tracking and version management
+            zh_cn: 镜像构建的时间记录
+          display_name:
+            en_us: Build Time
+            zh_cn: 构建时间
+          filterable: true
+          name: build_time
+          orderable: true
+          short_description:
+            en_us: Build Time
+            zh_cn: 构建时间
+          type: timestamp
+        - description:
+            en_us: Image file size for storage optimization analysis
+            zh_cn: 镜像文件大小，用于存储优化分析
+          display_name:
+            en_us: Image Size
+            zh_cn: 镜像大小
+          filterable: true
+          name: size
+          orderable: true
+          short_description:
+            en_us: Image Size
+            zh_cn: 镜像大小
+          type: long
+        - description:
+            en_us: CPU architecture such as amd64, arm64 for platform compatibility
+            zh_cn: CPU架构，如amd64、arm64等
+          display_name:
+            en_us: Architecture
+            zh_cn: 架构
+          filterable: true
+          name: architecture
+          orderable: true
+          short_description:
+            en_us: Architecture
+            zh_cn: 架构
+          type: string
+        - description:
+            en_us: Base operating system such as linux, windows for runtime environment
+            zh_cn: 基础操作系统，如linux、windows等
+          display_name:
+            en_us: Operating System
+            zh_cn: 操作系统
+          filterable: true
+          name: os
+          orderable: true
+          short_description:
+            en_us: Operating System
+            zh_cn: 操作系统
+          type: string
+        - description:
+            en_us: Build status such as success, failed, building for deployment readiness
+            zh_cn: 构建状态，如success、failed、building等
+          display_name:
+            en_us: Build Status
+            zh_cn: 构建状态
+          filterable: true
+          name: build_status
+          orderable: true
+          short_description:
+            en_us: Build Status
+            zh_cn: 构建状态
+          type: string
+    keep_alive_seconds: 86400
+    name_fields:
+        - full_image_name
+        - image_name
+        - image_tag
+        - image_digest
+        - registry_id
+        - architecture
+        - os
+        - build_status
+    primary_key_fields:
+        - image_id
+    time_field: __time__
+    type: entity_set

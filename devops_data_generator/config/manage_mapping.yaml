@@ -1,0 +1,13 @@
+# 开发人员管理代码仓库映射配置文件
+# 第一版仍保留静态 truth surface，但仓库标识统一改为 GitLab path_with_namespace。
+
+manage_mappings:
+  "<DEVELOPER_NAME_OR_USERNAME>":
+    repositories:
+      - "<GITLAB_PATH_WITH_NAMESPACE>"
+
+metadata:
+  description: "开发人员与代码仓库管理关系映射配置（GitLab 单仓库 demo 模板）"
+  version: "3.0.0"
+  last_updated: "2026-05-11"
+  changes: "移除 baseline mymall 示例，统一迁移为 GitLab path_with_namespace 占位符模板"

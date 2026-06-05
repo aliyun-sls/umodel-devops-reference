@@ -1,0 +1,29 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: |
+            Kubernetes Pod uses container images, enabling deployment tracking and impact analysis.
+            Supports rapid image version identification and rollback operations for workload management.
+        zh_cn: |
+            Kubernetes Pod使用容器镜像，支持部署追踪和影响分析。
+            支持镜像版本快速识别和工作负载管理的回滚操作。
+    display_name:
+        en_us: Kubernetes Pod Uses Container Images
+        zh_cn: Kubernetes Pod使用容器镜像
+    domain: devops
+    kind: entity_set_link
+    name: k8s.pod_uses_devops.image
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.image
+    entity_link_type: uses
+    priority: 5
+    src:
+        domain: k8s
+        kind: entity_set
+        name: k8s.pod

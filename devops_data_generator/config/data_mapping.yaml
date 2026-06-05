@@ -1,0 +1,168 @@
+entity:
+  developer:
+    fields:
+      - user_id -> work_no
+      - name
+      - email
+      - role
+    primaryKeys:
+      - work_no
+    __domain__: devops
+    __entity_type__: devops.developer
+
+  code_repository:
+    # git_provider value is injected at runtime by the active git adapter
+    # (see devops_data_generator/adapters/{gitlab,codeup}/adapter.py).
+    fields:
+      - repo_id
+      - repo_name
+      - repo_url
+      - git_provider
+      - language
+      - framework
+      - description
+      - default_branch
+    primaryKeys:
+      - repo_id
+    __domain__: devops
+    __entity_type__: devops.code_repository
+
+  code_release:
+    fields:
+      - release_id
+      - repo_id
+      - repo_name
+      - tag
+      - commit_sha
+      - release_notes
+      - release_time
+      - status: "released"
+      - release_type
+      - author
+    primaryKeys:
+      - release_id
+    __domain__: devops
+    __entity_type__: devops.code_release
+
+  image_registry:
+    fields:
+      - registry_id
+      - registry_name
+      - registry_namespace
+      - registry_url
+      - provider: "aliyun"
+      - region
+      - description
+      - is_public
+    primaryKeys:
+      - registry_id
+    __domain__: devops
+    __entity_type__: devops.image_registry
+
+  image:
+    fields:
+      - image_id
+      - image_name
+      - image_tag
+      - image_digest
+      - registry_id
+      - full_image_name
+      - build_time
+      - size
+      - architecture
+      - os
+      - build_status
+    primaryKeys:
+      - image_id
+    __domain__: devops
+    __entity_type__: devops.image
+
+  kubernetes_pod:
+    fields:
+      - pod_id
+      - entity_id
+      - images
+      - container_names
+      - image_count
+      - container_count
+      - namespace
+    primaryKeys:
+      - entity_id
+    use_field_as_entity_id: entity_id
+    __domain__: k8s
+    __entity_type__: k8s.pod
+
+topo:
+  developer_manages_code_repository:
+    __src_domain__: devops
+    __src_entity_type__: devops.developer
+    __dest_domain__: devops
+    __dest_entity_type__: devops.code_repository
+    src_entity_primarykeys:
+      - work_no
+    dest_entity_primarykeys:
+      - repo_id
+    fixed_fields:
+      __link_type__: "manages"
+
+  code_release_sourced_from_code_repository:
+    __src_domain__: devops
+    __src_entity_type__: devops.code_release
+    __dest_domain__: devops
+    __dest_entity_type__: devops.code_repository
+    src_entity_primarykeys:
+      - release_id
+    dest_entity_primarykeys:
+      - repo_id
+    fixed_fields:
+      __link_type__: "sourced_from"
+
+  image_sourced_from_image_registry:
+    __src_domain__: devops
+    __src_entity_type__: devops.image
+    __dest_domain__: devops
+    __dest_entity_type__: devops.image_registry
+    src_entity_primarykeys:
+      - image_id
+    dest_entity_primarykeys:
+      - registry_id
+    fixed_fields:
+      __link_type__: "sourced_from"
+
+  image_sourced_from_code_release:
+    __src_domain__: devops
+    __src_entity_type__: devops.image
+    __dest_domain__: devops
+    __dest_entity_type__: devops.code_release
+    src_entity_primarykeys:
+      - image_id
+    dest_entity_primarykeys:
+      - release_id
+    fixed_fields:
+      __link_type__: "sourced_from"
+
+  image_registry_contains_image:
+    __src_domain__: devops
+    __src_entity_type__: devops.image_registry
+    __dest_domain__: devops
+    __dest_entity_type__: devops.image
+    src_entity_primarykeys:
+      - registry_id
+    dest_entity_primarykeys:
+      - image_id
+    fixed_fields:
+      __link_type__: "contains"
+      priority: 5
+
+  pod_uses_image:
+    __src_domain__: k8s
+    __src_entity_type__: k8s.pod
+    __dest_domain__: devops
+    __dest_entity_type__: devops.image
+    src_entity_primarykeys:
+      - entity_id
+    dest_entity_primarykeys:
+      - image_id
+    fixed_fields:
+      __link_type__: "uses"
+      priority: 5

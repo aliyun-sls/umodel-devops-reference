@@ -1,0 +1,29 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: |
+            APM service is sourced from code release, linking runtime performance to specific releases.
+            Enables correlation of performance issues with specific code changes for rapid troubleshooting.
+        zh_cn: |
+            APM服务来源于代码发布，将运行时性能与特定发布版本关联。
+            支持性能问题与具体代码变更的关联分析，实现快速故障排查。
+    display_name:
+        en_us: APM Service Sourced from Code Release
+        zh_cn: APM服务来源于代码发布
+    domain: devops
+    kind: entity_set_link
+    name: apm.service_sourced_from_devops.code_release
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.code_release
+    entity_link_type: sourced_from
+    priority: 5
+    src:
+        domain: apm
+        kind: entity_set
+        name: apm.service

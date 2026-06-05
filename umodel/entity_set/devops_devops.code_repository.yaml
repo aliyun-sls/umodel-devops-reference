@@ -1,0 +1,132 @@
+kind: entity_set
+metadata:
+    description:
+        en_us: Code Repository entity serving as the core carrier for source code management, recording technical implementation and evolution history of projects. Through this entity, unified management of code assets and service source traceability can be achieved, supporting end-to-end DevOps workflow integration.
+        zh_cn: 代码仓库实体是源码管理的核心载体，记录了项目的技术实现和演进历史。通过代码仓库实体，可以实现代码资产的统一管理和服务源头的追溯，支持技术栈分析、代码质量跟踪以及与微服务部署的完整关联。
+    display_name:
+        en_us: Code Repository
+        zh_cn: 代码仓库
+    domain: devops
+    kind: entity_set
+    name: devops.code_repository
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dynamic: false
+    fields:
+        - description:
+            en_us: Unique repository identifier serving as primary key for repository management
+            zh_cn: 仓库唯一标识符，作为主键用于管理和关联代码仓库
+          display_name:
+            en_us: Repository ID
+            zh_cn: 仓库ID
+          filterable: true
+          name: repo_id
+          orderable: true
+          short_description:
+            en_us: Repository ID
+            zh_cn: 仓库ID
+          type: string
+        - description:
+            en_us: Human-readable repository name, typically corresponding to project name
+            zh_cn: 仓库的业务标识，通常对应项目名，便于直观识别
+          display_name:
+            en_us: Repository Name
+            zh_cn: 仓库名称
+          filterable: true
+          name: repo_name
+          orderable: true
+          short_description:
+            en_us: Repository Name
+            zh_cn: 仓库名称
+          type: string
+        - description:
+            en_us: Complete URL for accessing the code repository, supporting various Git protocols
+            zh_cn: 代码访问地址，支持多种Git协议，便于直接跳转
+          display_name:
+            en_us: Repository URL
+            zh_cn: 仓库地址
+          filterable: true
+          name: repo_url
+          orderable: true
+          short_description:
+            en_us: Repository URL
+            zh_cn: 仓库地址
+          type: string
+        - description:
+            en_us: Git service provider such as GitLab, GitHub, Gitee for categorization
+            zh_cn: Git服务提供商，如GitLab、GitHub等，用于分类管理
+          display_name:
+            en_us: Git Provider
+            zh_cn: Git提供商
+          filterable: true
+          name: git_provider
+          orderable: true
+          short_description:
+            en_us: Git Provider
+            zh_cn: Git提供商
+          type: string
+        - description:
+            en_us: Primary programming language used in the repository for technology stack analysis
+            zh_cn: 主要编程语言，便于技术栈分析和代码质量跟踪
+          display_name:
+            en_us: Programming Language
+            zh_cn: 编程语言
+          filterable: true
+          name: language
+          orderable: true
+          short_description:
+            en_us: Programming Language
+            zh_cn: 编程语言
+          type: string
+        - description:
+            en_us: Technology framework utilized such as Spring, React, Django for framework analysis
+            zh_cn: 使用的技术框架，如Spring、React等，便于框架分析
+          display_name:
+            en_us: Framework
+            zh_cn: 技术框架
+          filterable: true
+          name: framework
+          orderable: true
+          short_description:
+            en_us: Framework
+            zh_cn: 技术框架
+          type: string
+        - description:
+            en_us: Detailed description of the repository's purpose and content
+            zh_cn: 仓库用途说明，便于理解和管理
+          display_name:
+            en_us: Repository Description
+            zh_cn: 仓库描述
+          filterable: false
+          name: description
+          orderable: false
+          short_description:
+            en_us: Repository Description
+            zh_cn: 仓库描述
+          type: string
+        - description:
+            en_us: Default branch name such as main or master for primary development line
+            zh_cn: 默认分支名称，通常为main或master
+          display_name:
+            en_us: Default Branch
+            zh_cn: 默认分支
+          filterable: true
+          name: default_branch
+          orderable: true
+          short_description:
+            en_us: Default Branch
+            zh_cn: 默认分支
+          type: string
+    keep_alive_seconds: 86400
+    name_fields:
+        - repo_name
+        - repo_id
+        - git_provider
+        - language
+        - framework
+    primary_key_fields:
+        - repo_id
+    time_field: __time__
+    type: entity_set

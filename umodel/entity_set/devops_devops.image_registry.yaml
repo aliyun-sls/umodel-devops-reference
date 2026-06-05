@@ -1,0 +1,133 @@
+kind: entity_set
+metadata:
+    description:
+        en_us: Image Registry entity serving as the centralized storage and distribution center for container images, responsible for image security, version management, and access control. This entity enables unified management of image assets and provides the foundation for secure and compliant container deployment workflows.
+        zh_cn: 镜像仓库实体是容器镜像的集中存储和分发中心，承担着镜像安全、版本管理和访问控制的重要职责。建立镜像仓库实体有助于实现镜像资产的统一管理，支持多区域分发、权限控制以及与容器部署的安全合规管理。
+    display_name:
+        en_us: Image Registry
+        zh_cn: 镜像仓库
+    domain: devops
+    kind: entity_set
+    name: devops.image_registry
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dynamic: false
+    fields:
+        - description:
+            en_us: Unique registry identifier serving as primary key for image registry management
+            zh_cn: 仓库唯一标识，作为主键用于镜像仓库管理
+          display_name:
+            en_us: Registry ID
+            zh_cn: 仓库ID
+          filterable: true
+          name: registry_id
+          orderable: true
+          short_description:
+            en_us: Registry ID
+            zh_cn: 仓库ID
+          type: string
+        - description:
+            en_us: Business identifier for registry management and intuitive identification
+            zh_cn: 仓库的业务标识，便于管理识别
+          display_name:
+            en_us: Registry Name
+            zh_cn: 仓库名称
+          filterable: true
+          name: registry_name
+          orderable: true
+          short_description:
+            en_us: Registry Name
+            zh_cn: 仓库名称
+          type: string
+        - description:
+            en_us: Network address for image access and registry operations
+            zh_cn: 镜像访问的网络地址
+          display_name:
+            en_us: Registry URL
+            zh_cn: 仓库地址
+          filterable: true
+          name: registry_url
+          orderable: true
+          short_description:
+            en_us: Registry URL
+            zh_cn: 仓库地址
+          type: string
+        - description:
+            en_us: Registry category such as Harbor, ACR, ECR for type-specific management
+            zh_cn: 仓库类别，如Harbor、ACR、ECR等
+          display_name:
+            en_us: Registry Type
+            zh_cn: 仓库类型
+          filterable: true
+          name: registry_type
+          orderable: true
+          short_description:
+            en_us: Registry Type
+            zh_cn: 仓库类型
+          type: string
+        - description:
+            en_us: Image registry service provider for vendor-specific integrations
+            zh_cn: 镜像仓库的服务提供商
+          display_name:
+            en_us: Registry Provider
+            zh_cn: 仓库提供商
+          filterable: true
+          name: provider
+          orderable: true
+          short_description:
+            en_us: Registry Provider
+            zh_cn: 仓库提供商
+          type: string
+        - description:
+            en_us: Geographical region where the image registry is located
+            zh_cn: 镜像仓库所在的地理区域
+          display_name:
+            en_us: Region
+            zh_cn: 区域
+          filterable: true
+          name: region
+          orderable: true
+          short_description:
+            en_us: Region
+            zh_cn: 区域
+          type: string
+        - description:
+            en_us: Registry purpose description for understanding and management
+            zh_cn: 仓库用途说明，便于理解和管理
+          display_name:
+            en_us: Registry Description
+            zh_cn: 仓库描述
+          filterable: false
+          name: description
+          orderable: false
+          short_description:
+            en_us: Registry Description
+            zh_cn: 仓库描述
+          type: string
+        - description:
+            en_us: Registry access permission setting for security management
+            zh_cn: 仓库的访问权限设置
+          display_name:
+            en_us: Is Public
+            zh_cn: 是否公开
+          filterable: true
+          name: is_public
+          orderable: true
+          short_description:
+            en_us: Is Public
+            zh_cn: 是否公开
+          type: boolean
+    keep_alive_seconds: 86400
+    name_fields:
+        - registry_name
+        - registry_id
+        - registry_url
+        - registry_type
+        - provider
+        - region
+    primary_key_fields:
+        - registry_id
+    time_field: __time__
+    type: entity_set

@@ -1,0 +1,5 @@
+pyyaml>=6.0
+alibabacloud-cms20240330>=1.0.0
+alibabacloud-credentials>=0.3.0
+alibabacloud-tea-openapi>=0.3.7
+alibabacloud-tea-util>=0.3.11

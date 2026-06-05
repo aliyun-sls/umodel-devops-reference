@@ -1,0 +1,29 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: |
+            Code release is sourced from code repository, providing release traceability foundation.
+            Enables version control and quality tracking from source code to deployable artifacts.
+        zh_cn: |
+            代码发布来源于代码仓库，提供发布可追溯性基础。
+            支持从源代码到可部署制品的版本控制和质量追踪。
+    display_name:
+        en_us: Code Release Sourced from Repository
+        zh_cn: 代码发布来源于代码仓库
+    domain: devops
+    kind: entity_set_link
+    name: devops.code_release_sourced_from_devops.code_repository
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.code_repository
+    entity_link_type: sourced_from
+    priority: 5
+    src:
+        domain: devops
+        kind: entity_set
+        name: devops.code_release

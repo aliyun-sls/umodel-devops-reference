@@ -1,0 +1,29 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: |
+            Developer manages APM services, establishing clear service ownership and responsibility.
+            Enables efficient collaboration between ops and dev teams with defined accountability for service issues.
+        zh_cn: |
+            研发人员管理APM服务，建立清晰的服务归属和责任制。
+            支持运维团队与开发团队的高效协作，明确服务问题的责任归属。
+    display_name:
+        en_us: Developer Manages APM Services
+        zh_cn: 研发人员管理APM服务
+    domain: devops
+    kind: entity_set_link
+    name: devops.developer_manages_apm.service
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: apm
+        kind: entity_set
+        name: apm.service
+    entity_link_type: manages
+    priority: 5
+    src:
+        domain: devops
+        kind: entity_set
+        name: devops.developer

@@ -1,0 +1,26 @@
+version: '3.8'
+
+# Codeup mode: codeup is an Alibaba Cloud SaaS, so no codeup container
+# is needed — only run the data generator and point it at codeup via
+# devops_data_generator/config/app_config.yaml (use
+# app_config.codeup.yaml.sample as the starting template).
+#
+# Usage:
+#   cp devops_data_generator/config/app_config.codeup.yaml.sample \
+#      devops_data_generator/config/app_config.yaml
+#   # fill in organization_id / access_key_id / access_key_secret / sls / acr / cms
+#   docker compose -f docker-compose.codeup.yml up --build
+
+services:
+  data-generator:
+    build:
+      context: ./devops_data_generator
+      dockerfile: Dockerfile
+    container_name: umodel-devops-codeup
+    restart: unless-stopped
+    volumes:
+      - ./devops_data_generator/config:/app/config:ro
+      - ./devops_data_generator/logs:/app/logs
+    environment:
+      PYTHONUNBUFFERED: "1"
+    command: ["python3", "main.py", "--mode", "continuous", "--config", "/app/config"]

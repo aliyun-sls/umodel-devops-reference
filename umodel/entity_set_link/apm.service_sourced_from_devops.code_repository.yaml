@@ -1,0 +1,29 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: |
+            APM service is sourced from code repository, establishing direct traceability from monitoring to source.
+            Enables immediate navigation from performance problems to source code for efficient debugging.
+        zh_cn: |
+            APM服务来源于代码仓库，建立从监控到源码的直接追溯关系。
+            支持从性能问题直接定位到源代码，提升调试效率。
+    display_name:
+        en_us: APM Service Sourced from Code Repository
+        zh_cn: APM服务来源于代码仓库
+    domain: devops
+    kind: entity_set_link
+    name: apm.service_sourced_from_devops.code_repository
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.code_repository
+    entity_link_type: sourced_from
+    priority: 5
+    src:
+        domain: apm
+        kind: entity_set
+        name: apm.service

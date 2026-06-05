@@ -1,0 +1,106 @@
+kind: entity_set
+metadata:
+    description:
+        en_us: Developer entity representing core participants in the DevOps process, responsible for code development, system maintenance, and issue resolution. This entity establishes clear responsibility attribution and efficient problem handling across the development lifecycle.
+        zh_cn: 研发人员实体代表DevOps流程的核心参与者，承担代码开发、系统维护、问题处理等关键职责。建立研发人员实体的目的是实现责任归属的清晰化和问题处理的高效化，为跨域数据融合提供人员维度的关联基础。
+    display_name:
+        en_us: Developer
+        zh_cn: 研发人员
+    domain: devops
+    kind: entity_set
+    name: devops.developer
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dynamic: false
+    fields:
+        - description:
+            en_us: Unique employee identifier serving as primary key for personnel identification
+            zh_cn: 员工唯一标识符，作为主键用于人员身份识别
+          display_name:
+            en_us: Work Number
+            zh_cn: 工号
+          filterable: true
+          name: work_no
+          orderable: true
+          short_description:
+            en_us: Work Number
+            zh_cn: 工号
+          type: string
+        - description:
+            en_us: Human-readable name of the developer for UI display and identification
+            zh_cn: 研发人员的直观识别信息，用于UI展示和人员识别
+          display_name:
+            en_us: Developer Name
+            zh_cn: 研发人员姓名
+          filterable: true
+          name: name
+          orderable: true
+          short_description:
+            en_us: Developer Name
+            zh_cn: 研发人员姓名
+          type: string
+        - description:
+            en_us: Primary contact email address for communication and notifications
+            zh_cn: 研发人员的邮箱地址，作为联系方式和告警通知的重要渠道
+          display_name:
+            en_us: Email Address
+            zh_cn: 邮箱地址
+          filterable: true
+          name: email
+          orderable: true
+          short_description:
+            en_us: Email Address
+            zh_cn: 邮箱地址
+          type: string
+        - description:
+            en_us: Team affiliation of the developer for team-level collaboration analysis
+            zh_cn: 研发人员所属的团队名称，支持团队维度的协作分析和管理
+          display_name:
+            en_us: Team Name
+            zh_cn: 团队名称
+          filterable: true
+          name: team
+          orderable: true
+          short_description:
+            en_us: Team Name
+            zh_cn: 团队名称
+          type: string
+        - description:
+            en_us: Developer's role such as developer, tester, operations for role-based analysis
+            zh_cn: 研发人员的角色职责分析，如开发、测试、运维等
+          display_name:
+            en_us: Role
+            zh_cn: 角色
+          filterable: true
+          name: role
+          orderable: true
+          short_description:
+            en_us: Role
+            zh_cn: 角色
+          type: string
+        - description:
+            en_us: Organizational department for department-level analysis and management
+            zh_cn: 研发人员所属的部门，支持组织架构分析和跨部门协作追踪
+          display_name:
+            en_us: Department
+            zh_cn: 部门
+          filterable: true
+          name: department
+          orderable: true
+          short_description:
+            en_us: Department
+            zh_cn: 部门
+          type: string
+    keep_alive_seconds: 86400
+    name_fields:
+        - name
+        - work_no
+        - email
+        - team
+        - role
+    primary_key_fields:
+        - work_no
+    time_field: __time__
+    type: entity_set

@@ -1,0 +1,104 @@
+# --- Active git provider ---------------------------------------------------
+git_provider:
+  type: gitlab          # gitlab | codeup
+
+# --- GitLab credentials ----------------------------------------------------
+# Verified against: GitLab CE 17.6.0 (docker image: gitlab/gitlab-ce:17.6.0-ce.0)
+# SDK: python-gitlab 4.8.0
+#
+# Supported token types (all use the same `access_token` field):
+#   - Personal Access Token (PAT): user-level, scope: api
+#   - Project Access Token: project-level, not bound to a personal account
+#   - Group Access Token: group-level, covers all projects in the group
+# Generate at: GitLab → Settings → Access Tokens (user/project/group level).
+# Required scope: api (read_api is insufficient for member listing).
+gitlab:
+  url: "http://gitlab.local"
+  access_token: "<YOUR_GITLAB_TOKEN>"
+  group_id: null
+  project_id: null
+  release_tag: null
+
+acr:
+  instance_id: "<YOUR_ACR_INSTANCE_ID>"
+  region: "cn-hangzhou"
+  access_key_id: "<YOUR_ACCESS_KEY_ID>"
+  access_key_secret: "<YOUR_ACCESS_KEY_SECRET>"
+  # 0 = unlimited (pull all); set a number to cap per-API results
+  max_repositories: 0       # max ACR registries to pull
+  max_tags_per_repo: 0      # max image tags per registry
+
+cms:
+  endpoint: "metrics.<YOUR_REGION_ID>.aliyuncs.com"
+  workspace: "<YOUR_CMS_WORKSPACE>"
+  namespace_filter: "<YOUR_NAMESPACE_FILTER>"
+  access_key_id: "<YOUR_ACCESS_KEY_ID>"
+  access_key_secret: "<YOUR_ACCESS_KEY_SECRET>"
+
+kubernetes:
+  # "k8s": read pods directly from kubeconfig
+  # "cms": read pods from the CMS workspace EntityStore
+  data_source: "k8s"
+  cluster_id: "<YOUR_CLUSTER_ID>"
+  namespace_filter: "<YOUR_NAMESPACE_FILTER>"
+  kubeconfig_path: ""
+  k8s_context: ""
+
+static_topo:
+  static_topo_config: "config/static_topo.yaml"
+
+sls:
+  endpoint: "cn-hongkong.log.aliyuncs.com"
+  access_key_id: "<YOUR_ACCESS_KEY_ID>"
+  access_key_secret: "<YOUR_ACCESS_KEY_SECRET>"
+  project: "<YOUR_SLS_PROJECT>"
+  logstore_mapping:
+    entities:
+      developer: "<YOUR_ENTITY_NAME>"
+      code_repository: "<YOUR_ENTITY_NAME>"
+      code_release: "<YOUR_ENTITY_NAME>"
+      image_registry: "<YOUR_ENTITY_NAME>"
+      image: "<YOUR_ENTITY_NAME>"
+    relationships:
+      developer_manages_code_repository: "<YOUR_TOPO_NAME>"
+      code_release_sourced_from_code_repository: "<YOUR_TOPO_NAME>"
+      image_sourced_from_image_registry: "<YOUR_TOPO_NAME>"
+      image_sourced_from_code_release: "<YOUR_TOPO_NAME>"
+      image_registry_contains_image: "<YOUR_TOPO_NAME>"
+      pod_uses_image: "<YOUR_TOPO_NAME>"
+      static_topo: "<YOUR_TOPO_NAME>"
+
+tasks:
+  enabled:
+    - code_repository
+    - developer
+    - code_release
+    - code_release_sourced_from_code_repository
+    - image_registry
+    - image
+    - image_registry_contains_image
+    - image_sourced_from_code_release
+    - kubernetes_pod
+    - pod_uses_image
+    - static_topo
+    - developer_manages_code_repository
+  interval: 300
+  batch_size: 100
+  shared_data_ttl: 86400
+  skip_sls_upload:
+    - skip_to_upload
+  dependencies:
+    developer: ["code_repository"]
+    code_release: ["code_repository"]
+    developer_manages_code_repository: ["developer", "code_repository"]
+    code_release_sourced_from_code_repository: ["code_release", "code_repository"]
+    image: ["image_registry"]
+    image_registry_contains_image: ["image_registry", "image"]
+    image_sourced_from_code_release: ["image", "code_release", "code_repository", "image_registry"]
+    pod_uses_image: ["kubernetes_pod", "image"]
+    static_topo: ["code_repository", "code_release", "developer", "image_registry"]
+
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/gitlab_data_generator.log"

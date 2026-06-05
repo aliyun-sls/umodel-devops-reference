@@ -1,0 +1,29 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: |
+            Kubernetes Deployment uses container images, tracking application deployment relationships.
+            Enables update impact analysis and rollback support based on image versions.
+        zh_cn: |
+            Kubernetes Deployment使用容器镜像，追踪应用部署关系。
+            支持基于镜像版本的更新影响分析和回滚支持。
+    display_name:
+        en_us: Kubernetes Deployment Uses Container Images
+        zh_cn: Kubernetes Deployment使用容器镜像
+    domain: devops
+    kind: entity_set_link
+    name: k8s.deployment_uses_devops.image
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.image
+    entity_link_type: uses
+    priority: 5
+    src:
+        domain: k8s
+        kind: entity_set
+        name: k8s.deployment

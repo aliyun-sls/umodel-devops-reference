@@ -1,0 +1,29 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: |
+            Image registry contains container images, enabling resource location and capacity management.
+            Supports rapid image discovery and storage utilization analysis across registries.
+        zh_cn: |
+            镜像仓库包含容器镜像，支持资源定位和容量管理。
+            支持镜像快速发现和各仓库存储使用情况分析。
+    display_name:
+        en_us: Image Registry Contains Container Images
+        zh_cn: 镜像仓库包含容器镜像
+    domain: devops
+    kind: entity_set_link
+    name: devops.image_registry_contains_devops.image
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    src:
+        domain: devops
+        kind: entity_set
+        name: devops.image_registry
+    entity_link_type: contains
+    priority: 5
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.image

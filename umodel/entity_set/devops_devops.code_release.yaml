@@ -1,0 +1,160 @@
+kind: entity_set
+metadata:
+    description:
+        en_us: Code Release entity documenting the transformation process from source code to deployable artifacts, serving as the key link connecting development and operations. Through release entities, version management, change tracking, and rollback analysis can be achieved, enabling complete traceability from code changes to production deployments.
+        zh_cn: 代码发布实体记录了从源码到可部署制品的转换过程，是连接开发和运维的关键环节。通过发布实体，可以实现版本管理、变更追踪和回滚分析，支持语义化版本管理和精确的代码变更定位，为微服务部署提供完整的血缘关系。
+    display_name:
+        en_us: Code Release
+        zh_cn: 代码发布
+    domain: devops
+    kind: entity_set
+    name: devops.code_release
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dynamic: false
+    fields:
+        - description:
+            en_us: Unique release identifier serving as primary key for version tracking and release management
+            zh_cn: 发布唯一标识，作为主键用于版本追踪和发布管理
+          display_name:
+            en_us: Release ID
+            zh_cn: 发布ID
+          filterable: true
+          name: release_id
+          orderable: true
+          short_description:
+            en_us: Release ID
+            zh_cn: 发布ID
+          type: string
+        - description:
+            en_us: Associated code repository identifier for source code traceability
+            zh_cn: 关联到具体的代码仓库，支持源码溯源
+          display_name:
+            en_us: Repository ID
+            zh_cn: 仓库ID
+          filterable: true
+          name: repo_id
+          orderable: true
+          short_description:
+            en_us: Repository ID
+            zh_cn: 仓库ID
+          type: string
+        - description:
+            en_us: Repository name for intuitive identification and display purposes
+            zh_cn: 仓库名称，便于直观识别和展示
+          display_name:
+            en_us: Repository Name
+            zh_cn: 仓库名称
+          filterable: true
+          name: repo_name
+          orderable: true
+          short_description:
+            en_us: Repository Name
+            zh_cn: 仓库名称
+          type: string
+        - description:
+            en_us: Version tag supporting semantic versioning for release identification
+            zh_cn: 版本标识，支持语义化版本管理
+          display_name:
+            en_us: Release Tag
+            zh_cn: 发布标签
+          filterable: true
+          name: tag
+          orderable: true
+          short_description:
+            en_us: Release Tag
+            zh_cn: 发布标签
+          type: string
+        - description:
+            en_us: Git commit hash for precise code change location and traceability
+            zh_cn: Git提交哈希，精确的代码变更定位
+          display_name:
+            en_us: Commit SHA
+            zh_cn: 提交SHA
+          filterable: true
+          name: commit_sha
+          orderable: true
+          short_description:
+            en_us: Commit SHA
+            zh_cn: 提交SHA
+          type: string
+        - description:
+            en_us: Detailed release change description and notes
+            zh_cn: 发布变更说明，详细的变更描述
+          display_name:
+            en_us: Release Notes
+            zh_cn: 发布说明
+          filterable: false
+          name: release_notes
+          orderable: false
+          short_description:
+            en_us: Release Notes
+            zh_cn: 发布说明
+          type: string
+        - description:
+            en_us: Release timestamp for time-dimension version management and analysis
+            zh_cn: 时间维度的版本管理和分析
+          display_name:
+            en_us: Release Time
+            zh_cn: 发布时间
+          filterable: true
+          name: release_time
+          orderable: true
+          short_description:
+            en_us: Release Time
+            zh_cn: 发布时间
+          type: timestamp
+        - description:
+            en_us: Release status such as success, failed, pending for deployment tracking
+            zh_cn: 发布状态，如success、failed、pending等
+          display_name:
+            en_us: Release Status
+            zh_cn: 发布状态
+          filterable: true
+          name: status
+          orderable: true
+          short_description:
+            en_us: Release Status
+            zh_cn: 发布状态
+          type: string
+        - description:
+            en_us: Release type classification such as major, minor, patch for version categorization
+            zh_cn: 发布类型，如major、minor、patch等
+          display_name:
+            en_us: Release Type
+            zh_cn: 发布类型
+          filterable: true
+          name: release_type
+          orderable: true
+          short_description:
+            en_us: Release Type
+            zh_cn: 发布类型
+          type: string
+        - description:
+            en_us: Release operation executor for responsibility attribution
+            zh_cn: 发布操作的执行人，用于责任归属
+          display_name:
+            en_us: Author
+            zh_cn: 发布者
+          filterable: true
+          name: author
+          orderable: true
+          short_description:
+            en_us: Author
+            zh_cn: 发布者
+          type: string
+    keep_alive_seconds: 86400
+    name_fields:
+        - tag
+        - repo_name
+        - release_id
+        - author
+        - commit_sha
+        - status
+        - release_type
+    primary_key_fields:
+        - release_id
+    time_field: __time__
+    type: entity_set

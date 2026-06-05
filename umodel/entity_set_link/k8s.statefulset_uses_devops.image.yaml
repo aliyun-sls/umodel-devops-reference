@@ -1,0 +1,29 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: |
+            Kubernetes StatefulSet uses container images, managing stateful application deployment relationships.
+            Supports ordered deployment tracking and version management for stateful workloads.
+        zh_cn: |
+            Kubernetes StatefulSet使用容器镜像，管理有状态应用部署关系。
+            支持有状态工作负载的有序部署追踪和版本管理。
+    display_name:
+        en_us: Kubernetes StatefulSet Uses Container Images
+        zh_cn: Kubernetes StatefulSet使用容器镜像
+    domain: devops
+    kind: entity_set_link
+    name: k8s.statefulset_uses_devops.image
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.image
+    entity_link_type: uses
+    priority: 5
+    src:
+        domain: k8s
+        kind: entity_set
+        name: k8s.statefulset

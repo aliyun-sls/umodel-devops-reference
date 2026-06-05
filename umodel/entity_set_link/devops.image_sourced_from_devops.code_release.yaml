@@ -1,0 +1,29 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: |
+            Container image is sourced from code release, enabling traceability from containers to code changes.
+            Supports security vulnerability tracking and rollback decision-making based on code change history.
+        zh_cn: |
+            容器镜像来源于代码发布，实现从容器到代码变更的追溯能力。
+            支持安全漏洞追踪和基于代码变更历史的回滚决策。
+    display_name:
+        en_us: Container Image Sourced from Code Release
+        zh_cn: 容器镜像来源于代码发布
+    domain: devops
+    kind: entity_set_link
+    name: devops.image_sourced_from_devops.code_release
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.code_release
+    entity_link_type: sourced_from
+    priority: 5
+    src:
+        domain: devops
+        kind: entity_set
+        name: devops.image

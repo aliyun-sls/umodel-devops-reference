@@ -1,0 +1,15 @@
+# Core (shared across providers)
+aliyun-log-python-sdk==0.9.31
+protobuf==3.20.3
+alibabacloud_credentials==1.0.2
+pyyaml==6.0.1
+python-dateutil==2.8.2
+alibabacloud_cr20181201==2.0.4
+alibabacloud_cms20240330==3.1.0
+flask==2.3.3
+werkzeug==2.3.7
+kubernetes==29.0.0
+
+# Git provider SDKs (both installed in v0.1; v0.2 will split into extras_require)
+python-gitlab==4.8.0
+alibabacloud_devops20210625==3.0.0

@@ -1,0 +1,24 @@
+# 代码仓库与镜像仓库映射配置文件
+# 第一版仍保留 repo ↔ registry 静态映射，仓库标识统一改为 GitLab path_with_namespace。
+
+metadata:
+  description: "代码仓库与镜像仓库映射配置（GitLab 单仓库 demo 模板）"
+  version: "2.0.0"
+  last_updated: "2026-05-11"
+
+repo_image_mappings:
+  "<GIT_REPO_PATH>": "<ACR_REGISTRY_ID>"
+
+tag_matching_rules:
+  match_type: "exact"
+
+examples:
+  description: |
+    配置说明：
+    1. repo_image_mappings 使用 GitLab path_with_namespace 作为 repo 键。
+    2. image_sourced_from_code_release 仍依赖静态 repo ↔ registry 映射 + tag matching。
+
+    使用场景：
+    - GitLab 仓库 "<GITLAB_PATH_WITH_NAMESPACE>" 的发布版本 "<RELEASE_TAG>"
+    - 对应镜像仓库 "<ACR_REGISTRY_ID>" 中的镜像标签 "<RELEASE_TAG>"
+    - 自动建立 image_sourced_from_code_release 关系

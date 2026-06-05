@@ -1,0 +1,119 @@
+# 静态Topo配置文件
+# 保留 baseline 的静态/混合关系机制，但将业务样例收缩为 GitLab 单仓库 demo 模板。
+# 所有 repo 标识统一使用 GitLab path_with_namespace 口径。
+
+metadata:
+  description: "静态拓扑关系配置文件（GitLab 单仓库 demo 模板）"
+  version: "2.0.0"
+  last_updated: "2026-05-11"
+
+topo_definitions:
+  - name: "apm.service_sourced_from_devops.code_repository"
+    type: "static"
+    description: "服务到代码仓库的静态关系模板"
+    relationship_type: "sourced_from"
+    relations:
+      - source_entity_type: "apm.service"
+        source_domain: "apm"
+        source_entity_id: "<APM_SERVICE_ENTITY_ID>"
+        target_domain: "devops"
+        target_entity_type: "devops.code_repository"
+        target_entity_id: "<CODE_REPOSITORY_ENTITY_ID_MD5>"
+        attributes:
+          apm_service: "<APM_SERVICE_NAME>"
+          code_repository: "<GITLAB_PATH_WITH_NAMESPACE>"
+
+  - name: "apm.service_sourced_from_devops.code_release"
+    type: "mixed"
+    description: "静态 apm.service 与动态 code_release 的关系模板"
+    relationship_type: "sourced_from"
+    static_entity_type: "apm.service"
+    relation_direction: "static_to_dynamic"
+    source_domain: "apm"
+    target_domain: "devops"
+    static_entities:
+      - entity_id: "<APM_SERVICE_ENTITY_ID>"
+        name: "<APM_SERVICE_NAME>"
+        service_name: "<APM_SERVICE_NAME>"
+        repository_name: "<GITLAB_PATH_WITH_NAMESPACE>"
+        domain: "apm"
+    dynamic_entity:
+      entity_type: "devops.code_release"
+      domain: "devops"
+    match_rule:
+      static_field: "repository_name"
+      dynamic_field: "repo_name"
+      type: "exact"
+    attributes:
+      relationship_type: "sourced_from"
+
+  - name: "devops.developer_manages_apm.service"
+    type: "mixed"
+    description: "静态 apm.service 与动态 developer 的关系模板"
+    relationship_type: "manages"
+    static_entity_type: "apm.service"
+    relation_direction: "static_to_dynamic"
+    source_domain: "apm"
+    target_domain: "devops"
+    static_entities:
+      - entity_id: "<APM_SERVICE_ENTITY_ID>"
+        name: "<APM_SERVICE_NAME>"
+        service_name: "<APM_SERVICE_NAME>"
+        repository_name: "<GITLAB_PATH_WITH_NAMESPACE>"
+        domain: "apm"
+        work_no: "<DEVELOPER_WORK_NO>"
+    dynamic_entity:
+      entity_type: "devops.developer"
+      domain: "devops"
+    match_rule:
+      static_field: "work_no"
+      dynamic_field: "user_id"
+      type: "exact"
+    attributes:
+      relationship_type: "manages"
+
+  - name: "devops.developer_manages_devops.code_repository"
+    type: "dynamic_to_dynamic"
+    description: "动态 developer 与动态 code_repository 的管理关系模板"
+    relationship_type: "manages"
+    source_domain: "devops"
+    target_domain: "devops"
+    source_entity:
+      entity_type: "devops.developer"
+      data_key: "devops.developer_raw_data"
+      id_field: "user_id"
+    target_entity:
+      entity_type: "devops.code_repository"
+      data_key: "code_repos"
+      id_field: "repo_id"
+    relationship_mapping:
+      - source_filter:
+          user_id: "<DEVELOPER_WORK_NO>"
+        target_filter:
+          repo_name: "<GITLAB_PATH_WITH_NAMESPACE>"
+        attributes:
+          role: "maintainer"
+          access_level: "40"
+
+  - name: "devops.developer_manages_devops.image_registry"
+    type: "cross_reference"
+    description: "开发人员与镜像仓库的静态关系模板"
+    relationship_type: "manages"
+    source_domain: "devops"
+    target_domain: "devops"
+    cross_references:
+      - source_entities:
+          - type: "devops.developer"
+            id: "<DEVELOPER_ENTITY_ID_MD5>"
+        target_entities:
+          - type: "devops.image_registry"
+            id: "<IMAGE_REGISTRY_ENTITY_ID_MD5>"
+        attributes:
+          developer_name: "<DEVELOPER_NAME_OR_USERNAME>"
+          registry_name: "<IMAGE_REGISTRY_NAME>"
+
+examples:
+  notes:
+    - "把 <GITLAB_PATH_WITH_NAMESPACE> 替换为真实 GitLab 仓库标识，例如 group/project。"
+    - "把所有 <...> 占位符替换为当前 demo 的真实实体名、实体ID 或 work_no。"
+    - "如果当前 demo 不接 APM 或静态 registry 管理关系，可以删除对应 topo_definition。"

@@ -1,0 +1,29 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: |
+            Developer manages code repositories, defining clear ownership and access control.
+            Enables workload analysis and permission management based on repository responsibilities.
+        zh_cn: |
+            研发人员管理代码仓库，定义清晰的归属权和访问控制。
+            支持基于仓库责任的工作量分析和权限管理。
+    display_name:
+        en_us: Developer Manages Code Repositories
+        zh_cn: 研发人员管理代码仓库
+    domain: devops
+    kind: entity_set_link
+    name: devops.developer_manages_devops.code_repository
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.code_repository
+    entity_link_type: manages
+    priority: 5
+    src:
+        domain: devops
+        kind: entity_set
+        name: devops.developer

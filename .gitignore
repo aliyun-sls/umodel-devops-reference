@@ -1,0 +1,16 @@
+/devops_data_generator/config/app_config.yaml
+/devops_data_generator/logs/
+/logs/
+/__pycache__/
+**/__pycache__/
+*.pyc
+
+# local workflow artifacts
+.spec/
+.review/
+/gitlab_skill/
+
+# Editor / OS noise
+.DS_Store
+.idea/
+.vscode/
