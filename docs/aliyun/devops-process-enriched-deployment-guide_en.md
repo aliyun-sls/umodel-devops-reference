@@ -33,7 +33,7 @@ cp devops_data_generator/config/app_config.codeup.yaml.sample \
    devops_data_generator/config/app_config.yaml
 ```
 
-Key config sections: `git_provider`, `acr`, `cms`, `kubernetes`, `sls`, `tasks`.
+Key config sections: `git_provider`, `acr`, `cms`, `kubernetes`, `sls`, `tasks`. (`git_provider.type` selects the gitlab vs codeup adapter; records write their source into the `data_source` field.)
 
 See [Provider Matrix](../provider-matrix.md) for field details per provider.
 
@@ -50,7 +50,7 @@ python3 devops_data_generator/main.py --mode continuous --config devops_data_gen
 ### 4. Verify in UModel Explorer
 
 ```sql
-.entity with(domain='devops', type='devops.code_repository') | limit 0,100
+.entity with(domain='devops', type='devops.repository') | limit 0,100
 ```
 
-Expected: entities with `git_provider=gitlab` or `git_provider=aliyun` depending on your config.
+Expected: entities with `data_source=gitlab` or `data_source=codeup` depending on your config.

@@ -29,10 +29,10 @@ Two implementations: `GitLabAdapter` (python-gitlab SDK) and `CodeupAdapter` (al
 ## Task Types
 
 **Entity tasks** (produce entities):
-- `code_repository`, `developer`, `code_release`, `image_registry`, `image`, `kubernetes_pod`
+- `repository`, `user`, `release`, `pull_request`, `docker_image`, `artifact`, `kubernetes_pod`
 
 **Relationship tasks** (produce links):
-- `code_release_sourced_from_code_repository`, `developer_manages_code_repository`, `image_registry_contains_image`, `image_sourced_from_code_release`, `pod_uses_image`, `static_topo`
+- `user_owns_repository`, `repository_tags_release`, `repository_contains_pull_request`, `user_participates_in_pull_request`, `release_contains_artifact`, `artifact_same_as_docker_image`, `pod_uses_docker_image`, `static_topo`
 
 ## Data Flow
 

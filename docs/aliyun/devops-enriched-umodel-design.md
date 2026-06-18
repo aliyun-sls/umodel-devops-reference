@@ -26,25 +26,27 @@
 
 ## **实体详细设计**
 
-### **1. 研发人员实体（devops.developer）**
+### **1. 用户实体（devops.user）**（旧 devops.developer 重命名）
 
 #### **业务背景**
 
-研发人员是DevOps流程的核心参与者，承担代码开发、系统维护、问题处理等关键职责。建立研发人员实体的目的是实现责任归属的清晰化和问题处理的高效化。
+用户是DevOps流程的核心参与者，承担代码开发、系统维护、问题处理等关键职责。建立用户实体的目的是实现责任归属的清晰化和问题处理的高效化。
 
 #### **字段设计**
 
 |  |  |  |  |  |  |  |
 | --- | --- | --- | --- | --- | --- | --- |
 | **字段名称** | **类型** | **必填** | **可过滤** | **可排序** | **描述** | **业务价值** |
-| **work_no** | string | 是 | 是 | 是 | 工号 | 唯一标识，与企业人员系统对接，作为主键 |
-| **name** | string | 是 | 是 | 是 | 研发人员姓名 | 直观的人员识别信息 |
+| **user_id** | string | 是 | 是 | 是 | 用户标识 | 唯一标识，与企业人员系统对接，作为主键 |
+| **full_name** | string | 是 | 是 | 是 | 用户全名 | 直观的人员识别信息 |
 | **email** | string | 是 | 是 | 是 | 邮箱地址 | 联系方式，告警通知的重要渠道 |
-| **team** | string | 是 | 是 | 是 | 团队名称 | 团队维度的协作分析和管理 |
-| **role** | string | 是 | 是 | 是 | 角色 | 角色职责分析，如开发、测试、运维等 |
-| **department** | string | 是 | 是 | 是 | 部门 | 组织架构分析，跨部门协作追踪 |
+| **data_source** | string | 是 | 是 | 是 | 数据来源 | 标识来源平台，如gitlab、codeup |
+| **platform_user_id** | string | 是 | 是 | 是 | 平台用户ID | 原平台用户标识 |
+| **department** | string | 否 | 是 | 是 | 部门 | 组织架构分析，跨部门协作追踪 |
+| **is_active** | boolean | 否 | 是 | 是 | 是否活跃 | 过滤离职员工 |
+| **roles** | json | 否 | 否 | 否 | 角色列表 | 从该用户在各仓库的成员资格聚合，如 ["developer","leader"] |
 
-### **2. 代码仓库实体（devops.code_repository）**
+### **2. 代码仓库实体（devops.repository）**（旧 devops.code_repository 重命名）
 
 #### **业务背景**
 
@@ -55,16 +57,16 @@
 |  |  |  |  |  |  |  |
 | --- | --- | --- | --- | --- | --- | --- |
 | **字段名称** | **类型** | **必填** | **可过滤** | **可排序** | **描述** | **业务价值** |
-| **repo_id** | string | 是 | 是 | 是 | 仓库ID | 唯一标识，作为主键 |
-| **repo_name** | string | 是 | 是 | 是 | 仓库名称 | 仓库的业务标识，通常对应项目名 |
-| **repo_url** | string | 是 | 是 | 是 | 仓库URL | 代码访问地址，支持多种Git协议 |
-| **git_provider** | string | 是 | 是 | 是 | Git提供商 | Git服务提供商，如GitLab、GitHub等 |
-| **language** | string | 是 | 是 | 是 | 编程语言 | 主要编程语言，便于技术栈分析 |
-| **framework** | string | 是 | 是 | 是 | 技术框架 | 使用的技术框架，如Spring、React等 |
+| **repository_id** | string | 是 | 是 | 是 | 仓库标识 | 唯一标识，作为主键 |
+| **name** | string | 是 | 是 | 是 | 仓库名称 | 仓库的业务标识，通常对应项目名 |
+| **url** | string | 是 | 是 | 是 | 仓库URL | 代码访问地址，支持多种Git协议 |
+| **data_source** | string | 是 | 是 | 是 | 数据来源 | 替代旧 git_provider，如gitlab、codeup |
+| **owner_id** | string | 是 | 是 | 是 | 所有者 | 关联 devops.user.user_id |
+| **language** | string | 否 | 是 | 是 | 编程语言 | 主要编程语言，便于技术栈分析 |
 | **description** | string | 否 | 否 | 否 | 仓库描述 | 仓库用途说明，便于理解和管理 |
 | **default_branch** | string | 是 | 是 | 是 | 默认分支 | 默认分支名称，通常为main或master |
 
-### **3. 代码发布实体（devops.code_release）**
+### **3. 代码发布实体（devops.release）**（旧 devops.code_release 重命名）
 
 #### **业务背景**
 
@@ -76,37 +78,17 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | **字段名称** | **类型** | **必填** | **可过滤** | **可排序** | **描述** | **业务价值** |
 | **release_id** | string | 是 | 是 | 是 | 发布ID | 唯一标识，作为主键 |
-| **repo_id** | string | 是 | 是 | 是 | 仓库ID | 关联到具体的代码仓库 |
-| **repo_name** | string | 是 | 是 | 是 | 仓库名称 | 仓库名称，便于直观识别 |
-| **tag** | string | 是 | 是 | 是 | 发布标签 | 版本标识，支持语义化版本管理 |
+| **repository_id** | string | 是 | 是 | 是 | 仓库标识 | 关联到具体的代码仓库 |
+| **tag_name** | string | 是 | 是 | 是 | 发布标签 | 版本标识，支持语义化版本管理 |
 | **commit_sha** | string | 是 | 是 | 是 | 提交SHA | Git提交哈希，精确的代码变更定位 |
-| **release_notes** | string | 否 | 否 | 否 | 发布说明 | 发布变更说明，详细的变更描述 |
-| **release_time** | timestamp | 是 | 是 | 是 | 发布时间 | 时间维度的版本管理和分析 |
+| **description** | string | 否 | 否 | 否 | 发布说明 | 发布变更说明，详细的变更描述 |
 | **status** | string | 是 | 是 | 是 | 发布状态 | 发布状态，如success、failed、pending等 |
 | **release_type** | string | 是 | 是 | 是 | 发布类型 | 发布类型，如major、minor、patch等 |
-| **author** | string | 是 | 是 | 是 | 发布者 | 发布操作的执行人 |
+| **created_by** | string | 是 | 是 | 是 | 创建者 | 关联 devops.user.user_id |
 
-### **4. 镜像仓库实体（devops.image_registry）**
+> **注**：旧版 devops.image_registry 实体已移除（决策 A）。registry 级信息折叠为 docker_image.registry 字符串字段，不再作为独立 EntitySet。
 
-#### **业务背景**
-
-镜像仓库是容器镜像的集中存储和分发中心，承担着镜像安全、版本管理和访问控制的重要职责。建立镜像仓库实体有助于实现镜像资产的统一管理。
-
-#### **字段设计**
-
-|  |  |  |  |  |  |  |
-| --- | --- | --- | --- | --- | --- | --- |
-| **字段名称** | **类型** | **必填** | **可过滤** | **可排序** | **描述** | **业务价值** |
-| **registry_id** | string | 是 | 是 | 是 | 仓库ID | 唯一标识，作为主键 |
-| **registry_name** | string | 是 | 是 | 是 | 仓库名称 | 仓库的业务标识，便于管理识别 |
-| **registry_url** | string | 是 | 是 | 是 | 仓库地址 | 镜像访问的网络地址 |
-| **registry_type** | string | 是 | 是 | 是 | 仓库类型 | 仓库类别，如Harbor、ACR、ECR等 |
-| **provider** | string | 是 | 是 | 是 | 仓库提供商 | 镜像仓库的服务提供商 |
-| **region** | string | 是 | 是 | 是 | 区域 | 镜像仓库所在的地理区域 |
-| **description** | string | 否 | 否 | 否 | 仓库描述 | 仓库用途说明，便于理解和管理 |
-| **is_public** | boolean | 是 | 是 | 是 | 是否公开 | 仓库的访问权限设置 |
-
-### **5. 容器镜像实体（devops.image）**
+### **4. 容器镜像实体（devops.docker_image）**（旧 devops.image 重命名）
 
 #### **业务背景**
 
@@ -117,17 +99,17 @@
 |  |  |  |  |  |  |  |
 | --- | --- | --- | --- | --- | --- | --- |
 | **字段名称** | **类型** | **必填** | **可过滤** | **可排序** | **描述** | **业务价值** |
-| **image_id** | string | 是 | 是 | 是 | 镜像ID | 唯一标识，作为主键 |
-| **image_name** | string | 是 | 是 | 是 | 镜像名称 | 镜像的业务标识，通常对应应用名 |
-| **image_tag** | string | 是 | 是 | 是 | 镜像标签 | 版本标识，支持多版本管理 |
-| **image_digest** | string | 是 | 是 | 是 | 镜像摘要 | SHA256哈希值，确保镜像完整性 |
-| **registry_id** | string | 是 | 是 | 是 | 仓库ID | 关联到具体的镜像仓库 |
+| **docker_image_id** | string | 是 | 是 | 是 | 镜像标识 | 唯一标识，作为主键 |
+| **artifact_id** | string | 是 | 是 | 是 | 构建产物ID | 关联 devops.artifact（决策B同生，same_as关系）|
+| **registry** | string | 是 | 是 | 是 | 镜像仓库 | registry 级属性（替代旧 image_registry 实体）|
+| **repository** | string | 是 | 是 | 是 | 仓库路径 | 镜像的业务标识，通常对应应用名 |
+| **tag** | string | 是 | 是 | 是 | 镜像标签 | 版本标识，支持多版本管理 |
+| **digest** | string | 是 | 是 | 是 | 镜像摘要 | SHA256哈希值，确保镜像完整性 |
 | **full_image_name** | string | 是 | 是 | 是 | 完整镜像名 | 包含仓库地址的完整镜像名 |
-| **build_time** | timestamp | 是 | 是 | 是 | 构建时间 | 镜像构建的时间记录 |
-| **size** | long | 是 | 是 | 是 | 镜像大小 | 镜像文件大小，用于存储优化分析 |
-| **architecture** | string | 是 | 是 | 是 | 架构 | CPU架构，如amd64、arm64等 |
-| **os** | string | 是 | 是 | 是 | 操作系统 | 基础操作系统，如linux、windows等 |
-| **build_status** | string | 是 | 是 | 是 | 构建状态 | 构建状态，如success、failed、building等 |
+| **architecture** | string | 否 | 是 | 是 | 架构 | CPU架构，如amd64、arm64等 |
+| **os** | string | 否 | 是 | 是 | 操作系统 | 基础操作系统，如linux、windows等 |
+| **data_source** | string | 是 | 是 | 是 | 数据来源 | 如aliyun_acr |
+| **created_at** | timestamp | 是 | 是 | 是 | 创建时间 | 镜像构建的时间记录 |
 
 ## **实体关联设计**
 
@@ -150,23 +132,15 @@
 
 ### **DevOps域内部关系**
 
-1. 研发人员管理代码仓库（devops.developer_manages_devops.code_repository）。
+1. 用户归属代码仓库（devops.user_owns_devops.repository）。
 
 **业务价值**：
 
 * **责任明确**：快速定位代码仓库的负责人。
-* **权限管理**：基于管理关系进行权限分配。
-* **工作量分析**：统计研发人员管理的仓库数量和复杂度。
+* **权限管理**：基于归属关系进行权限分配。
+* **工作量分析**：统计用户归属的仓库数量和复杂度。
 
-2. 研发人员管理镜像仓库（devops.developer_manages_devops.image_registry）。
-
-**业务价值**：
-
-* **运维责任**：明确镜像仓库的运维责任人。
-* **安全管理**：基于管理关系进行安全策略配置。
-* **资源优化**：支持基于负责人的资源分配优化。
-
-3.代码发布来源代码仓库（devops.code_release_sourced_from_devops.code_repository）。
+2.代码仓库标记代码发布（devops.repository_tags_devops.release）。
 
 **业务价值**：
 
@@ -174,7 +148,14 @@
 * **变更分析**：分析代码变更对发布的影响。
 * **质量追踪**：从源码质量到发布质量的端到端追踪。
 
-4.镜像来源代码发布（devops.image_sourced_from_devops.code_release）。
+3.代码发布包含构建产物（devops.release_contains_devops.artifact）。
+
+**业务价值**：
+
+* **产物溯源**：从发布追溯到具体构建产物。
+* **多产物支持**：一个发布可含多个制品（镜像/Chart 等）。
+
+4.构建产物对应容器镜像（devops.artifact_same_as_devops.docker_image）。
 
 **业务价值**：
 
@@ -182,22 +163,14 @@
 * **安全追踪**：快速定位安全漏洞的影响范围。
 * **回滚决策**：基于代码变更历史制定回滚策略。
 
-5. 镜像仓库包含镜像（devops.image_registry_contains_devops.image）。
-
-**业务价值**：
-
-* **资源定位**：快速找到镜像的存储位置。
-* **容量管理**：统计各仓库的存储使用情况。
-* **访问控制**：基于存储位置进行权限管理。
-
 ### **跨域关系设计**
 
 #### **与 K8s 域的集成**
 
-1. Pod使用镜像（k8s.pod_uses_devops.image）
-2. Deployment使用镜像（k8s.deployment_uses_devops.image）
-3. StatefulSet使用镜像（k8s.statefulset_uses_devops.image）
-4. DaemonSet使用镜像（k8s.daemonset_uses_devops.image）
+1. Pod使用镜像（k8s.pod_uses_devops.docker_image）
+2. Deployment使用镜像（k8s.deployment_uses_devops.docker_image）
+3. StatefulSet使用镜像（k8s.statefulset_uses_devops.docker_image）
+4. DaemonSet使用镜像（k8s.daemonset_uses_devops.docker_image）
 
 **业务价值**：
 
@@ -207,9 +180,9 @@
 
 #### **与APM域的集成**
 
-1. 服务来源于代码仓库（apm.service_sourced_from_devops.code_repository）
-2. 服务来源于代码发布（apm.service_sourced_from_devops.code_release）
-3. 研发人员管理服务（devops.developer_manages_apm.service）
+1. 服务来源于代码仓库（apm.service_sourced_from_devops.repository）
+2. 服务来源于代码发布（apm.service_sourced_from_devops.release）
+3. 用户管理服务（devops.user_manages_apm.service）
 
 **业务价值**：
 

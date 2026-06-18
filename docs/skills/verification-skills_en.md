@@ -37,7 +37,7 @@ Core principle: `verification-workspace-refresh` writes data first — subsequen
 **Order**: Step 4.
 
 ### 5. `cms-field-check`
-**Purpose**: Validate key entity field values. Provider-aware — asserts `git_provider=gitlab` or `=aliyun` based on `app_config.yaml`.
+**Purpose**: Validate key entity field values. Provider-aware — asserts `data_source=gitlab` or `=codeup` based on `app_config.yaml`.
 **When to use**: After visibility passes.
 **Order**: Step 5.
 

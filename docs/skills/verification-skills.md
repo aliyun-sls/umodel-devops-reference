@@ -119,7 +119,7 @@
 - 结果：`PASS` / `FAIL`
 - 执行状态：`success` / `partial_success` / `error`
 - 已执行 task 数 / 跳过 / 失败
-- 关键实体计数（code_repository / developer / code_release / image_registry / image / kubernetes_pod）
+- 关键实体计数（repository / user / release / docker_image / kubernetes_pod）
 - 关键关系计数
 
 ### `cms-visibility`
@@ -133,8 +133,8 @@
 - git_provider: `gitlab` 或 `codeup`
 - 结果：`PASS` / `FAIL`
 - 关键字段断言：
-  - `devops.code_repository.git_provider` = `gitlab` 或 `aliyun`（按 provider）
-  - `devops.code_release.release_type` 由 release_classifier 归类
+  - `devops.repository.data_source` = `gitlab` 或 `codeup`（按 provider）
+  - `devops.release.release_type` 由 release_classifier 归类
   - 其他字段完整性
 
 ### `cms-sls-diagnose`

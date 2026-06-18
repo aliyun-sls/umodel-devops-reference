@@ -10,39 +10,36 @@
 
 ## Entity Definitions
 
-### 1. Developer (`devops.developer`)
+### 1. User (`devops.user`) — *renamed from `devops.developer`*
 
-Core participant in DevOps workflows. Fields: `work_no`, `name`, `email`, `team`, `role`, `department`.
+Core participant in DevOps workflows. Fields: `user_id`, `full_name`, `email`, `data_source`, `platform_user_id`, `department`, `is_active`, `roles` (aggregated from repository membership).
 
-### 2. Code Repository (`devops.code_repository`)
+### 2. Repository (`devops.repository`) — *renamed from `devops.code_repository`*
 
-Source code management unit. Fields: `repo_id`, `repo_name`, `repo_url`, `git_provider`, `language`, `framework`, `description`, `default_branch`.
+Source code management unit. Fields: `repository_id`, `name`, `url`, `data_source` (replaces old `git_provider`), `owner_id`, `language`, `description`, `default_branch`.
 
-### 3. Code Release (`devops.code_release`)
+### 3. Release (`devops.release`) — *renamed from `devops.code_release`*
 
-Transformation from source to deployable artifact. Fields: `release_id`, `repo_id`, `repo_name`, `tag`, `commit_sha`, `release_notes`, `release_time`, `status`, `release_type`, `author`.
+Transformation from source to deployable artifact. Fields: `release_id`, `repository_id`, `tag_name`, `commit_sha`, `description`, `status`, `release_type`, `created_by`.
 
-### 4. Image Registry (`devops.image_registry`)
+> Note: the former `devops.image_registry` entity has been **removed** (decision A). Registry-level info now lives as the `docker_image.registry` string field.
 
-Container image storage and distribution. Fields: `registry_id`, `registry_name`, `registry_namespace`, `registry_url`, `provider`, `region`, `description`, `is_public`.
+### 4. Docker Image (`devops.docker_image`) — *renamed from `devops.image`*
 
-### 5. Container Image (`devops.image`)
-
-Deployable application unit. Fields: `image_id`, `image_name`, `image_tag`, `image_digest`, `registry_id`, `full_image_name`, `build_time`, `size`, `architecture`, `os`, `build_status`.
+Deployable application unit. Fields: `docker_image_id`, `artifact_id` (decision B pairing), `registry`, `repository`, `tag`, `digest`, `full_image_name`, `architecture`, `os`, `data_source`, `created_at`.
 
 ## Relationship Definitions (12 Links)
 
 | Source | Relation | Target |
 |---|---|---|
-| `devops.developer` | manages | `devops.code_repository` |
-| `devops.developer` | manages | `devops.image_registry` |
-| `devops.developer` | manages | `apm.service` |
-| `devops.code_release` | sourced_from | `devops.code_repository` |
-| `devops.image` | sourced_from | `devops.code_release` |
-| `devops.image_registry` | contains | `devops.image` |
-| `apm.service` | sourced_from | `devops.code_release` |
-| `apm.service` | sourced_from | `devops.code_repository` |
-| `k8s.pod` | uses | `devops.image` |
-| `k8s.deployment` | uses | `devops.image` |
-| `k8s.daemonset` | uses | `devops.image` |
-| `k8s.statefulset` | uses | `devops.image` |
+| `devops.user` | owns | `devops.repository` |
+| `devops.user` | manages | `apm.service` |
+| `devops.repository` | tags | `devops.release` |
+| `devops.release` | contains | `devops.artifact` |
+| `devops.artifact` | same_as | `devops.docker_image` |
+| `apm.service` | sourced_from | `devops.release` |
+| `apm.service` | sourced_from | `devops.repository` |
+| `k8s.pod` | uses | `devops.docker_image` |
+| `k8s.deployment` | uses | `devops.docker_image` |
+| `k8s.daemonset` | uses | `devops.docker_image` |
+| `k8s.statefulset` | uses | `devops.docker_image` |
