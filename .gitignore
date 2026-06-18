@@ -8,7 +8,12 @@
 # local workflow artifacts
 .spec/
 .review/
+.mimocode/
 /gitlab_skill/
+/docs/DevOps UModel设计-new.md
+/docs/umodel-alignment-spec.md
+/docs/review-brief.md
+/docs/review-brief-alignment-impl.md
 
 # Editor / OS noise
 .DS_Store
