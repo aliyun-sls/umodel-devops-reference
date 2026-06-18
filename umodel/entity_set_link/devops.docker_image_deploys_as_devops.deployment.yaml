@@ -1,0 +1,25 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: Docker Image deploys_as Deployment.
+        zh_cn: Docker Image deploys_as Deployment。
+    display_name:
+        en_us: Docker Image Deploys_As Deployment
+        zh_cn: Docker Image deploys_as Deployment
+    domain: devops
+    kind: entity_set_link
+    name: devops.docker_image_deploys_as_devops.deployment
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.deployment
+    entity_link_type: deploys_as
+    priority: 5
+    src:
+        domain: devops
+        kind: entity_set
+        name: devops.docker_image

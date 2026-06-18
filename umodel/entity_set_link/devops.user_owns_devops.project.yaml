@@ -1,0 +1,25 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: User owns Project.
+        zh_cn: User owns Project。
+    display_name:
+        en_us: User Owns Project
+        zh_cn: User owns Project
+    domain: devops
+    kind: entity_set_link
+    name: devops.user_owns_devops.project
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.project
+    entity_link_type: owns
+    priority: 5
+    src:
+        domain: devops
+        kind: entity_set
+        name: devops.user

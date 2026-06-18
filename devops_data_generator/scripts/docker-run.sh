@@ -190,7 +190,7 @@ DOCKER_CMD="$DOCKER_CMD -v $(realpath "$CONFIG_FILE"):/app/config/app_config.yam
 DOCKER_CMD="$DOCKER_CMD -v $(pwd)/logs:/app/logs"
 
 # 如果存在其他配置文件，也挂载进去
-for config in "data_mapping.yaml" "manage_mapping.yaml" "static_topo.yaml" "repo_image_mapping.yaml"; do
+for config in "data_mapping.yaml" "static_topo.yaml" "repo_image_mapping.yaml"; do
     if [ -f "./config/$config" ]; then
         DOCKER_CMD="$DOCKER_CMD -v $(pwd)/config/$config:/app/config/$config:ro"
     fi

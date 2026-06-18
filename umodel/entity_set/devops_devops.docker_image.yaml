@@ -1,0 +1,299 @@
+kind: entity_set
+metadata:
+    description:
+        en_us: Docker container image artifact (renamed from image).
+        zh_cn: Docker镜像实体代表Docker容器镜像产物（旧 image 重命名）。
+    display_name:
+        en_us: Docker Image
+        zh_cn: Docker镜像
+    domain: devops
+    kind: entity_set
+    name: devops.docker_image
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dynamic: false
+    fields:
+        - description:
+            en_us: Docker镜像唯一标识
+            zh_cn: Docker镜像唯一标识
+          display_name:
+            en_us: Docker Image Id
+            zh_cn: Docker镜像唯一标识
+          filterable: true
+          name: docker_image_id
+          orderable: true
+          short_description:
+            en_us: Docker Image Id
+            zh_cn: Docker镜像唯一标识
+          type: string
+        - description:
+            en_us: 关联的Artifact ID
+            zh_cn: 关联的Artifact ID
+          display_name:
+            en_us: Artifact Id
+            zh_cn: 关联的Artifact ID
+          filterable: true
+          name: artifact_id
+          orderable: true
+          short_description:
+            en_us: Artifact Id
+            zh_cn: 关联的Artifact ID
+          type: string
+        - description:
+            en_us: 镜像仓库
+            zh_cn: 镜像仓库
+          display_name:
+            en_us: Registry
+            zh_cn: 镜像仓库
+          filterable: true
+          name: registry
+          orderable: true
+          short_description:
+            en_us: Registry
+            zh_cn: 镜像仓库
+          type: string
+        - description:
+            en_us: 仓库路径
+            zh_cn: 仓库路径
+          display_name:
+            en_us: Repository
+            zh_cn: 仓库路径
+          filterable: true
+          name: repository
+          orderable: true
+          short_description:
+            en_us: Repository
+            zh_cn: 仓库路径
+          type: string
+        - description:
+            en_us: 镜像标签
+            zh_cn: 镜像标签
+          display_name:
+            en_us: Tag
+            zh_cn: 镜像标签
+          filterable: true
+          name: tag
+          orderable: true
+          short_description:
+            en_us: Tag
+            zh_cn: 镜像标签
+          type: string
+        - description:
+            en_us: 镜像摘要
+            zh_cn: 镜像摘要
+          display_name:
+            en_us: Digest
+            zh_cn: 镜像摘要
+          filterable: true
+          name: digest
+          orderable: true
+          short_description:
+            en_us: Digest
+            zh_cn: 镜像摘要
+          type: string
+        - description:
+            en_us: 完整镜像名
+            zh_cn: 完整镜像名
+          display_name:
+            en_us: Full Image Name
+            zh_cn: 完整镜像名
+          filterable: true
+          name: full_image_name
+          orderable: true
+          short_description:
+            en_us: Full Image Name
+            zh_cn: 完整镜像名
+          type: string
+        - description:
+            en_us: 基础镜像
+            zh_cn: 基础镜像
+          display_name:
+            en_us: Base Image
+            zh_cn: 基础镜像
+          filterable: true
+          name: base_image
+          orderable: true
+          short_description:
+            en_us: Base Image
+            zh_cn: 基础镜像
+          type: string
+        - description:
+            en_us: 平台 如linux/amd64
+            zh_cn: 平台 如linux/amd64
+          display_name:
+            en_us: Platform
+            zh_cn: 平台 如linux/amd64
+          filterable: true
+          name: platform
+          orderable: true
+          short_description:
+            en_us: Platform
+            zh_cn: 平台 如linux/amd64
+          type: string
+        - description:
+            en_us: 架构 amd64/arm64
+            zh_cn: 架构 amd64/arm64
+          display_name:
+            en_us: Architecture
+            zh_cn: 架构 amd64/arm64
+          filterable: true
+          name: architecture
+          orderable: true
+          short_description:
+            en_us: Architecture
+            zh_cn: 架构 amd64/arm64
+          type: string
+        - description:
+            en_us: 操作系统 linux/windows
+            zh_cn: 操作系统 linux/windows
+          display_name:
+            en_us: Os
+            zh_cn: 操作系统 linux/windows
+          filterable: true
+          name: os
+          orderable: true
+          short_description:
+            en_us: Os
+            zh_cn: 操作系统 linux/windows
+          type: string
+        - description:
+            en_us: Docker标签
+            zh_cn: Docker标签
+          display_name:
+            en_us: Labels
+            zh_cn: Docker标签
+          filterable: false
+          name: labels
+          orderable: false
+          short_description:
+            en_us: Labels
+            zh_cn: Docker标签
+          type: json
+        - description:
+            en_us: 环境变量
+            zh_cn: 环境变量
+          display_name:
+            en_us: Env Vars
+            zh_cn: 环境变量
+          filterable: false
+          name: env_vars
+          orderable: false
+          short_description:
+            en_us: Env Vars
+            zh_cn: 环境变量
+          type: json
+        - description:
+            en_us: 暴露端口
+            zh_cn: 暴露端口
+          display_name:
+            en_us: Exposed Ports
+            zh_cn: 暴露端口
+          filterable: false
+          name: exposed_ports
+          orderable: false
+          short_description:
+            en_us: Exposed Ports
+            zh_cn: 暴露端口
+          type: array
+        - description:
+            en_us: 挂载点
+            zh_cn: 挂载点
+          display_name:
+            en_us: Volumes
+            zh_cn: 挂载点
+          filterable: false
+          name: volumes
+          orderable: false
+          short_description:
+            en_us: Volumes
+            zh_cn: 挂载点
+          type: array
+        - description:
+            en_us: 是否签名
+            zh_cn: 是否签名
+          display_name:
+            en_us: Is Signed
+            zh_cn: 是否签名
+          filterable: true
+          name: is_signed
+          orderable: true
+          short_description:
+            en_us: Is Signed
+            zh_cn: 是否签名
+          type: boolean
+        - description:
+            en_us: 签名信息
+            zh_cn: 签名信息
+          display_name:
+            en_us: Signature
+            zh_cn: 签名信息
+          filterable: true
+          name: signature
+          orderable: true
+          short_description:
+            en_us: Signature
+            zh_cn: 签名信息
+          type: string
+        - description:
+            en_us: 扫描结果详情
+            zh_cn: 扫描结果详情
+          display_name:
+            en_us: Scan Result
+            zh_cn: 扫描结果详情
+          filterable: false
+          name: scan_result
+          orderable: false
+          short_description:
+            en_us: Scan Result
+            zh_cn: 扫描结果详情
+          type: json
+        - description:
+            en_us: 数据来源 harbor/docker_hub
+            zh_cn: 数据来源 harbor/docker_hub
+          display_name:
+            en_us: Data Source
+            zh_cn: 数据来源 harbor/docker_hub
+          filterable: true
+          name: data_source
+          orderable: true
+          short_description:
+            en_us: Data Source
+            zh_cn: 数据来源 harbor/docker_hub
+          type: string
+        - description:
+            en_us: 平台镜像ID
+            zh_cn: 平台镜像ID
+          display_name:
+            en_us: Platform Image Id
+            zh_cn: 平台镜像ID
+          filterable: true
+          name: platform_image_id
+          orderable: true
+          short_description:
+            en_us: Platform Image Id
+            zh_cn: 平台镜像ID
+          type: string
+        - description:
+            en_us: 创建时间
+            zh_cn: 创建时间
+          display_name:
+            en_us: Created At
+            zh_cn: 创建时间
+          filterable: true
+          name: created_at
+          orderable: true
+          short_description:
+            en_us: Created At
+            zh_cn: 创建时间
+          type: datetime
+    keep_alive_seconds: 86400
+    name_fields:
+        - repository
+        - docker_image_id
+        - tag
+    primary_key_fields:
+        - docker_image_id
+    time_field: __time__
+    type: entity_set

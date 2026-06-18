@@ -114,8 +114,8 @@ def main():
                     t = r[0]
                     type_counts[t] = type_counts.get(t, 0) + 1
 
-            expected = ["devops.code_repository", "devops.code_release", "devops.image",
-                        "devops.image_registry", "devops.developer"]
+            expected = ["devops.repository", "devops.release", "devops.user",
+                        "devops.pull_request", "devops.docker_image", "devops.artifact"]
             for et in expected:
                 count = type_counts.get(et, 0)
                 status = "PRESENT" if count > 0 else "MISSING"

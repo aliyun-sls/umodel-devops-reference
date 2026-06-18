@@ -54,49 +54,58 @@ sls:
   project: "<YOUR_SLS_PROJECT>"
   logstore_mapping:
     entities:
-      developer: "<YOUR_ENTITY_NAME>"
-      code_repository: "<YOUR_ENTITY_NAME>"
-      code_release: "<YOUR_ENTITY_NAME>"
-      image_registry: "<YOUR_ENTITY_NAME>"
-      image: "<YOUR_ENTITY_NAME>"
+      user: "<YOUR_ENTITY_NAME>"
+      repository: "<YOUR_ENTITY_NAME>"
+      release: "<YOUR_ENTITY_NAME>"
+      pull_request: "<YOUR_ENTITY_NAME>"
+      artifact: "<YOUR_ENTITY_NAME>"
+      docker_image: "<YOUR_ENTITY_NAME>"
     relationships:
-      developer_manages_code_repository: "<YOUR_TOPO_NAME>"
-      code_release_sourced_from_code_repository: "<YOUR_TOPO_NAME>"
-      image_sourced_from_image_registry: "<YOUR_TOPO_NAME>"
-      image_sourced_from_code_release: "<YOUR_TOPO_NAME>"
-      image_registry_contains_image: "<YOUR_TOPO_NAME>"
-      pod_uses_image: "<YOUR_TOPO_NAME>"
+      user_owns_repository: "<YOUR_TOPO_NAME>"
+      repository_tags_release: "<YOUR_TOPO_NAME>"
+      repository_contains_pull_request: "<YOUR_TOPO_NAME>"
+      user_participates_in_pull_request: "<YOUR_TOPO_NAME>"
+      release_contains_artifact: "<YOUR_TOPO_NAME>"
+      artifact_same_as_docker_image: "<YOUR_TOPO_NAME>"
+      pod_uses_docker_image: "<YOUR_TOPO_NAME>"
       static_topo: "<YOUR_TOPO_NAME>"
 
 tasks:
   enabled:
-    - code_repository
-    - developer
-    - code_release
-    - code_release_sourced_from_code_repository
-    - image_registry
-    - image
-    - image_registry_contains_image
-    - image_sourced_from_code_release
+    - repository
+    - user
+    - release
+    - user_owns_repository
+    - repository_tags_release
+    - pull_request
+    - repository_contains_pull_request
+    - user_participates_in_pull_request
+    - docker_image
+    - artifact
+    - release_contains_artifact
+    - artifact_same_as_docker_image
     - kubernetes_pod
-    - pod_uses_image
+    - pod_uses_docker_image
     - static_topo
-    - developer_manages_code_repository
   interval: 300
   batch_size: 100
   shared_data_ttl: 86400
   skip_sls_upload:
     - skip_to_upload
   dependencies:
-    developer: ["code_repository"]
-    code_release: ["code_repository"]
-    developer_manages_code_repository: ["developer", "code_repository"]
-    code_release_sourced_from_code_repository: ["code_release", "code_repository"]
-    image: ["image_registry"]
-    image_registry_contains_image: ["image_registry", "image"]
-    image_sourced_from_code_release: ["image", "code_release", "code_repository", "image_registry"]
-    pod_uses_image: ["kubernetes_pod", "image"]
-    static_topo: ["code_repository", "code_release", "developer", "image_registry"]
+    user: ["repository"]
+    release: ["repository"]
+    user_owns_repository: ["user", "repository"]
+    repository_tags_release: ["repository", "release"]
+    pull_request: ["repository"]
+    repository_contains_pull_request: ["pull_request", "repository"]
+    user_participates_in_pull_request: ["user", "pull_request"]
+    docker_image: []
+    artifact: ["docker_image"]
+    release_contains_artifact: ["release", "docker_image"]
+    artifact_same_as_docker_image: ["docker_image"]
+    pod_uses_docker_image: ["kubernetes_pod", "docker_image"]
+    static_topo: ["repository", "release", "user"]
 
 logging:
   level: INFO

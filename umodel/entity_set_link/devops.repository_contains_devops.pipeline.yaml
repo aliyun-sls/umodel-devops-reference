@@ -1,0 +1,25 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: Repository contains Pipeline.
+        zh_cn: Repository contains Pipeline。
+    display_name:
+        en_us: Repository Contains Pipeline
+        zh_cn: Repository contains Pipeline
+    domain: devops
+    kind: entity_set_link
+    name: devops.repository_contains_devops.pipeline
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.pipeline
+    entity_link_type: contains
+    priority: 5
+    src:
+        domain: devops
+        kind: entity_set
+        name: devops.repository

@@ -28,41 +28,41 @@ python3 devops_data_generator/scripts/verify_devops_details.py --config devops_d
 **Step 3**: Assert field values based on active provider:
 
 ### When `git_provider.type = gitlab`
-- `devops.code_repository.git_provider` must equal `"gitlab"`
-- `devops.code_repository.repo_name` format: `path_with_namespace` (e.g. `root/demo-app`)
-- `devops.code_repository.default_branch` fallback: `"main"`
-- `devops.code_release.release_type` from `release_classifier` (not hardcoded `"release"`)
+- `devops.repository.data_source` must equal `"gitlab"`
+- `devops.repository.name` format: `path_with_namespace` (e.g. `root/demo-app`)
+- `devops.repository.default_branch` fallback: `"main"`
+- `devops.release.release_type` from `release_classifier` (not hardcoded `"release"`)
 
 ### When `git_provider.type = codeup`
-- `devops.code_repository.git_provider` must equal `"aliyun"`
-- `devops.code_repository.repo_name` format: codeup repo name (e.g. `Codeup-Demo`)
-- `devops.code_repository.repo_url` must contain `codeup.aliyun.com`
-- `devops.code_repository.default_branch` fallback: `"master"`
-- `devops.code_release.release_type` from `release_classifier` (not hardcoded)
-- `devops.developer.repositories[*].access_level` = `0` (codeup does not expose access_level)
+- `devops.repository.data_source` must equal `"codeup"` (not `aliyun`)
+- `devops.repository.name` format: codeup repo name (e.g. `Codeup-Demo`)
+- `devops.repository.url` must contain `codeup.aliyun.com`
+- `devops.repository.default_branch` fallback: `"master"`
+- `devops.release.release_type` from `release_classifier` (not hardcoded)
+- `devops.user.repositories[*].access_level` = `0` (codeup does not expose access_level)
 
 ### Shared assertions (both providers)
-- `devops.code_repository.repo_id` is a non-empty string
-- `devops.code_release.release_id` format: `{repo_id_or_name}/{tag}`
-- `devops.code_release.tag` is non-empty
-- `devops.code_release.commit_sha` is non-empty
-- `devops.image.image_id` is non-empty
-- `devops.image.registry_id` is non-empty
-- `devops.image_registry.registry_id` is non-empty
-- `devops.image_registry.registry_url` is non-empty
+- `devops.repository.repository_id` is a non-empty string
+- `devops.release.release_id` format: `{repo_id_or_name}/{tag}`
+- `devops.release.tag_name` is non-empty
+- `devops.release.commit_sha` is non-empty
+- `devops.docker_image.docker_image_id` is non-empty
+- `devops.docker_image.registry` is non-empty
+- `devops.user.user_id` is non-empty
+- `devops.artifact.artifact_id` pairs with `devops.docker_image.artifact_id` (decision B)
 
 ## Receipt Format
 ```
 - stage: cms-field-check
 - git_provider: gitlab | codeup
 - command: <canonical command>
-- checked_entity_types: [code_repository, code_release, image, image_registry, developer]
+- checked_entity_types: [repository, release, docker_image, user, artifact]
 - key_field_results:
-    code_repository:
-      git_provider: <actual value> (expected: gitlab|aliyun) — PASS|FAIL
-      repo_id: PASS|FAIL
-      repo_url: PASS|FAIL
-    code_release:
+    repository:
+      data_source: <actual value> (expected: gitlab|codeup) — PASS|FAIL
+      repository_id: PASS|FAIL
+      url: PASS|FAIL
+    release:
       release_type: <actual value> — PASS|FAIL
       ...
 - verdict: PASS | FAIL

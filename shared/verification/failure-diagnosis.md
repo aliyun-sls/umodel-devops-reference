@@ -25,7 +25,7 @@ Action:
 
 ## Route 3 - Refresh Failed
 Symptoms:
-- `main.py --mode single` returns task failures or critical git tasks (code_repository / developer / code_release, regardless of provider) are skipped/failed
+- `main.py --mode single` returns task failures or critical git tasks (repository / user / release, regardless of provider) are skipped/failed
 
 Action:
 - treat refresh as failed

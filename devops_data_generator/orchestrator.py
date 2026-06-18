@@ -9,25 +9,28 @@ from config.config_loader import ConfigLoader
 from generator.sls_data_generator import SlsDataGenerator
 from sender.sls_data_sender import SlsDataSender
 from shared.data_context import SharedDataContext
-from tasks.code_release_sourced_from_code_repository_task import CodeReleaseSourcedFromCodeRepositoryTask
-from tasks.code_release_task import CodeReleaseTask
-from tasks.code_repository_task import CodeRepositoryTask
-from tasks.developer_manages_code_repository_task import DeveloperManagesCodeRepositoryTask
-from tasks.developer_task import DeveloperTask
-from tasks.image_registry_contains_image_task import ImageRegistryContainsImageTask
-from tasks.image_registry_task import ImageRegistryTask
-from tasks.image_sourced_from_code_release_task import ImageSourcedFromCodeReleaseTask
-from tasks.image_task import ImageTask
+from tasks.artifact_same_as_docker_image_task import ArtifactSameAsDockerImageTask
+from tasks.artifact_task import ArtifactTask
+from tasks.docker_image_task import DockerImageTask
 from tasks.kubernetes_pod_task import KubernetesPodTask
-from tasks.pod_uses_image_task import PodUsesImageTask
+from tasks.pod_uses_docker_image_task import PodUsesDockerImageTask
+from tasks.pull_request_task import PullRequestTask
+from tasks.release_contains_artifact_task import ReleaseContainsArtifactTask
+from tasks.release_task import ReleaseTask
+from tasks.repository_contains_pull_request_task import RepositoryContainsPullRequestTask
+from tasks.repository_task import RepositoryTask
+from tasks.repository_tags_release_task import RepositoryTagsReleaseTask
 from tasks.static_topo_task import StaticTopoTask
+from tasks.user_owns_repository_task import UserOwnsRepositoryTask
+from tasks.user_participates_in_pull_request_task import UserParticipatesInPullRequestTask
+from tasks.user_task import UserTask
 
 logger = logging.getLogger(__name__)
 
 
 # Critical tasks gate `partial_success` vs `error` for the cycle.
 # Naming kept provider-agnostic so codeup runs follow the same logic.
-CRITICAL_GIT_TASKS = {"code_repository", "developer", "code_release"}
+CRITICAL_GIT_TASKS = {"repository", "user", "release"}
 
 # Placeholder tokens that indicate a sample config block has not been
 # populated yet. Covers both gitlab and codeup samples.
@@ -108,19 +111,23 @@ class DevOpsDataOrchestrator:
         self.tasks = {
             # Git-provider-aware tasks: inject adapter + carry provider_config
             # for niche options (release_tag, fetch_details).
-            "code_repository": CodeRepositoryTask(provider_config, self.git_adapter),
-            "developer": DeveloperTask(provider_config, self.git_adapter),
-            "code_release": CodeReleaseTask(provider_config, self.git_adapter),
-            # Provider-agnostic relationship tasks
-            "developer_manages_code_repository": DeveloperManagesCodeRepositoryTask(provider_config),
-            "code_release_sourced_from_code_repository": CodeReleaseSourcedFromCodeRepositoryTask(provider_config),
-            # ACR / K8s tasks (provider-agnostic)
-            "image_registry": ImageRegistryTask(acr_config),
-            "image": ImageTask(acr_config),
-            "image_registry_contains_image": ImageRegistryContainsImageTask(acr_config),
-            "image_sourced_from_code_release": ImageSourcedFromCodeReleaseTask(acr_config),
+            "repository": RepositoryTask(provider_config, self.git_adapter),
+            "user": UserTask(provider_config, self.git_adapter),
+            "release": ReleaseTask(provider_config, self.git_adapter),
+            "pull_request": PullRequestTask(provider_config, self.git_adapter),
+            # Provider-agnostic relationship tasks (git-derived)
+            "user_owns_repository": UserOwnsRepositoryTask(provider_config),
+            "repository_tags_release": RepositoryTagsReleaseTask(provider_config),
+            "repository_contains_pull_request": RepositoryContainsPullRequestTask(provider_config),
+            "user_participates_in_pull_request": UserParticipatesInPullRequestTask(provider_config),
+            # ACR tasks (provider-agnostic); image_registry entity removed (decision A)
+            "docker_image": DockerImageTask(acr_config),
+            "artifact": ArtifactTask(acr_config),
+            "release_contains_artifact": ReleaseContainsArtifactTask(acr_config),
+            "artifact_same_as_docker_image": ArtifactSameAsDockerImageTask(acr_config),
+            # K8s tasks (provider-agnostic)
             "kubernetes_pod": KubernetesPodTask(self._merge_k8s_configs(cms_config, kubernetes_config)),
-            "pod_uses_image": PodUsesImageTask(cms_config),
+            "pod_uses_docker_image": PodUsesDockerImageTask(cms_config),
             "static_topo": StaticTopoTask(static_topo_config),
         }
 
@@ -354,7 +361,7 @@ class DevOpsDataOrchestrator:
                     and _has_real_value(provider_config.get("access_key_secret"))
                 )
             return False
-        if task_name in {"image_registry", "image"}:
+        if task_name in {"docker_image"}:
             return (
                 _has_real_value(acr_config.get("instance_id"))
                 and _has_real_value(acr_config.get("access_key_id"))
@@ -371,11 +378,13 @@ class DevOpsDataOrchestrator:
                 )
             return _has_real_value(kubernetes_config.get("kubeconfig_path"))
         if task_name in {
-            "code_release_sourced_from_code_repository",
-            "developer_manages_code_repository",
-            "image_registry_contains_image",
-            "image_sourced_from_code_release",
-            "pod_uses_image",
+            "repository_tags_release",
+            "user_owns_repository",
+            "repository_contains_pull_request",
+            "user_participates_in_pull_request",
+            "release_contains_artifact",
+            "artifact_same_as_docker_image",
+            "pod_uses_docker_image",
             "static_topo",
         }:
             return True

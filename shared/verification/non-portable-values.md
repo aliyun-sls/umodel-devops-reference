@@ -24,5 +24,4 @@ These values are legitimate inputs, but they remain environment-specific:
 - `cms.workspace`
 - `sls.project`
 - `repo_image_mapping.yaml` actual mapping rows
-- `manage_mapping.yaml` actual developer-to-repository rows
 - `kubernetes.cluster_id`

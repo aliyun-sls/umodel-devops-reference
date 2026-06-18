@@ -1,0 +1,169 @@
+kind: entity_set
+metadata:
+    description:
+        en_us: CI/CD pipeline definition/configuration.
+        zh_cn: 流水线实体代表CI/CD流水线的定义/配置。
+    display_name:
+        en_us: Pipeline
+        zh_cn: 流水线
+    domain: devops
+    kind: entity_set
+    name: devops.pipeline
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dynamic: false
+    fields:
+        - description:
+            en_us: 流水线唯一标识
+            zh_cn: 流水线唯一标识
+          display_name:
+            en_us: Pipeline Id
+            zh_cn: 流水线唯一标识
+          filterable: true
+          name: pipeline_id
+          orderable: true
+          short_description:
+            en_us: Pipeline Id
+            zh_cn: 流水线唯一标识
+          type: string
+        - description:
+            en_us: 所属仓库
+            zh_cn: 所属仓库
+          display_name:
+            en_us: Repository Id
+            zh_cn: 所属仓库
+          filterable: true
+          name: repository_id
+          orderable: true
+          short_description:
+            en_us: Repository Id
+            zh_cn: 所属仓库
+          type: string
+        - description:
+            en_us: 流水线名称
+            zh_cn: 流水线名称
+          display_name:
+            en_us: Name
+            zh_cn: 流水线名称
+          filterable: true
+          name: name
+          orderable: true
+          short_description:
+            en_us: Name
+            zh_cn: 流水线名称
+          type: string
+        - description:
+            en_us: 配置文件路径
+            zh_cn: 配置文件路径
+          display_name:
+            en_us: File Path
+            zh_cn: 配置文件路径
+          filterable: true
+          name: file_path
+          orderable: true
+          short_description:
+            en_us: File Path
+            zh_cn: 配置文件路径
+          type: string
+        - description:
+            en_us: 流水线描述
+            zh_cn: 流水线描述
+          display_name:
+            en_us: Description
+            zh_cn: 流水线描述
+          filterable: true
+          name: description
+          orderable: true
+          short_description:
+            en_us: Description
+            zh_cn: 流水线描述
+          type: string
+        - description:
+            en_us: 数据来源 github_actions/gitlab_ci/jenkins
+            zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
+          display_name:
+            en_us: Data Source
+            zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
+          filterable: true
+          name: data_source
+          orderable: true
+          short_description:
+            en_us: Data Source
+            zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
+          type: string
+        - description:
+            en_us: 平台流水线ID
+            zh_cn: 平台流水线ID
+          display_name:
+            en_us: Platform Pipeline Id
+            zh_cn: 平台流水线ID
+          filterable: true
+          name: platform_pipeline_id
+          orderable: true
+          short_description:
+            en_us: Platform Pipeline Id
+            zh_cn: 平台流水线ID
+          type: string
+        - description:
+            en_us: 流水线URL
+            zh_cn: 流水线URL
+          display_name:
+            en_us: Url
+            zh_cn: 流水线URL
+          filterable: true
+          name: url
+          orderable: true
+          short_description:
+            en_us: Url
+            zh_cn: 流水线URL
+          type: string
+        - description:
+            en_us: 是否激活
+            zh_cn: 是否激活
+          display_name:
+            en_us: Is Active
+            zh_cn: 是否激活
+          filterable: true
+          name: is_active
+          orderable: true
+          short_description:
+            en_us: Is Active
+            zh_cn: 是否激活
+          type: boolean
+        - description:
+            en_us: 创建时间
+            zh_cn: 创建时间
+          display_name:
+            en_us: Created At
+            zh_cn: 创建时间
+          filterable: true
+          name: created_at
+          orderable: true
+          short_description:
+            en_us: Created At
+            zh_cn: 创建时间
+          type: datetime
+        - description:
+            en_us: 更新时间
+            zh_cn: 更新时间
+          display_name:
+            en_us: Updated At
+            zh_cn: 更新时间
+          filterable: true
+          name: updated_at
+          orderable: true
+          short_description:
+            en_us: Updated At
+            zh_cn: 更新时间
+          type: datetime
+    keep_alive_seconds: 86400
+    name_fields:
+        - name
+        - pipeline_id
+        - file_path
+    primary_key_fields:
+        - pipeline_id
+    time_field: __time__
+    type: entity_set

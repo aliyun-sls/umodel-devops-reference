@@ -1,0 +1,390 @@
+kind: entity_set
+metadata:
+    description:
+        en_us: Code review entity carrying change review, discussion, and merge flow.
+        zh_cn: 代码评审实体承载代码变更的审查、讨论与合并流程。
+    display_name:
+        en_us: Pull Request
+        zh_cn: 代码评审
+    domain: devops
+    kind: entity_set
+    name: devops.pull_request
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dynamic: false
+    fields:
+        - description:
+            en_us: PR唯一标识
+            zh_cn: PR唯一标识
+          display_name:
+            en_us: Pr Id
+            zh_cn: PR唯一标识
+          filterable: true
+          name: pr_id
+          orderable: true
+          short_description:
+            en_us: Pr Id
+            zh_cn: PR唯一标识
+          type: string
+        - description:
+            en_us: 所属项目
+            zh_cn: 所属项目
+          display_name:
+            en_us: Project Id
+            zh_cn: 所属项目
+          filterable: true
+          name: project_id
+          orderable: true
+          short_description:
+            en_us: Project Id
+            zh_cn: 所属项目
+          type: string
+        - description:
+            en_us: 所属仓库
+            zh_cn: 所属仓库
+          display_name:
+            en_us: Repository Id
+            zh_cn: 所属仓库
+          filterable: true
+          name: repository_id
+          orderable: true
+          short_description:
+            en_us: Repository Id
+            zh_cn: 所属仓库
+          type: string
+        - description:
+            en_us: PR编号
+            zh_cn: PR编号
+          display_name:
+            en_us: Number
+            zh_cn: PR编号
+          filterable: true
+          name: number
+          orderable: true
+          short_description:
+            en_us: Number
+            zh_cn: PR编号
+          type: integer
+        - description:
+            en_us: 标题
+            zh_cn: 标题
+          display_name:
+            en_us: Title
+            zh_cn: 标题
+          filterable: true
+          name: title
+          orderable: true
+          short_description:
+            en_us: Title
+            zh_cn: 标题
+          type: string
+        - description:
+            en_us: 详细描述
+            zh_cn: 详细描述
+          display_name:
+            en_us: Description
+            zh_cn: 详细描述
+          filterable: true
+          name: description
+          orderable: true
+          short_description:
+            en_us: Description
+            zh_cn: 详细描述
+          type: string
+        - description:
+            en_us: 作者
+            zh_cn: 作者
+          display_name:
+            en_us: Author Id
+            zh_cn: 作者
+          filterable: true
+          name: author_id
+          orderable: true
+          short_description:
+            en_us: Author Id
+            zh_cn: 作者
+          type: string
+        - description:
+            en_us: 源分支
+            zh_cn: 源分支
+          display_name:
+            en_us: Source Branch
+            zh_cn: 源分支
+          filterable: true
+          name: source_branch
+          orderable: true
+          short_description:
+            en_us: Source Branch
+            zh_cn: 源分支
+          type: string
+        - description:
+            en_us: 目标分支
+            zh_cn: 目标分支
+          display_name:
+            en_us: Target Branch
+            zh_cn: 目标分支
+          filterable: true
+          name: target_branch
+          orderable: true
+          short_description:
+            en_us: Target Branch
+            zh_cn: 目标分支
+          type: string
+        - description:
+            en_us: 源提交哈希
+            zh_cn: 源提交哈希
+          display_name:
+            en_us: Source Commit Sha
+            zh_cn: 源提交哈希
+          filterable: true
+          name: source_commit_sha
+          orderable: true
+          short_description:
+            en_us: Source Commit Sha
+            zh_cn: 源提交哈希
+          type: string
+        - description:
+            en_us: 合并提交哈希
+            zh_cn: 合并提交哈希
+          display_name:
+            en_us: Merge Commit Sha
+            zh_cn: 合并提交哈希
+          filterable: true
+          name: merge_commit_sha
+          orderable: true
+          short_description:
+            en_us: Merge Commit Sha
+            zh_cn: 合并提交哈希
+          type: string
+        - description:
+            en_us: 状态 open/merged/closed/draft
+            zh_cn: 状态 open/merged/closed/draft
+          display_name:
+            en_us: Status
+            zh_cn: 状态 open/merged/closed/draft
+          filterable: true
+          name: status
+          orderable: true
+          short_description:
+            en_us: Status
+            zh_cn: 状态 open/merged/closed/draft
+          type: enum
+        - description:
+            en_us: 数据来源
+            zh_cn: 数据来源
+          display_name:
+            en_us: Data Source
+            zh_cn: 数据来源
+          filterable: true
+          name: data_source
+          orderable: true
+          short_description:
+            en_us: Data Source
+            zh_cn: 数据来源
+          type: string
+        - description:
+            en_us: 平台PR ID
+            zh_cn: 平台PR ID
+          display_name:
+            en_us: Platform Pr Id
+            zh_cn: 平台PR ID
+          filterable: true
+          name: platform_pr_id
+          orderable: true
+          short_description:
+            en_us: Platform Pr Id
+            zh_cn: 平台PR ID
+          type: string
+        - description:
+            en_us: PR URL
+            zh_cn: PR URL
+          display_name:
+            en_us: Url
+            zh_cn: PR URL
+          filterable: true
+          name: url
+          orderable: true
+          short_description:
+            en_us: Url
+            zh_cn: PR URL
+          type: string
+        - description:
+            en_us: 提交数量
+            zh_cn: 提交数量
+          display_name:
+            en_us: Commits Count
+            zh_cn: 提交数量
+          filterable: true
+          name: commits_count
+          orderable: true
+          short_description:
+            en_us: Commits Count
+            zh_cn: 提交数量
+          type: integer
+        - description:
+            en_us: 变更文件数
+            zh_cn: 变更文件数
+          display_name:
+            en_us: Changed Files
+            zh_cn: 变更文件数
+          filterable: true
+          name: changed_files
+          orderable: true
+          short_description:
+            en_us: Changed Files
+            zh_cn: 变更文件数
+          type: integer
+        - description:
+            en_us: 新增行数
+            zh_cn: 新增行数
+          display_name:
+            en_us: Additions
+            zh_cn: 新增行数
+          filterable: true
+          name: additions
+          orderable: true
+          short_description:
+            en_us: Additions
+            zh_cn: 新增行数
+          type: integer
+        - description:
+            en_us: 删除行数
+            zh_cn: 删除行数
+          display_name:
+            en_us: Deletions
+            zh_cn: 删除行数
+          filterable: true
+          name: deletions
+          orderable: true
+          short_description:
+            en_us: Deletions
+            zh_cn: 删除行数
+          type: integer
+        - description:
+            en_us: 评论数量
+            zh_cn: 评论数量
+          display_name:
+            en_us: Comments Count
+            zh_cn: 评论数量
+          filterable: true
+          name: comments_count
+          orderable: true
+          short_description:
+            en_us: Comments Count
+            zh_cn: 评论数量
+          type: integer
+        - description:
+            en_us: 评审者列表
+            zh_cn: 评审者列表
+          display_name:
+            en_us: Reviewers
+            zh_cn: 评审者列表
+          filterable: false
+          name: reviewers
+          orderable: false
+          short_description:
+            en_us: Reviewers
+            zh_cn: 评审者列表
+          type: json
+        - description:
+            en_us: 标签列表
+            zh_cn: 标签列表
+          display_name:
+            en_us: Labels
+            zh_cn: 标签列表
+          filterable: false
+          name: labels
+          orderable: false
+          short_description:
+            en_us: Labels
+            zh_cn: 标签列表
+          type: json
+        - description:
+            en_us: 是否有冲突
+            zh_cn: 是否有冲突
+          display_name:
+            en_us: Has Conflicts
+            zh_cn: 是否有冲突
+          filterable: true
+          name: has_conflicts
+          orderable: true
+          short_description:
+            en_us: Has Conflicts
+            zh_cn: 是否有冲突
+          type: boolean
+        - description:
+            en_us: 是否AI评审
+            zh_cn: 是否AI评审
+          display_name:
+            en_us: Ai Reviewed
+            zh_cn: 是否AI评审
+          filterable: true
+          name: ai_reviewed
+          orderable: true
+          short_description:
+            en_us: Ai Reviewed
+            zh_cn: 是否AI评审
+          type: boolean
+        - description:
+            en_us: 创建时间
+            zh_cn: 创建时间
+          display_name:
+            en_us: Created At
+            zh_cn: 创建时间
+          filterable: true
+          name: created_at
+          orderable: true
+          short_description:
+            en_us: Created At
+            zh_cn: 创建时间
+          type: datetime
+        - description:
+            en_us: 更新时间
+            zh_cn: 更新时间
+          display_name:
+            en_us: Updated At
+            zh_cn: 更新时间
+          filterable: true
+          name: updated_at
+          orderable: true
+          short_description:
+            en_us: Updated At
+            zh_cn: 更新时间
+          type: datetime
+        - description:
+            en_us: 合并时间
+            zh_cn: 合并时间
+          display_name:
+            en_us: Merged At
+            zh_cn: 合并时间
+          filterable: true
+          name: merged_at
+          orderable: true
+          short_description:
+            en_us: Merged At
+            zh_cn: 合并时间
+          type: datetime
+        - description:
+            en_us: 关闭时间
+            zh_cn: 关闭时间
+          display_name:
+            en_us: Closed At
+            zh_cn: 关闭时间
+          filterable: true
+          name: closed_at
+          orderable: true
+          short_description:
+            en_us: Closed At
+            zh_cn: 关闭时间
+          type: datetime
+    keep_alive_seconds: 86400
+    name_fields:
+        - title
+        - pr_id
+        - status
+    primary_key_fields:
+        - pr_id
+    time_field: __time__
+    type: entity_set

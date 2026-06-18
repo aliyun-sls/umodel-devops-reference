@@ -289,9 +289,9 @@ class StaticTopoTask(BaseTask):
             
             # 定义动态数据键名映射
             dynamic_data_key_mapping = {
-                'devops.code_release': 'code_release_list',
-                'devops.developer': 'devops.developer_raw_data',
-                'devops.code_repository': 'code_repos'
+                'devops.release': 'release_list',
+                'devops.user': 'devops.user_raw_data',
+                'devops.repository': 'repositories',
             }
             
             dynamic_data_key = dynamic_data_key_mapping.get(dynamic_entity_type, f"{dynamic_entity_type}_raw_data")
@@ -580,11 +580,12 @@ class StaticTopoTask(BaseTask):
         """
         # 从data_mapping.yaml中获取的主键配置
         entity_primary_keys_mapping = {
-            'devops.code_repository': ['repo_id'],
-            'devops.code_release': ['release_id'],
-            'devops.developer': ['user_id'],  # 映射后的字段名
-            'devops.image': ['image_id'],
-            'devops.image_registry': ['registry_id'],
+            'devops.repository': ['repository_id'],
+            'devops.release': ['release_id'],
+            'devops.user': ['user_id'],
+            'devops.pull_request': ['pr_id'],
+            'devops.docker_image': ['docker_image_id'],
+            'devops.artifact': ['artifact_id'],
             'apm.service': ['entity_id'],  # 静态实体使用entity_id
         }
         

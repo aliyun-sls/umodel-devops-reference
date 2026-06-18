@@ -8,9 +8,8 @@ from .client import GITLAB_SDK_AVAILABLE, create_gitlab_client
 
 logger = logging.getLogger(__name__)
 
-# GitLab access_level → human-readable role (from demo CodeRepositoryTask /
-# DeveloperTask). Keep as adapter-internal because it is purely a GitLab
-# convention.
+# GitLab access_level → human-readable role. Keep as adapter-internal because
+# it is purely a GitLab convention.
 ACCESS_LEVEL_ROLE = {
     50: "owner",
     40: "maintainer",
@@ -56,18 +55,23 @@ class GitLabAdapter(IGitAdapter):
         for project in self._iter_projects():
             detail = self.client.projects.get(project.id) if fetch_details else project
             languages = self._safe_languages(detail) if fetch_details else {}
+            repo_id = str(detail.id)
             repositories.append(
                 {
-                    "repo_id": str(detail.id),
-                    "repo_name": getattr(detail, "path_with_namespace", "") or getattr(detail, "name", ""),
-                    "repo_url": getattr(detail, "web_url", "") or "",
+                    "repository_id": repo_id,
+                    "name": getattr(detail, "path_with_namespace", "") or getattr(detail, "name", ""),
+                    "full_path": getattr(detail, "path_with_namespace", "") or "",
+                    "description": getattr(detail, "description", "") or "",
+                    "owner_id": "",
+                    "data_source": self.PROVIDER_NAME,
+                    "platform_repo_id": repo_id,
+                    "url": getattr(detail, "web_url", "") or "",
+                    "default_branch": getattr(detail, "default_branch", "") or self.DEFAULT_BRANCH_FALLBACK,
+                    "visibility": getattr(detail, "visibility", "") or "",
                     "language": self._primary_language(languages),
                     "language_breakdown": languages,
-                    "framework": "",
-                    "description": getattr(detail, "description", "") or "",
-                    "default_branch": getattr(detail, "default_branch", "") or self.DEFAULT_BRANCH_FALLBACK,
-                    "path_with_namespace": getattr(detail, "path_with_namespace", "") or "",
-                    "visibility": getattr(detail, "visibility", "") or "",
+                    "created_at": self._safe_dt(getattr(detail, "created_at", "")),
+                    "updated_at": self._safe_dt(getattr(detail, "last_activity_at", "")),
                 }
             )
         return repositories
@@ -76,17 +80,20 @@ class GitLabAdapter(IGitAdapter):
         project = self.client.projects.get(int(repo_id))
         members = []
         for member in project.members_all.list(all=True):
-            access_level = getattr(member, "access_level", 0) or 0
+            user_id = str(getattr(member, "id", ""))
             members.append(
                 {
-                    "user_id": str(getattr(member, "id", "")),
-                    "name": getattr(member, "name", "") or getattr(member, "username", ""),
+                    "user_id": f"{self.PROVIDER_NAME}:{user_id}" if user_id else "",
+                    "full_name": getattr(member, "name", "") or getattr(member, "username", ""),
                     "email": getattr(member, "email", "") or "",
-                    "username": getattr(member, "username", "") or "",
+                    "display_name": getattr(member, "username", "") or "",
                     "avatar_url": getattr(member, "avatar_url", "") or "",
-                    "role": ACCESS_LEVEL_ROLE.get(access_level, f"level_{access_level}"),
-                    "access_level": access_level,
-                    "state": getattr(member, "state", "active") or "active",
+                    "data_source": self.PROVIDER_NAME,
+                    "platform_user_id": user_id,
+                    "department": "",
+                    "is_active": getattr(member, "state", "active") == "active",
+                    "role": ACCESS_LEVEL_ROLE.get(getattr(member, "access_level", 0) or 0, "member"),
+                    "access_level": getattr(member, "access_level", 0) or 0,
                 }
             )
         return members
@@ -103,6 +110,40 @@ class GitLabAdapter(IGitAdapter):
         except Exception as exc:  # noqa: BLE001 — GitLab SDK raises various types
             logger.warning("Release tag %s not found for repo %s: %s", tag, repo_id, exc)
             return None
+
+    def list_pull_requests(self, repo_id: str) -> List[Dict[str, Any]]:
+        """Return merge requests for a repository in the unified pull_request schema."""
+        project = self.client.projects.get(int(repo_id))
+        pull_requests: List[Dict[str, Any]] = []
+        for mr in project.mergerequests.list(all=True, state="all"):
+            pr_num = getattr(mr, "iid", "")
+            pr_id = f"{self.PROVIDER_NAME}:{repo_id}!{pr_num}" if pr_num else ""
+            author = getattr(mr, "author", {}) or {}
+            author_id = str(getattr(author, "id", "")) if author else ""
+            pull_requests.append(
+                {
+                    "pr_id": pr_id,
+                    "project_id": "",
+                    "repository_id": repo_id,
+                    "number": pr_num,
+                    "title": getattr(mr, "title", "") or "",
+                    "description": getattr(mr, "description", "") or "",
+                    "author_id": f"{self.PROVIDER_NAME}:{author_id}" if author_id else "",
+                    "source_branch": getattr(mr, "source_branch", "") or "",
+                    "target_branch": getattr(mr, "target_branch", "") or "",
+                    "source_commit_sha": getattr(mr, "sha", "") or "",
+                    "merge_commit_sha": getattr(mr, "merge_commit_sha", "") or "",
+                    "status": self._map_mr_state(getattr(mr, "state", "")),
+                    "data_source": self.PROVIDER_NAME,
+                    "platform_pr_id": str(pr_num),
+                    "url": getattr(mr, "web_url", "") or "",
+                    "created_at": self._safe_dt(getattr(mr, "created_at", "")),
+                    "updated_at": self._safe_dt(getattr(mr, "updated_at", "")),
+                    "merged_at": self._safe_dt(getattr(mr, "merged_at", "")),
+                    "closed_at": self._safe_dt(getattr(mr, "closed_at", "")),
+                }
+            )
+        return pull_requests
 
     # ------------------------------------------------------------------
     # GitLab-specific helpers
@@ -128,18 +169,43 @@ class GitLabAdapter(IGitAdapter):
             return ""
         return max(language_stats.items(), key=lambda item: item[1])[0]
 
+    @staticmethod
+    def _safe_dt(value: Any) -> str:
+        if not value:
+            return ""
+        try:
+            return str(value).replace("T", "T")
+        except Exception:  # noqa: BLE001
+            return str(value)
+
+    @staticmethod
+    def _map_mr_state(state: str) -> str:
+        return {
+            "opened": "open",
+            "merged": "merged",
+            "closed": "closed",
+        }.get(state, "draft")
+
     def _normalize_release(self, repo_id: str, release: Any) -> Dict[str, Any]:
         author = getattr(release, "author", {}) or {}
         commit = getattr(release, "commit", {}) or {}
         commit_sha = commit.get("id", "") if isinstance(commit, dict) else ""
+        tag = release.tag_name
         return {
-            "release_id": f"{repo_id}/{release.tag_name}",
-            "repo_id": repo_id,
-            "tag": release.tag_name,
+            "release_id": f"{self.PROVIDER_NAME}:{repo_id}/{tag}",
+            "repository_id": repo_id,
+            "name": getattr(release, "name", "") or tag,
+            "version": tag.lstrip("v") if tag else "",
+            "description": getattr(release, "description", "") or "",
+            "release_type": "",  # derived by release_classifier in the task
+            "status": "completed",
+            "data_source": self.PROVIDER_NAME,
+            "platform_release_id": f"{repo_id}/{tag}",
+            "url": getattr(release, "_links", {}).get("self", "") if isinstance(getattr(release, "_links", None), dict) else "",
+            "created_by": author.get("name", "") if isinstance(author, dict) else "",
+            "tag_name": tag,
+            "target_commitish": getattr(release, "commit", {}).get("committed_id", "") if isinstance(commit, dict) else "",
             "commit_sha": commit_sha,
-            "release_notes": getattr(release, "description", "") or "",
             "release_time": getattr(release, "released_at", "") or getattr(release, "created_at", "") or "",
-            "author": author.get("name", "") if isinstance(author, dict) else "",
-            "author_email": "",
             "tag_type": "release",
         }
