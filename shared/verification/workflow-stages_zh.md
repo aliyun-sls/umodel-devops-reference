@@ -13,7 +13,7 @@
 查询 CMS Workspace，确认 `devops.*` 实体可见。
 
 ## 阶段 5 — CMS 字段检查
-验证关键实体字段值正确（按 `git_provider.type` 断言 `git_provider=gitlab` 或 `=aliyun`）。
+验证关键实体字段值正确（按 `git_provider.type` 断言 `data_source=gitlab` 或 `data_source=codeup`）。
 
 ## 阶段 6 — CMS/SLS 诊断
 仅在刷新或可见性失败时进入，诊断 Workspace 与 SLS 对齐问题。

@@ -19,17 +19,17 @@
                 ▼
      ┌──────────────────────┐
      │  devops_data_generator│
-     │  ├─ 13 个采集任务      │
-     │  ├─ SLS 数据发送       │
-     │  └─ 编排调度器         │
-     └──────────┬───────────┘
-                │ SLS / CMS 写入
-                ▼
-     ┌──────────────────────┐
-     │  UModel Explorer     │
-     │  5 个 EntitySet       │
-     │  12 条 EntitySetLink  │
-     └──────────────────────┘
+      │  ├─ 15 个采集任务      │
+      │  ├─ SLS 数据发送       │
+      │  └─ 编排调度器         │
+      └──────────┬───────────┘
+                 │ SLS / CMS 写入
+                 ▼
+      ┌──────────────────────┐
+      │  UModel Explorer     │
+      │  17 个 EntitySet      │
+      │  36 条 EntitySetLink  │
+      └──────────────────────┘
 ```
 
 ## 快速开始
@@ -58,15 +58,19 @@ docker compose up --build
 
 ## UModel 实体
 
-| 域 | 实体 | 说明 |
-|---|---|---|
-| devops | `devops.developer` | 开发者 |
-| devops | `devops.code_repository` | 代码仓库 |
-| devops | `devops.code_release` | 发布版本 / Tag |
-| devops | `devops.image_registry` | 容器镜像仓库（ACR）|
-| devops | `devops.image` | 容器镜像 |
+17 个 EntitySet 覆盖完整研发链路（组织→项目→代码→CI/CD→发布→部署）。有 producer 支撑的实体（git + ACR 派生）：`devops.user`、`devops.repository`、`devops.release`、`devops.pull_request`、`devops.artifact`、`devops.docker_image`。其余 11 个（organization、project、work_item、milestone、pipeline、pipeline_run、helm_chart、binary、npm_package、unit_testcase、deployment）为 schema-only，待对应数据源 adapter（Jira/CI/appstack/制品库/组织系统）落地，详见 `docs/umodel-entity-field-contract.md`。
 
-12 条 EntitySetLink 连接上述实体，并桥接 `apm.service` 和 `k8s.{pod,deployment,daemonset,statefulset}`。
+| 域 | 实体 | 有 producer |
+|---|---|---|
+| devops | `devops.user` | ✓（git） |
+| devops | `devops.repository` | ✓（git） |
+| devops | `devops.release` | ✓（git） |
+| devops | `devops.pull_request` | ✓（git） |
+| devops | `devops.artifact` | ✓（派生，ACR） |
+| devops | `devops.docker_image` | ✓（ACR） |
+| devops | + 11 个 schema-only | 待 adapter |
+
+36 条 EntitySetLink 连接上述实体（29 条设计文档关系 + 跨域链接到 `apm.service` 和 `k8s.{pod,deployment,daemonset,statefulset}`）。
 
 ## 验证
 
@@ -93,14 +97,15 @@ python3 umodel_uploader/umodel_batch_uploader.py umodel \
 
 ```
 umodel-devops-reference/
-├── umodel/                          # 5 EntitySet + 12 EntitySetLink 定义
+├── umodel/                          # 17 EntitySet + 36 EntitySetLink 定义
 ├── umodel_uploader/                 # 批量上传工具
 ├── devops_data_generator/
 │   ├── adapters/{gitlab,codeup}/    # IGitAdapter 实现
-│   ├── tasks/                       # 13 个数据采集任务
+│   ├── tasks/                       # 15 个数据采集任务
 │   ├── config/                      # 各平台配置样例
 │   ├── orchestrator.py              # 任务调度 + 结构化结果
 │   └── scripts/                     # 验证 + 部署脚本
+├── tools/                           # gen_umodel_yaml.py（schema 生成器）
 ├── .claude/skills/                  # 6 个 Claude 验证 Skill
 ├── .codex/skills/                   # 6 个 Codex 验证 Skill
 ├── shared/verification/             # 验证契约

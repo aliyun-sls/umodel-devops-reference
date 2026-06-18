@@ -12,7 +12,7 @@ The `git_provider.type` field in `app_config.yaml` selects which git adapter to 
 | Authentication | Personal / Project / Group Access Token | RAM AccessKey + Organization ID, or PAT (`auth_mode`) |
 | API endpoint | User-configured | Default `devops.cn-hangzhou.aliyuncs.com` (overridable) |
 | Default branch fallback | `main` | `master` |
-| `git_provider` field value in SLS | `"gitlab"` | `"aliyun"` |
+| `data_source` field value in SLS | `"gitlab"` | `"codeup"` |
 | Docker Compose | `docker compose up --build` | `docker compose up --build` |
 | Config sample | `app_config.gitlab.yaml.sample` | `app_config.codeup.yaml.sample` |
 
@@ -61,17 +61,16 @@ Both providers produce the same entity field set. Only values differ:
 
 | Field | GitLab | Codeup |
 |---|---|---|
-| `repo_id` | GitLab project id (string) | Codeup repository id (string) |
-| `repo_name` | `path_with_namespace` (e.g. `root/demo-app`) | Codeup `name` |
-| `repo_url` | `web_url` | Codeup `web_url` |
-| `git_provider` | `"gitlab"` | `"aliyun"` |
+| `repository_id` | GitLab project id (string) | Codeup repository id (string) |
+| `name` | `path_with_namespace` (e.g. `root/demo-app`) | Codeup `name` |
+| `url` | `web_url` | Codeup `web_url` |
+| `data_source` | `"gitlab"` | `"codeup"` |
 | `language` | Primary language from `languages()` | Codeup `language` |
-| `framework` | `""` (not exposed by GitLab) | Codeup `framework` (if available) |
 | `default_branch` | API value; fallback `main` | API value; fallback `master` |
 
-`developer.repositories[*].access_level`: GitLab fills the actual level (10–50); Codeup fills `0` (concept does not exist).
+`user.repositories[*].access_level`: GitLab fills the actual level (10–50); Codeup fills `0` (concept does not exist).
 
-`code_release.release_type`: classified by `tasks/utils/release_classifier.py` using word-boundary regex — consistent across providers.
+`release.release_type`: classified by `tasks/utils/release_classifier.py` using word-boundary regex — consistent across providers.
 
 ## Pagination and Limits
 

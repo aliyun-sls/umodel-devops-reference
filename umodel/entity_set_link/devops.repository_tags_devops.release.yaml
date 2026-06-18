@@ -1,0 +1,25 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: Repository tags Release.
+        zh_cn: Repository tags Release。
+    display_name:
+        en_us: Repository Tags Release
+        zh_cn: Repository tags Release
+    domain: devops
+    kind: entity_set_link
+    name: devops.repository_tags_devops.release
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.release
+    entity_link_type: tags
+    priority: 5
+    src:
+        domain: devops
+        kind: entity_set
+        name: devops.repository

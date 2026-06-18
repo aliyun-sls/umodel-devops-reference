@@ -60,11 +60,12 @@ def main():
 
     queries = [
         (".entity with(domain='devops') |project __entity_id__, __entity_type__, __domain__", "All devops domain entities"),
-        (".entity with(domain='devops', type='devops.code_repository') |project __entity_id__, __entity_type__, __domain__", "devops.code_repository"),
-        (".entity with(domain='devops', type='devops.code_release') |project __entity_id__, __entity_type__, __domain__", "devops.code_release"),
-        (".entity with(domain='devops', type='devops.image') |project __entity_id__, __entity_type__, __domain__", "devops.image"),
-        (".entity with(domain='devops', type='devops.image_registry') |project __entity_id__, __entity_type__, __domain__", "devops.image_registry"),
-        (".entity with(domain='devops', type='devops.developer') |project __entity_id__, __entity_type__, __domain__", "devops.developer"),
+        (".entity with(domain='devops', type='devops.repository') |project __entity_id__, __entity_type__, __domain__", "devops.repository"),
+        (".entity with(domain='devops', type='devops.release') |project __entity_id__, __entity_type__, __domain__", "devops.release"),
+        (".entity with(domain='devops', type='devops.user') |project __entity_id__, __entity_type__, __domain__", "devops.user"),
+        (".entity with(domain='devops', type='devops.pull_request') |project __entity_id__, __entity_type__, __domain__", "devops.pull_request"),
+        (".entity with(domain='devops', type='devops.artifact') |project __entity_id__, __entity_type__, __domain__", "devops.artifact"),
+        (".entity with(domain='devops', type='devops.docker_image') |project __entity_id__, __entity_type__, __domain__", "devops.docker_image"),
         (".entity |project __entity_id__, __entity_type__, __domain__", "ALL entity types (no domain filter)"),
         (".entity |project __entity_type__ |sort __entity_type__", "All unique entity types"),
     ]
@@ -82,8 +83,8 @@ def main():
         print(f"  [{result['status']}] {label}: {result['row_count']} rows")
 
     devops_labels = [
-        "devops.code_repository", "devops.code_release", "devops.image",
-        "devops.image_registry", "devops.developer",
+        "devops.repository", "devops.release", "devops.user",
+        "devops.pull_request", "devops.artifact", "devops.docker_image",
     ]
     has_devops = any(results.get(l, {}).get("row_count", 0) > 0 for l in devops_labels)
 

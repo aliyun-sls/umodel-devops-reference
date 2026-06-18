@@ -111,23 +111,22 @@ GitLab 访问权限由 GitLab 自身的访问令牌控制，不通过阿里云 `
 
    **实体数据：**
 
-   * `devops.developer` - 开发人员实体
-   * `devops.code_repository` - 代码仓库实体
-   * `devops.code_release` - 代码发布实体
-   * `devops.image_registry` - 镜像仓库实体
-   * `devops.image` - 容器镜像实体
+   * `devops.user` - 用户实体
+   * `devops.repository` - 代码仓库实体
+   * `devops.release` - 代码发布实体
+   * `devops.docker_image` - 容器镜像实体
    * `k8s.pod` - Kubernetes Pod实体
 
    **关系数据：**
 
-   * `developer_manages_code_repository` - 开发人员管理代码仓库关系
-   * `code_release_sourced_from_code_repository` - 代码发布来源于代码仓库关系
-   * `image_sourced_from_code_release` - 镜像来源于代码发布关系
-   * `image_registry_contains_image` - 镜像仓库包含镜像关系
-   * `pod_uses_image` - Pod使用镜像关系
-   * `apm.service_sourced_from_devops.code_repository` - APM服务来源于代码仓库关系
-   * `apm.service_sourced_from_devops.code_release` - APM服务来源于代码发布关系
-   * `devops.developer_manages_apm.service` - 开发人员管理APM服务关系
+   * `user_owns_repository` - 用户归属代码仓库关系
+   * `repository_tags_release` - 代码仓库标记代码发布关系
+   * `release_contains_artifact` - 代码发布包含构建产物关系
+   * `artifact_same_as_docker_image` - 构建产物对应容器镜像关系
+   * `pod_uses_docker_image` - Pod使用镜像关系
+   * `apm.service_sourced_from_devops.repository` - APM服务来源于代码仓库关系
+   * `apm.service_sourced_from_devops.release` - APM服务来源于代码发布关系
+   * `devops.user_manages_apm.service` - 用户管理APM服务关系
 2. 编辑配置文件。
 
    **配置文件与参数说明**
@@ -165,22 +164,20 @@ GitLab 访问权限由 GitLab 自身的访问令牌控制，不通过阿里云 `
      project: "<YOUR_SLS_PROJECT>"
      
      # LogStore映射配置
-     logstore_mapping:
-       entities:
-         developer: "<WORKSPACE_NAME>__entity"
-         code_repository: "<WORKSPACE_NAME>__entity"
-         code_release: "<WORKSPACE_NAME>__entity"
-         image_registry: "<WORKSPACE_NAME>__entity"
-         image: "<WORKSPACE_NAME>__entity"
-       relationships:
-         developer_manages_code_repository: "<WORKSPACE_NAME>__topo"
-         code_release_sourced_from_code_repository: "<WORKSPACE_NAME>__topo"
-         image_sourced_from_image_registry: "<WORKSPACE_NAME>__topo"
-         image_sourced_from_code_release: "<WORKSPACE_NAME>__topo"
-         image_registry_contains_image: "<WORKSPACE_NAME>__topo"
-         pod_uses_image: "<WORKSPACE_NAME>__topo"
-         # 静态Topo关系
-         static_topo: "<WORKSPACE_NAME>__topo"
+      logstore_mapping:
+        entities:
+          user: "<WORKSPACE_NAME>__entity"
+          repository: "<WORKSPACE_NAME>__entity"
+          release: "<WORKSPACE_NAME>__entity"
+          docker_image: "<WORKSPACE_NAME>__entity"
+        relationships:
+          user_owns_repository: "<WORKSPACE_NAME>__topo"
+          repository_tags_release: "<WORKSPACE_NAME>__topo"
+          release_contains_artifact: "<WORKSPACE_NAME>__topo"
+          artifact_same_as_docker_image: "<WORKSPACE_NAME>__topo"
+          pod_uses_docker_image: "<WORKSPACE_NAME>__topo"
+          # 静态Topo关系
+          static_topo: "<WORKSPACE_NAME>__topo"
    ```
 
    **配置参数说明：**
@@ -412,29 +409,29 @@ GitLab 访问权限由 GitLab 自身的访问令牌控制，不通过阿里云 `
                 when __domain__ is null or __domain__ = '' then 'domain缺失'
                 when __entity_type__ is null or __entity_type__ = '' then 'entity_type缺失'
                 when __entity_id__ is null or __entity_id__ = '' then 'entity_id缺失'
-                when work_no is null or work_no = '' then '主键work_no缺失'
-                when name is null or name = '' then 'name字段缺失'
+                when user_id is null or user_id = '' then '主键user_id缺失'
+                when full_name is null or full_name = '' then 'full_name字段缺失'
                 else '正常'
-            end | where __entity_type__ = 'devops.developer' and validation_status != '正常' | project validation_status
+            end | where __entity_type__ = 'devops.user' and validation_status != '正常' | project validation_status
         ```
       * **按字段缺失类型统计（在** `${workspace}__entity` **Logstore）**
 
         ```
         * | 
-        where __entity_type__ = 'devops.developer'
+        where __entity_type__ = 'devops.user'
           and (
             __domain__ is null or __domain__ = '' or
             __entity_type__ is null or __entity_type__ = '' or
             __entity_id__ is null or __entity_id__ = '' or
-            work_no is null or work_no = '' or
-            name is null or name = ''
+            user_id is null or user_id = '' or
+            full_name is null or full_name = ''
           ) | extend validation_status=
             case 
                 when __domain__ is null or __domain__ = '' then 'domain缺失'
                 when __entity_type__ is null or __entity_type__ = '' then 'entity_type缺失'
                 when __entity_id__ is null or __entity_id__ = '' then 'entity_id缺失'
-                when work_no is null or work_no = '' then '主键work_no缺失'
-                when name is null or name = '' then 'name字段缺失'
+                when user_id is null or user_id = '' then '主键user_id缺失'
+                when full_name is null or full_name = '' then 'full_name字段缺失'
             end | stats cnt = count(1) by validation_status
         ```
       * **关系必要字段验证（在** `${workspace}__topo` **Logstore）**
@@ -451,13 +448,13 @@ GitLab 访问权限由 GitLab 自身的访问令牌控制，不通过阿里云 `
                 when __link_type__ is null or __link_type__ = '' then 'link_type缺失'
                 else '正常'
             end |
-        where __link_type__ = 'manages'
+        where __link_type__ = 'owns'
           and validation_status != '正常'
         ```
    3. 登录云监控2.0控制台，单击**实体探索**，输入以下查询语句，单击**查询。**验证实体与关系是否正常上传**。**
 
-      * **实体查询语句：**`.entity with(domain='devops', type='devops.developer') | limit 0,100`。
-      * **关系查询语句：**`.entity_set with(domain='devops', name='devops.developer') | entity-call get_neighbor_entities()`。
+      * **实体查询语句：**`.entity with(domain='devops', type='devops.user') | limit 0,100`。
+      * **关系查询语句：**`.entity_set with(domain='devops', name='devops.user') | entity-call get_neighbor_entities()`。
 
 执行完上述步骤后，即可完成 DevOps 定义的实体数据打通，登录到**云监控 2.0 控制台**，可看到如下内容：
 
@@ -493,13 +490,13 @@ GitLab 访问权限由 GitLab 自身的访问令牌控制，不通过阿里云 `
 
    ```
    * | select count(*) as total_count
-   where __entity_type__ = 'devops.developer'
+   where __entity_type__ = 'devops.user'
    ```
 2. 在**关系数据（**`${workspace}__topo` **）**Logstore中执行查询语句。
 
    ```
    * | select count(*) as total_count
-   where __relation_type__ = 'manages'
+   where __relation_type__ = 'owns'
    ```
 
    **说明**
@@ -516,28 +513,28 @@ GitLab 访问权限由 GitLab 自身的访问令牌控制，不通过阿里云 `
            when __domain__ is null or __domain__ = '' then 'domain缺失'
            when __entity_type__ is null or __entity_type__ = '' then 'entity_type缺失'
            when __entity_id__ is null or __entity_id__ = '' then 'entity_id缺失'
-           when work_no is null or work_no = '' then '主键work_no缺失'
-           when name is null or name = '' then 'name字段缺失'
-           else '正常'
-       end | where __entity_type__ = 'devops.developer' and validation_status != '正常' | project validation_status
-   ```
+            when user_id is null or user_id = '' then '主键user_id缺失'
+            when full_name is null or full_name = '' then 'full_name字段缺失'
+            else '正常'
+        end | where __entity_type__ = 'devops.user' and validation_status != '正常' | project validation_status
+    ```
 2. 在**关系数据（**`${workspace}__topo` **）**Logstore中执行查询语句。确认上传的数据包含所有必要字段。
 
-   ```
-   * | extend validation_status =
-       case 
-           when __src_entity_id__ is null or __src_entity_id__ = '' then 'src_entity_id缺失' 
-           when __src_entity_type__ is null or __src_entity_type__ = '' then 'src_entity_type缺失' 
-           when __src_domain__ is null or __src_domain__ = '' then 'src_domain缺失' 
-           when __dest_entity_id__ is null or __dest_entity_id__ = '' then 'dest_entity_id缺失'
-           when __dest_entity_type__ is null or __dest_entity_type__ = '' then 'dest_entity_type缺失' 
-           when __dest_domain__ is null or __dest_domain__ = '' then 'dest_domain缺失'
-           when __relation_type__ is null or __relation_type__ = '' then 'relation_type缺失'
-           else '正常'
-       end |
-   where __relation_type__ = 'manages'
-     and validation_status != '正常'
-   ```
+    ```
+    * | extend validation_status =
+        case 
+            when __src_entity_id__ is null or __src_entity_id__ = '' then 'src_entity_id缺失' 
+            when __src_entity_type__ is null or __src_entity_type__ = '' then 'src_entity_type缺失' 
+            when __src_domain__ is null or __src_domain__ = '' then 'src_domain缺失' 
+            when __dest_entity_id__ is null or __dest_entity_id__ = '' then 'dest_entity_id缺失'
+            when __dest_entity_type__ is null or __dest_entity_type__ = '' then 'dest_entity_type缺失' 
+            when __dest_domain__ is null or __dest_domain__ = '' then 'dest_domain缺失'
+            when __relation_type__ is null or __relation_type__ = '' then 'relation_type缺失'
+            else '正常'
+        end |
+    where __relation_type__ = 'owns'
+      and validation_status != '正常'
+    ```
 
    **说明**
 
@@ -561,9 +558,9 @@ GitLab 访问权限由 GitLab 自身的访问令牌控制，不通过阿里云 `
            then '已过期' 
            else '未过期' 
        end as status
-   where __entity_type__ = 'devops.developer'
-   order by __last_observed_time__ desc
-   limit 20
+    where __entity_type__ = 'devops.user'
+    order by __last_observed_time__ desc
+    limit 20
    ```
 2. 在**关系数据（**`${workspace}__topo` **）**Logstore中执行查询语句。
 
@@ -579,9 +576,9 @@ GitLab 访问权限由 GitLab 自身的访问令牌控制，不通过阿里云 `
            then '已过期' 
            else '未过期' 
        end as status
-   where __relation_type__ = 'manages'
-   order by __last_observed_time__ desc
-   limit 20
+    where __relation_type__ = 'owns'
+    order by __last_observed_time__ desc
+    limit 20
    ```
 
    **说明**

@@ -1,0 +1,25 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: Pipeline Run builds Artifact.
+        zh_cn: Pipeline Run builds Artifact。
+    display_name:
+        en_us: Pipeline Run Builds Artifact
+        zh_cn: Pipeline Run builds Artifact
+    domain: devops
+    kind: entity_set_link
+    name: devops.pipeline_run_builds_devops.artifact
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.artifact
+    entity_link_type: builds
+    priority: 5
+    src:
+        domain: devops
+        kind: entity_set
+        name: devops.pipeline_run

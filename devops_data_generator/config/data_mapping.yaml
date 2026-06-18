@@ -1,81 +1,140 @@
+# 数据映射配置（producer 支撑子集）
+# 说明：本文件只列出有 producer 实际生产数据的实体与关系，避免悬空配置（D1 已清除）。
+# 全量 17 EntitySet + 36 EntitySetLink 的「定义」在 umodel/entity_set/ 与 umodel/entity_set_link/。
+# 字段契约 SSOT：docs/umodel-entity-field-contract.md
+# data_source 枚举：docs/data-source-enum-spec.md
+
 entity:
-  developer:
+  user:
+    # git adapter list_repository_members() 输出归一化字段（见 adapters/base.py）
     fields:
-      - user_id -> work_no
-      - name
+      - user_id
+      - full_name
       - email
-      - role
+      - display_name
+      - avatar_url
+      - data_source
+      - platform_user_id
+      - department
+      - is_active
     primaryKeys:
-      - work_no
+      - user_id
     __domain__: devops
-    __entity_type__: devops.developer
+    __entity_type__: devops.user
 
-  code_repository:
-    # git_provider value is injected at runtime by the active git adapter
-    # (see devops_data_generator/adapters/{gitlab,codeup}/adapter.py).
+  repository:
+    # git adapter list_repositories() 输出归一化字段
     fields:
-      - repo_id
-      - repo_name
-      - repo_url
-      - git_provider
-      - language
-      - framework
+      - repository_id
+      - name
+      - full_path
       - description
+      - owner_id
+      - data_source
+      - platform_repo_id
+      - url
       - default_branch
+      - visibility
+      - language
+      - created_at
+      - updated_at
     primaryKeys:
-      - repo_id
+      - repository_id
     __domain__: devops
-    __entity_type__: devops.code_repository
+    __entity_type__: devops.repository
 
-  code_release:
+  release:
+    # git adapter list_repository_releases() 输出归一化字段；release_type 由 release_classifier 推导
     fields:
       - release_id
-      - repo_id
-      - repo_name
-      - tag
-      - commit_sha
-      - release_notes
-      - release_time
-      - status: "released"
-      - release_type
-      - author
-    primaryKeys:
-      - release_id
-    __domain__: devops
-    __entity_type__: devops.code_release
-
-  image_registry:
-    fields:
-      - registry_id
-      - registry_name
-      - registry_namespace
-      - registry_url
-      - provider: "aliyun"
-      - region
+      - repository_id
+      - name
+      - version
       - description
-      - is_public
+      - release_type
+      - status
+      - data_source
+      - platform_release_id
+      - url
+      - created_by
+      - tag_name
+      - target_commitish
+      - created_at
     primaryKeys:
-      - registry_id
+      - release_id
     __domain__: devops
-    __entity_type__: devops.image_registry
+    __entity_type__: devops.release
 
-  image:
+  pull_request:
+    # git adapter list_pull_requests() 输出归一化字段（IGitAdapter 扩展方法）
     fields:
-      - image_id
-      - image_name
-      - image_tag
-      - image_digest
-      - registry_id
+      - pr_id
+      - project_id
+      - repository_id
+      - number
+      - title
+      - description
+      - author_id
+      - source_branch
+      - target_branch
+      - status
+      - data_source
+      - platform_pr_id
+      - url
+      - commits_count
+      - changed_files
+      - additions
+      - deletions
+      - created_at
+      - updated_at
+    primaryKeys:
+      - pr_id
+    __domain__: devops
+    __entity_type__: devops.pull_request
+
+  artifact:
+    # 派生实体（决策 B）：docker_image_task 一次 ACR fetch 同生 artifact + docker_image
+    fields:
+      - artifact_id
+      - name
+      - version
+      - artifact_type
+      - repository_id
+      - commit_sha
+      - tag_name
+      - pipeline_run_id
+      - storage_location
+      - data_source
+      - platform_artifact_id
+      - url
+      - created_at
+      - created_by
+    primaryKeys:
+      - artifact_id
+    __domain__: devops
+    __entity_type__: devops.artifact
+
+  docker_image:
+    # ACR producer 输出；architecture/os 取正确字段（修 D12 bug）
+    fields:
+      - docker_image_id
+      - artifact_id
+      - registry
+      - repository
+      - tag
+      - digest
       - full_image_name
-      - build_time
-      - size
+      - base_image
+      - platform
       - architecture
       - os
-      - build_status
+      - data_source
+      - platform_image_id
+      - created_at
     primaryKeys:
-      - image_id
+      - docker_image_id
     __domain__: devops
-    __entity_type__: devops.image
+    __entity_type__: devops.docker_image
 
   kubernetes_pod:
     fields:
@@ -93,76 +152,93 @@ entity:
     __entity_type__: k8s.pod
 
 topo:
-  developer_manages_code_repository:
+  # --- git/ACR producer 可派生的关系（决策 G-2：设计文档动词原样落地） ---
+  user_owns_repository:
     __src_domain__: devops
-    __src_entity_type__: devops.developer
+    __src_entity_type__: devops.user
     __dest_domain__: devops
-    __dest_entity_type__: devops.code_repository
+    __dest_entity_type__: devops.repository
     src_entity_primarykeys:
-      - work_no
+      - user_id
     dest_entity_primarykeys:
-      - repo_id
+      - repository_id
     fixed_fields:
-      __link_type__: "manages"
+      __link_type__: "owns"
 
-  code_release_sourced_from_code_repository:
+  repository_tags_release:
+    # 方向与旧 code_release_sourced_from_code_repository 相反（release→repo 改为 repo→release）
     __src_domain__: devops
-    __src_entity_type__: devops.code_release
+    __src_entity_type__: devops.repository
     __dest_domain__: devops
-    __dest_entity_type__: devops.code_repository
+    __dest_entity_type__: devops.release
     src_entity_primarykeys:
-      - release_id
-    dest_entity_primarykeys:
-      - repo_id
-    fixed_fields:
-      __link_type__: "sourced_from"
-
-  image_sourced_from_image_registry:
-    __src_domain__: devops
-    __src_entity_type__: devops.image
-    __dest_domain__: devops
-    __dest_entity_type__: devops.image_registry
-    src_entity_primarykeys:
-      - image_id
-    dest_entity_primarykeys:
-      - registry_id
-    fixed_fields:
-      __link_type__: "sourced_from"
-
-  image_sourced_from_code_release:
-    __src_domain__: devops
-    __src_entity_type__: devops.image
-    __dest_domain__: devops
-    __dest_entity_type__: devops.code_release
-    src_entity_primarykeys:
-      - image_id
+      - repository_id
     dest_entity_primarykeys:
       - release_id
     fixed_fields:
-      __link_type__: "sourced_from"
+      __link_type__: "tags"
 
-  image_registry_contains_image:
+  repository_contains_pull_request:
     __src_domain__: devops
-    __src_entity_type__: devops.image_registry
+    __src_entity_type__: devops.repository
     __dest_domain__: devops
-    __dest_entity_type__: devops.image
+    __dest_entity_type__: devops.pull_request
     src_entity_primarykeys:
-      - registry_id
+      - repository_id
     dest_entity_primarykeys:
-      - image_id
+      - pr_id
     fixed_fields:
       __link_type__: "contains"
-      priority: 5
 
-  pod_uses_image:
+  user_participates_in_pull_request:
+    # 派生自 PR.author/reviewers
+    __src_domain__: devops
+    __src_entity_type__: devops.user
+    __dest_domain__: devops
+    __dest_entity_type__: devops.pull_request
+    src_entity_primarykeys:
+      - user_id
+    dest_entity_primarykeys:
+      - pr_id
+    fixed_fields:
+      __link_type__: "participates_in"
+
+  release_contains_artifact:
+    # 派生：release.tag_name 关联到 ACR 同 tag 的 artifact
+    __src_domain__: devops
+    __src_entity_type__: devops.release
+    __dest_domain__: devops
+    __dest_entity_type__: devops.artifact
+    src_entity_primarykeys:
+      - release_id
+    dest_entity_primarykeys:
+      - artifact_id
+    fixed_fields:
+      __link_type__: "contains"
+
+  artifact_same_as_docker_image:
+    # 决策 B：docker_image_task 同生产出（ACR 派生）
+    __src_domain__: devops
+    __src_entity_type__: devops.artifact
+    __dest_domain__: devops
+    __dest_entity_type__: devops.docker_image
+    src_entity_primarykeys:
+      - artifact_id
+    dest_entity_primarykeys:
+      - docker_image_id
+    fixed_fields:
+      __link_type__: "same_as"
+
+  # --- 跨域（k8s） ---
+  pod_uses_docker_image:
     __src_domain__: k8s
     __src_entity_type__: k8s.pod
     __dest_domain__: devops
-    __dest_entity_type__: devops.image
+    __dest_entity_type__: devops.docker_image
     src_entity_primarykeys:
       - entity_id
     dest_entity_primarykeys:
-      - image_id
+      - docker_image_id
     fixed_fields:
       __link_type__: "uses"
       priority: 5

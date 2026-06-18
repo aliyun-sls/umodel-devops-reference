@@ -1,0 +1,25 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: Artifact same_as Npm Package.
+        zh_cn: Artifact same_as Npm Package。
+    display_name:
+        en_us: Artifact Same_As Npm Package
+        zh_cn: Artifact same_as Npm Package
+    domain: devops
+    kind: entity_set_link
+    name: devops.artifact_same_as_devops.npm_package
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.npm_package
+    entity_link_type: same_as
+    priority: 5
+    src:
+        domain: devops
+        kind: entity_set
+        name: devops.artifact

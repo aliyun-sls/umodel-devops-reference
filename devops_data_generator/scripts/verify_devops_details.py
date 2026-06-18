@@ -3,7 +3,7 @@
 CMS workspace devops entity field-level detail verification script.
 
 Performs targeted queries to verify that specific known entities
-(code_repository, code_release, image, image_registry) contain
+(repository, release, docker_image, user) contain
 expected field values in the CMS workspace EntityStore.
 
 Usage:
@@ -58,24 +58,24 @@ def main():
 
     queries = [
         (
-            ".entity with(domain='devops', type='devops.code_repository') "
-            "|project __entity_id__, repo_id, repo_name, repo_url, git_provider",
-            "code_repository - full fields",
+            ".entity with(domain='devops', type='devops.repository') "
+            "|project __entity_id__, repository_id, name, url, data_source",
+            "repository - full fields",
         ),
         (
-            ".entity with(domain='devops', type='devops.code_release') "
-            "|project __entity_id__, release_id, tag, repo_id, repo_name",
-            "code_release - full fields",
+            ".entity with(domain='devops', type='devops.release') "
+            "|project __entity_id__, release_id, tag_name, repository_id, name",
+            "release - full fields",
         ),
         (
-            ".entity with(domain='devops', type='devops.image') "
-            "|project __entity_id__, image_id, image_name, image_tag, full_image_name, registry_id",
-            "image - full fields",
+            ".entity with(domain='devops', type='devops.docker_image') "
+            "|project __entity_id__, docker_image_id, repository, tag, full_image_name, registry",
+            "docker_image - full fields",
         ),
         (
-            ".entity with(domain='devops', type='devops.image_registry') "
-            "|project __entity_id__, registry_id, registry_name, registry_url",
-            "image_registry - full fields",
+            ".entity with(domain='devops', type='devops.user') "
+            "|project __entity_id__, user_id, full_name, email, data_source",
+            "user - full fields",
         ),
         (
             ".entity with(domain='devops') |project __entity_type__ |sort __entity_type__",

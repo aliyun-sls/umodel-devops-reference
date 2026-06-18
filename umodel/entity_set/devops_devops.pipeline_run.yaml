@@ -1,0 +1,286 @@
+kind: entity_set
+metadata:
+    description:
+        en_us: CI/CD pipeline execution instance (unified naming, was pipeline_run_instance).
+        zh_cn: 流水线运行实体代表CI/CD流水线的执行实例（命名决策F统一为pipeline_run）。
+    display_name:
+        en_us: Pipeline Run
+        zh_cn: 流水线运行
+    domain: devops
+    kind: entity_set
+    name: devops.pipeline_run
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dynamic: false
+    fields:
+        - description:
+            en_us: 运行实例唯一标识
+            zh_cn: 运行实例唯一标识
+          display_name:
+            en_us: Run Id
+            zh_cn: 运行实例唯一标识
+          filterable: true
+          name: run_id
+          orderable: true
+          short_description:
+            en_us: Run Id
+            zh_cn: 运行实例唯一标识
+          type: string
+        - description:
+            en_us: 所属流水线
+            zh_cn: 所属流水线
+          display_name:
+            en_us: Pipeline Id
+            zh_cn: 所属流水线
+          filterable: true
+          name: pipeline_id
+          orderable: true
+          short_description:
+            en_us: Pipeline Id
+            zh_cn: 所属流水线
+          type: string
+        - description:
+            en_us: 所属仓库
+            zh_cn: 所属仓库
+          display_name:
+            en_us: Repository Id
+            zh_cn: 所属仓库
+          filterable: true
+          name: repository_id
+          orderable: true
+          short_description:
+            en_us: Repository Id
+            zh_cn: 所属仓库
+          type: string
+        - description:
+            en_us: 运行编号
+            zh_cn: 运行编号
+          display_name:
+            en_us: Number
+            zh_cn: 运行编号
+          filterable: true
+          name: number
+          orderable: true
+          short_description:
+            en_us: Number
+            zh_cn: 运行编号
+          type: integer
+        - description:
+            en_us: 关联PR
+            zh_cn: 关联PR
+          display_name:
+            en_us: Pr Id
+            zh_cn: 关联PR
+          filterable: true
+          name: pr_id
+          orderable: true
+          short_description:
+            en_us: Pr Id
+            zh_cn: 关联PR
+          type: string
+        - description:
+            en_us: 构建提交
+            zh_cn: 构建提交
+          display_name:
+            en_us: Commit Sha
+            zh_cn: 构建提交
+          filterable: true
+          name: commit_sha
+          orderable: true
+          short_description:
+            en_us: Commit Sha
+            zh_cn: 构建提交
+          type: string
+        - description:
+            en_us: 分支名
+            zh_cn: 分支名
+          display_name:
+            en_us: Branch
+            zh_cn: 分支名
+          filterable: true
+          name: branch
+          orderable: true
+          short_description:
+            en_us: Branch
+            zh_cn: 分支名
+          type: string
+        - description:
+            en_us: 触发方式 push/pull_request/schedule/manual/tag
+            zh_cn: 触发方式 push/pull_request/schedule/manual/tag
+          display_name:
+            en_us: Trigger Type
+            zh_cn: 触发方式 push/pull_request/schedule/manual/tag
+          filterable: true
+          name: trigger_type
+          orderable: true
+          short_description:
+            en_us: Trigger Type
+            zh_cn: 触发方式 push/pull_request/schedule/manual/tag
+          type: enum
+        - description:
+            en_us: 运行状态 queued/in_progress/success/failure/cancelled/skipped
+            zh_cn: 运行状态 queued/in_progress/success/failure/cancelled/skipped
+          display_name:
+            en_us: Status
+            zh_cn: 运行状态 queued/in_progress/success/failure/cancelled/skipped
+          filterable: true
+          name: status
+          orderable: true
+          short_description:
+            en_us: Status
+            zh_cn: 运行状态 queued/in_progress/success/failure/cancelled/skipped
+          type: enum
+        - description:
+            en_us: 运行结论 success/failure/cancelled/timeout
+            zh_cn: 运行结论 success/failure/cancelled/timeout
+          display_name:
+            en_us: Conclusion
+            zh_cn: 运行结论 success/failure/cancelled/timeout
+          filterable: true
+          name: conclusion
+          orderable: true
+          short_description:
+            en_us: Conclusion
+            zh_cn: 运行结论 success/failure/cancelled/timeout
+          type: enum
+        - description:
+            en_us: 数据来源 github_actions/gitlab_ci/jenkins
+            zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
+          display_name:
+            en_us: Data Source
+            zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
+          filterable: true
+          name: data_source
+          orderable: true
+          short_description:
+            en_us: Data Source
+            zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
+          type: string
+        - description:
+            en_us: 平台运行ID
+            zh_cn: 平台运行ID
+          display_name:
+            en_us: Platform Run Id
+            zh_cn: 平台运行ID
+          filterable: true
+          name: platform_run_id
+          orderable: true
+          short_description:
+            en_us: Platform Run Id
+            zh_cn: 平台运行ID
+          type: string
+        - description:
+            en_us: 运行URL
+            zh_cn: 运行URL
+          display_name:
+            en_us: Url
+            zh_cn: 运行URL
+          filterable: true
+          name: url
+          orderable: true
+          short_description:
+            en_us: Url
+            zh_cn: 运行URL
+          type: string
+        - description:
+            en_us: 触发者
+            zh_cn: 触发者
+          display_name:
+            en_us: Triggered By
+            zh_cn: 触发者
+          filterable: true
+          name: triggered_by
+          orderable: true
+          short_description:
+            en_us: Triggered By
+            zh_cn: 触发者
+          type: string
+        - description:
+            en_us: 阶段信息
+            zh_cn: 阶段信息
+          display_name:
+            en_us: Stages
+            zh_cn: 阶段信息
+          filterable: false
+          name: stages
+          orderable: false
+          short_description:
+            en_us: Stages
+            zh_cn: 阶段信息
+          type: json
+        - description:
+            en_us: 创建时间
+            zh_cn: 创建时间
+          display_name:
+            en_us: Created At
+            zh_cn: 创建时间
+          filterable: true
+          name: created_at
+          orderable: true
+          short_description:
+            en_us: Created At
+            zh_cn: 创建时间
+          type: datetime
+        - description:
+            en_us: 开始时间
+            zh_cn: 开始时间
+          display_name:
+            en_us: Started At
+            zh_cn: 开始时间
+          filterable: true
+          name: started_at
+          orderable: true
+          short_description:
+            en_us: Started At
+            zh_cn: 开始时间
+          type: datetime
+        - description:
+            en_us: 完成时间
+            zh_cn: 完成时间
+          display_name:
+            en_us: Completed At
+            zh_cn: 完成时间
+          filterable: true
+          name: completed_at
+          orderable: true
+          short_description:
+            en_us: Completed At
+            zh_cn: 完成时间
+          type: datetime
+        - description:
+            en_us: 执行时长(秒)
+            zh_cn: 执行时长(秒)
+          display_name:
+            en_us: Duration Seconds
+            zh_cn: 执行时长(秒)
+          filterable: true
+          name: duration_seconds
+          orderable: true
+          short_description:
+            en_us: Duration Seconds
+            zh_cn: 执行时长(秒)
+          type: integer
+        - description:
+            en_us: 排队时长(秒)
+            zh_cn: 排队时长(秒)
+          display_name:
+            en_us: Queue Duration Seconds
+            zh_cn: 排队时长(秒)
+          filterable: true
+          name: queue_duration_seconds
+          orderable: true
+          short_description:
+            en_us: Queue Duration Seconds
+            zh_cn: 排队时长(秒)
+          type: integer
+    keep_alive_seconds: 86400
+    name_fields:
+        - run_id
+        - pipeline_id
+        - status
+    primary_key_fields:
+        - run_id
+    time_field: __time__
+    type: entity_set

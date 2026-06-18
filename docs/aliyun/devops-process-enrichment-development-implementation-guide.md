@@ -31,7 +31,6 @@
 │   │   ├── app_config.yaml.sample   # 应用配置样例
 │   │   ├── config_loader.py         # 配置加载器
 │   │   ├── data_mapping.yaml        # 实体/关系字段映射配置
-│   │   ├── manage_mapping.yaml      # 管理关系配置
 │   │   ├── static_topo.yaml         # 静态关系配置
 │   │   └── repo_image_mapping.yaml  # 代码仓库与镜像仓库映射
 │   ├── tasks/                       # 任务实现
@@ -53,13 +52,13 @@
 
 **说明**
 
-完整介绍该场景实体和关系的开发过程会过于冗长，**因此以其中开发人员实体（developer）和管理关系（manages）为例**，演示从Schema定义到数据上传的完整开发过程。**UModel的实体建模方法、关系建模方法、数据采集流程、上传策略等开发流程是通用的，**其他实体和关系的开发具体实现可参考上述代码目录。
+完整介绍该场景实体和关系的开发过程会过于冗长，**因此以其中用户实体（user）和归属关系（owns）为例**，演示从Schema定义到数据上传的完整开发过程。**UModel的实体建模方法、关系建模方法、数据采集流程、上传策略等开发流程是通用的，**其他实体和关系的开发具体实现可参考上述代码目录。
 
 ### **步骤一：定义Schema**
 
-1. 定义开发人员实体Schema。
+1. 定义用户实体Schema。
 
-   **开发人员实体Schema**
+   **用户实体Schema**
 
    **重要**
 
@@ -68,86 +67,84 @@
    ```
    metadata:
        description:
-           en_us: Developer
-           zh_cn: 研发人员
+           en_us: User
+           zh_cn: 用户
        display_name:
-           en_us: Developer
-           zh_cn: 研发人员
+           en_us: User
+           zh_cn: 用户
        domain: devops
        kind: entity_set
-       name: devops.developer
+       name: devops.user
 
    spec:
-       id_generator: lower(to_hex(md5(cast(work_no as varbinary))))
+       id_generator: lower(to_hex(md5(cast(user_id as varbinary))))
        fields:
            - description:
-               en_us: Work Number
-               zh_cn: 工号
+               en_us: User ID
+               zh_cn: 用户标识
              display_name:
-               en_us: Work Number
-               zh_cn: 工号
+               en_us: User ID
+               zh_cn: 用户标识
              filterable: true
-             name: work_no
+             name: user_id
              orderable: true
              short_description:
-               en_us: Work Number
-               zh_cn: 工号
+               en_us: User ID
+               zh_cn: 用户标识
              type: string
            - description:
-               en_us: Developer Name
-               zh_cn: 研发人员姓名
+               en_us: Full Name
+               zh_cn: 用户全名
              display_name:
-               en_us: Developer Name
-               zh_cn: 研发人员姓名
+               en_us: Full Name
+               zh_cn: 用户全名
              filterable: true
-             name: name
+             name: full_name
              orderable: true
              short_description:
-               en_us: Developer Name
-               zh_cn: 研发人员姓名
+               en_us: Full Name
+               zh_cn: 用户全名
              type: string
              ....
        name_fields:
-           - name
-           - work_no
+           - full_name
+           - user_id
            - email
-           - team
-           - role
        primary_key_fields:
-           - work_no
+           - user_id
        time_field: __time__
        type: entity_set
    ```
-2. 定义管理关系Schema。
+2. 定义归属关系Schema。
 
-   **管理关系Schema**
+   **归属关系Schema**
 
    ```
-   # EntitySetLink: manages
+   # EntitySetLink: owns
    metadata:
        description:
            en_us: |
-               The link between "devops.developer" and "devops.code_repository".
-           zh_cn: 研发人员-管理-代码仓库
+               The link between "devops.user" and "devops.repository".
+           zh_cn: 用户-归属-代码仓库
        display_name:
            en_us: |
-               Developer-Manages-Code-Repository
-           zh_cn: 研发人员-管理-代码仓库
+               User-Owns-Repository
+           zh_cn: 用户-归属-代码仓库
        domain: devops
        kind: entity_set_link
-       name: devops.developer_manages_devops.code_repository
+       name: devops.user_owns_devops.repository
    # 关系的源和目标
    spec:
        dest:
            domain: devops
            kind: entity_set
-           name: devops.code_repository
-       entity_link_type: manages
+           name: devops.repository
+       entity_link_type: owns
        priority: 5
        src:
            domain: devops
            kind: entity_set
-           name: devops.developer
+           name: devops.user
    ```
 
 ### **步骤二：实现数据采集**
@@ -174,78 +171,78 @@
      + 处理API分页（如有需要）。
      + KeepAlive设为2天确保定时任务失败时数据仍可查询。
 
-     ```
-     import gitlab
-     import schedule
+      ```
+      import gitlab
+      import schedule
 
-     def fetch_developers():
-         """从GitLab API获取开发人员"""
-         # 初始化GitLab客户端
-         client = gitlab.Gitlab(
-             url=config['gitlab']['url'],
-             private_token=config['gitlab']['access_token']
-         )
-         
-         developers = {}  # 使用字典去重
-         
-         # 获取目标代码仓库
-         project = client.projects.get(config['gitlab']['project_id'])
+      def fetch_users():
+          """从GitLab API获取用户"""
+          # 初始化GitLab客户端
+          client = gitlab.Gitlab(
+              url=config['gitlab']['url'],
+              private_token=config['gitlab']['access_token']
+          )
+          
+          users = {}  # 使用字典去重
+          
+          # 获取目标代码仓库
+          project = client.projects.get(config['gitlab']['project_id'])
 
-         # 获取成员并去重
-         members = project.members_all.list(get_all=True)
-         for member in members:
-             user_id = str(member.id)
-             if user_id not in developers:
-                 developers[user_id] = {
-                     'user_id': user_id,
-                     'name': member.name,
-                     'email': getattr(member, 'email', ''),
-                     'role': str(member.access_level)
-                 }
-         
-         logger.info(f"采集到{len(developers)}个开发人员")
-         return list(developers.values())
+          # 获取成员并去重
+          members = project.members_all.list(get_all=True)
+          for member in members:
+              user_id = str(member.id)
+              if user_id not in users:
+                  users[user_id] = {
+                      'user_id': user_id,
+                      'full_name': member.name,
+                      'email': getattr(member, 'email', ''),
+                      'role': str(member.access_level)
+                  }
+          
+          logger.info(f"采集到{len(users)}个用户")
+          return list(users.values())
 
-     def sync_developers():
-         """定时全量同步开发人员"""
-         logger.info("开始同步开发人员...")
-         
-         # 1. 采集数据
-         raw_developers = fetch_developers()
-         
-         # 2. 转换数据（步骤3详细说明）
-         entities = convert_all_developers(raw_developers)
-         
-         # 3. 上传数据（步骤4详细说明）
-         success = upload_entities(entities, workspace='o11y-workspace')
-         
-         if success:
-             logger.info(f"成功上传{len(entities)}个开发人员实体")
-         else:
-             logger.error("上传失败")
+      def sync_users():
+          """定时全量同步用户"""
+          logger.info("开始同步用户...")
+          
+          # 1. 采集数据
+          raw_users = fetch_users()
+          
+          # 2. 转换数据（步骤3详细说明）
+          entities = convert_all_users(raw_users)
+          
+          # 3. 上传数据（步骤4详细说明）
+          success = upload_entities(entities, workspace='o11y-workspace')
+          
+          if success:
+              logger.info(f"成功上传{len(entities)}个用户实体")
+          else:
+              logger.error("上传失败")
 
-     # 设置定时任务：每天凌晨3点执行
-     schedule.every().day.at("03:00").do(sync_developers)
-     ```
-2. 从数据源获取管理关系实体原始数据，确定上传策略，并编写代码。
+      # 设置定时任务：每天凌晨3点执行
+      schedule.every().day.at("03:00").do(sync_users)
+      ```
+2. 从数据源获取归属关系实体原始数据，确定上传策略，并编写代码。
 
-   * **数据源与采集方式**：获取开发人员管理代码仓库的关系。
+   * **数据源与采集方式**：获取用户归属代码仓库的关系。
 
-     + 数据源：YAML配置文件，获取关系（开发人员——代码仓库）。
+     + 数据源：YAML配置文件，获取关系（用户——代码仓库）。
      + 采集方式：通过已有实体ID，关联静态配置。
-   * **上传策略**：由于管理关系相对稳定，即变化频率低；数据来源为人工维护的静态配置文件；因此推荐策略为定时全量上传。
+   * **上传策略**：由于归属关系相对稳定，即变化频率低；数据来源为人工维护的静态配置文件；因此推荐策略为定时全量上传。
 
      + 执行频率：每小时一次，及时同步配置变更。
      + KeepAlive：2小时，全量周期的2倍，防止任务失败。
 
-     **管理关系实体数据采集代码示例**
+     **归属关系实体数据采集代码示例**
 
      配置文件示例：
 
      ```
-     # 开发人员管理代码仓库映射
-     manage_mappings:
-       "1711055":  # 工号（developer的主键）
+     # 用户归属代码仓库映射
+     own_mappings:
+       "1711055":  # 用户标识（user的主键）
          repositories:
            - "mymall-order"      # 仓库名称（repository的标识）
            - "mymall-cart"
@@ -263,33 +260,33 @@
      import yaml
      import schedule
 
-     def generate_manage_relationships():
-         """基于配置文件生成开发人员管理代码仓库的关系"""
+     def generate_own_relationships():
+         """基于配置文件生成用户归属代码仓库的关系"""
          # 1. 加载配置文件
-         with open('config/manage_mapping.yaml', 'r') as f:
+         with open('config/own_mapping.yaml', 'r') as f:
              config = yaml.safe_load(f)
          
          # 2. 查询已有的实体（前提：实体已经上传到EntityStore）
-         developers = query_entities_from_sls('devops.developer')
-         repositories = query_entities_from_sls('devops.code_repository')
+         users = query_entities_from_sls('devops.user')
+         repositories = query_entities_from_sls('devops.repository')
          
          # 3. 构建查找索引（通过主键快速查找）
-         dev_map = {d['work_no']: d for d in developers}
-         repo_map = {r['repo_name']: r for r in repositories}
+         user_map = {u['user_id']: u for u in users}
+         repo_map = {r['name']: r for r in repositories}
          
          # 4. 生成关系数据
 
          relationships = [ ]
 
-         for work_no, mapping in config['manage_mappings'].items():
-             # 校验开发人员是否存在
-             if work_no not in dev_map:
-                 logger.warning(f"开发人员{work_no}不存在，跳过")
+         for user_id, mapping in config['own_mappings'].items():
+             # 校验用户是否存在
+             if user_id not in user_map:
+                 logger.warning(f"用户{user_id}不存在，跳过")
                  continue
              
-             developer = dev_map[work_no]
+             user = user_map[user_id]
              
-             # 遍历该开发人员管理的所有仓库
+             # 遍历该用户归属的所有仓库
              for repo_name in mapping['repositories']:
                  # 校验代码仓库是否存在
                  if repo_name not in repo_map:
@@ -300,21 +297,21 @@
                  
                  # 构建关系数据（保留原始标识，后续转换时使用）
                  relationships.append({
-                     'src_entity_id': developer['__entity_id__'],
+                     'src_entity_id': user['__entity_id__'],
                      'dest_entity_id': repository['__entity_id__'],
-                     'work_no': work_no,
+                     'user_id': user_id,
                      'repo_name': repo_name
                  })
          
-         logger.info(f"生成{len(relationships)}个管理关系")
+         logger.info(f"生成{len(relationships)}个归属关系")
          return relationships
 
-     def sync_manage_relationships():
-         """定时全量同步管理关系"""
-         logger.info("开始同步管理关系...")
+     def sync_own_relationships():
+         """定时全量同步归属关系"""
+         logger.info("开始同步归属关系...")
          
          # 1. 生成关系数据
-         raw_relationships = generate_manage_relationships()
+         raw_relationships = generate_own_relationships()
          
          # 2. 转换数据（步骤3详细说明）
          relationships = [convert_to_relationship(r) for r in raw_relationships]
@@ -323,43 +320,43 @@
          success = upload_relationships(relationships, workspace='o11y-workspace')
          
          if success:
-             logger.info(f"成功上传{len(relationships)}个管理关系")
+             logger.info(f"成功上传{len(relationships)}个归属关系")
          else:
              logger.error("上传失败")
 
      # 设置定时任务：每小时执行
-     schedule.every().hour.do(sync_manage_relationships)
+     schedule.every().hour.do(sync_own_relationships)
      ```
 
 ### **第三步：数据转换**
 
 1. 编写代码，将原始数据转换为EntityStore格式。
 
-   **开发人员实体数据转换**
+   **用户实体数据转换**
 
    ```
    import hashlib
    import time
 
-   def convert_developer_to_entity(raw_data):
-       """将开发人员原始数据转换为实体格式"""
+   def convert_user_to_entity(raw_data):
+       """将用户原始数据转换为实体格式"""
        # 1. 生成entity_id（根据Schema的id_generator规则）
-       work_no = raw_data['user_id']
-       entity_id = hashlib.md5(work_no.encode()).hexdigest()
+       user_id = raw_data['user_id']
+       entity_id = hashlib.md5(user_id.encode()).hexdigest()
        
        # 2. 构建实体数据
        entity = {
            # 系统必填字段
            '__domain__': 'devops',
-           '__entity_type__': 'devops.developer',
+           '__entity_type__': 'devops.user',
            '__entity_id__': entity_id,
            '__method__': 'Update',  # 全量同步使用Update
            '__last_observed_time__': str(int(time.time())),
            '__keep_alive_seconds__': str(86400 * 2),  # 2天
            
            # 业务字段
-           'work_no': work_no,
-           'name': raw_data['name'],
+           'user_id': user_id,
+           'full_name': raw_data['full_name'],
            'email': raw_data['email'],
            'role': raw_data.get('role', 'developer')
        }
@@ -367,14 +364,14 @@
        return entity
 
    # 批量转换
-   def convert_all_developers(raw_developers):
-       """批量转换开发人员数据"""
+   def convert_all_users(raw_users):
+       """批量转换用户数据"""
 
        entities = [ ]
 
-       for raw_data in raw_developers:
+       for raw_data in raw_users:
            try:
-               entity = convert_developer_to_entity(raw_data)
+               entity = convert_user_to_entity(raw_data)
                entities.append(entity)
            except Exception as e:
                logger.error(f"转换失败: {raw_data}, 错误: {e}")
@@ -382,7 +379,7 @@
        return entities
    ```
 
-   **管理关系数据转换**
+   **归属关系数据转换**
 
    ```
    def convert_to_relationship(rel_data):
@@ -390,18 +387,18 @@
        return {
            # 关系系统字段
            '__src_domain__': 'devops',
-           '__src_entity_type__': 'devops.developer',
+           '__src_entity_type__': 'devops.user',
            '__src_entity_id__': rel_data['src_entity_id'],
            '__dest_domain__': 'devops',
-           '__dest_entity_type__': 'devops.code_repository',
+           '__dest_entity_type__': 'devops.repository',
            '__dest_entity_id__': rel_data['dest_entity_id'],
-           '__link_type__': 'manages',
+           '__link_type__': 'owns',
            '__method__': 'Update',
            '__last_observed_time__': str(int(time.time())),
            '__keep_alive_seconds__': str(7200),  # 2小时
            
            # 关系业务字段（可选）
-           'work_no': rel_data.get('work_no'),
+           'user_id': rel_data.get('user_id'),
            'repo_name': rel_data.get('repo_name')
        }
    ```
@@ -561,17 +558,16 @@ DevOps场景包含多种实体，根据数据源不同采用不同的采集方�
 |  |  |  |  |
 | --- | --- | --- | --- |
 | **实体类型** | **说明** | **数据源** | **采集方式** |
-| `devops.code_repository` | 代码仓库 | GitLab API | 获取目标项目仓库信息 |
-| `devops.code_release` | 代码发布 | GitLab API | 获取项目Tag或Release列表 |
-| `devops.developer` | 开发人员 | GitLab API | 获取项目成员并去重 |
+| `devops.repository` | 代码仓库 | GitLab API | 获取目标项目仓库信息 |
+| `devops.release` | 代码发布 | GitLab API | 获取项目Tag或Release列表 |
+| `devops.user` | 用户 | GitLab API | 获取项目成员并去重 |
 
 **容器镜像实体（从阿里云ACR采集）**
 
 |  |  |  |  |
 | --- | --- | --- | --- |
 | **实体类型** | **说明** | **数据源** | **采集方式** |
-| `devops.image_registry` | 镜像仓库 | ACR API | 列举镜像仓库列表 |
-| `devops.image` | 容器镜像 | ACR API | 遍历仓库获取镜像标签 |
+| `devops.docker_image` | 容器镜像 | ACR API | 遍历仓库获取镜像标签（registry 作为 docker_image.registry 字符串字段）|
 
 **K8s实体（从可观测监控CMS采集）**
 
@@ -593,22 +589,20 @@ DevOps场景中的关系根据生成方式可分为**静态关系**和**动态�
 |  |  |  |  |  |
 | --- | --- | --- | --- | --- |
 | **关系类型** | **源实体** | **目标实体** | **配置方式** | **数据源** |
-| `devops.developer manages devops.code_repository` | 开发人员 | 代码仓库 | YAML配置文件 | `manage_mapping.yaml` |
-| `apm.service sourced_from devops.code_repository` | APM服务 | 代码仓库 | YAML配置文件 | `static_topo.yaml` |
-| `apm.service sourced_from devops.code_release` | APM服务 | 代码发布 | 混合关系（静态+动态） | `static_topo.yaml` |
-| `devops.developer manages apm.service` | 开发人员 | APM服务 | 混合关系（静态+动态） | `static_topo.yaml` |
-| `devops.developer manages devops.image_registry` | 开发人员 | 镜像仓库 | 动态对动态 | `static_topo.yaml` |
+| `devops.user owns devops.repository` | 用户 | 代码仓库 | YAML配置文件 | `own_mapping.yaml` |
+| `apm.service sourced_from devops.repository` | APM服务 | 代码仓库 | YAML配置文件 | `static_topo.yaml` |
+| `apm.service sourced_from devops.release` | APM服务 | 代码发布 | 混合关系（静态+动态） | `static_topo.yaml` |
+| `devops.user manages apm.service` | 用户 | APM服务 | 混合关系（静态+动态） | `static_topo.yaml` |
 
 **动态关系（基于数据关联）**
 
 |  |  |  |  |  |
 | --- | --- | --- | --- | --- |
 | **关系类型** | **源实体** | **目标实体** | **关联方式** | **匹配规则** |
-| `devops.code_release sourced_from devops.code_repository` | 代码发布 | 代码仓库 | 字段匹配 | 通过repo_id关联 |
-| `devops.image sourced_from devops.image_registry` | 容器镜像 | 镜像仓库 | 字段匹配 | 通过registry_id关联 |
-| `devops.image sourced_from devops.code_release` | 容器镜像 | 代码发布 | Tag匹配 | 镜像Tag与发布Tag匹配 |
-| `devops.image_registry contains devops.image` | 镜像仓库 | 容器镜像 | 字段匹配 | 通过registry_id关联 |
-| `k8s.pod uses devops.image` | K8s Pod | 容器镜像 | 镜像名匹配 | Pod容器镜像与镜像实体匹配 |
+| `devops.repository tags devops.release` | 代码仓库 | 代码发布 | 字段匹配 | 通过repository_id关联 |
+| `devops.release contains devops.artifact` | 代码发布 | 构建产物 | Tag匹配 | 发布Tag与产物Tag匹配 |
+| `devops.artifact same_as devops.docker_image` | 构建产物 | 容器镜像 | 字段匹配 | 通过artifact_id关联（决策B同生）|
+| `k8s.pod uses devops.docker_image` | K8s Pod | 容器镜像 | 镜像名匹配 | Pod容器镜像与镜像实体匹配 |
 
 ### **实体与关系的上传策略参考**
 
@@ -619,16 +613,14 @@ DevOps场景中的关系根据生成方式可分为**静态关系**和**动态�
 |  |  |  |  |  |
 | --- | --- | --- | --- | --- |
 | **实体/关系** | **策略** | **频率** | **KeepAlive** | **数据源** |
-| **devops.developer** | 定时全量 | 每天1次 | 2天 | GitLab API |
-| **devops.code_repository** | 定时全量 | 1小时 | 2小时 | GitLab API |
-| **devops.code_release** | 定时增量 | 5分钟 | 2小时 | GitLab API |
-| **devops.image_registry** | 定时全量 | 1小时 | 2小时 | ACR API |
-| **devops.image** | 定时增量 | 30分钟 | 2小时 | ACR API |
+| **devops.user** | 定时全量 | 每天1次 | 2天 | GitLab API |
+| **devops.repository** | 定时全量 | 1小时 | 2小时 | GitLab API |
+| **devops.release** | 定时增量 | 5分钟 | 2小时 | GitLab API |
+| **devops.docker_image** | 定时增量 | 30分钟 | 2小时 | ACR API |
 | **k8s.pod** | 实时查询 | 5 分钟 | 10 分钟 | K8S Server |
-| **developer manages code_repository** | 定时全量 | 每小时 | 2小时 | 配置文件 |
-| **code_release sourced_from code_repository** | 定时增量 | 5分钟 | 2小时 | 字段关联 |
-| **image sourced_from image_registry** | 定时增量 | 30分钟 | 2小时 | 字段关联 |
-| **image sourced_from code_release** | 定时增量 | 30分钟 | 2小时 | Tag匹配 |
-| **image_registry contains image** | 定时增量 | 30分钟 | 2小时 | 字段关联 |
-| **pod uses image** | 实时查询 | 5 分钟 | 10分钟 | 镜像名匹配 |
-| **apm.service sourced_from code_repository** | 定时全量 | 4 小时 | 8 小时 | 配置文件 |
+| **user owns repository** | 定时全量 | 每小时 | 2小时 | 配置文件 |
+| **repository tags release** | 定时增量 | 5分钟 | 2小时 | 字段关联 |
+| **release contains artifact** | 定时增量 | 30分钟 | 2小时 | Tag匹配 |
+| **artifact same_as docker_image** | 定时增量 | 30分钟 | 2小时 | 字段关联（决策B同生）|
+| **pod uses docker_image** | 实时查询 | 5 分钟 | 10分钟 | 镜像名匹配 |
+| **apm.service sourced_from repository** | 定时全量 | 4 小时 | 8 小时 | 配置文件 |

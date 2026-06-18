@@ -1,0 +1,25 @@
+kind: entity_set_link
+metadata:
+    description:
+        en_us: Pull Request triggers Pipeline Run.
+        zh_cn: Pull Request triggers Pipeline Run。
+    display_name:
+        en_us: Pull Request Triggers Pipeline Run
+        zh_cn: Pull Request triggers Pipeline Run
+    domain: devops
+    kind: entity_set_link
+    name: devops.pull_request_triggers_devops.pipeline_run
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dest:
+        domain: devops
+        kind: entity_set
+        name: devops.pipeline_run
+    entity_link_type: triggers
+    priority: 5
+    src:
+        domain: devops
+        kind: entity_set
+        name: devops.pull_request

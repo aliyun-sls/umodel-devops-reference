@@ -17,19 +17,19 @@ Ingest developer, repository, release, image, and topology data from your git pr
        └────────┬───────────┘
                 │ IGitAdapter
                 ▼
-     ┌──────────────────────┐
-     │  devops_data_generator│
-     │  ├─ 13 tasks          │
-     │  ├─ SLS sender        │
-     │  └─ orchestrator      │
-     └──────────┬───────────┘
-                │ SLS / CMS write
-                ▼
-     ┌──────────────────────┐
-     │  UModel Explorer     │
-     │  5 EntitySet          │
-     │  12 EntitySetLink     │
-     └──────────────────────┘
+      ┌──────────────────────┐
+      │  devops_data_generator│
+      │  ├─ 15 tasks          │
+      │  ├─ SLS sender        │
+      │  └─ orchestrator      │
+      └──────────┬───────────┘
+                 │ SLS / CMS write
+                 ▼
+      ┌──────────────────────┐
+      │  UModel Explorer     │
+      │  17 EntitySet         │
+      │  36 EntitySetLink     │
+      └──────────────────────┘
 ```
 
 ## Quick Start
@@ -58,15 +58,25 @@ Same container, same command — which provider runs is determined by `git_provi
 
 ## UModel Schema
 
-| Domain | EntitySet | Description |
-|---|---|---|
-| devops | `devops.developer` | Developer / team member |
-| devops | `devops.code_repository` | Git repository |
-| devops | `devops.code_release` | Release / tag |
-| devops | `devops.image_registry` | Container image registry (ACR) |
-| devops | `devops.image` | Container image |
+17 EntitySets span the full DevOps lifecycle (org → project → code → CI/CD → release → deployment).
+Producer-backed entities (git + ACR derived): `devops.user`, `devops.repository`, `devops.release`,
+`devops.pull_request`, `devops.artifact`, `devops.docker_image`. The remaining 11
+(organization, project, work_item, milestone, pipeline, pipeline_run, helm_chart, binary,
+npm_package, unit_testcase, deployment) are schema-only pending their data-source adapters
+(Jira/CI/appstack/artifact-registry/org) — see `docs/umodel-entity-field-contract.md`.
 
-12 EntitySetLinks connect these entities and bridge to `apm.service` and `k8s.{pod,deployment,daemonset,statefulset}`.
+| Domain | EntitySet | Producer-backed |
+|---|---|---|
+| devops | `devops.user` | ✓ (git) |
+| devops | `devops.repository` | ✓ (git) |
+| devops | `devops.release` | ✓ (git) |
+| devops | `devops.pull_request` | ✓ (git) |
+| devops | `devops.artifact` | ✓ (derived, ACR) |
+| devops | `devops.docker_image` | ✓ (ACR) |
+| devops | + 11 schema-only | pending adapters |
+
+36 EntitySetLinks connect these entities (29 design-doc relations + cross-domain links to
+`apm.service` and `k8s.{pod,deployment,daemonset,statefulset}`).
 
 ## Verification
 
@@ -93,14 +103,15 @@ python3 umodel_uploader/umodel_batch_uploader.py umodel \
 
 ```
 umodel-devops-reference/
-├── umodel/                          # 5 EntitySet + 12 EntitySetLink
+├── umodel/                          # 17 EntitySet + 36 EntitySetLink
 ├── umodel_uploader/                 # Batch upload tool
 ├── devops_data_generator/
 │   ├── adapters/{gitlab,codeup}/    # IGitAdapter implementations
-│   ├── tasks/                       # 13 data ingestion tasks
+│   ├── tasks/                       # 15 data ingestion tasks
 │   ├── config/                      # Sample configs per provider
 │   ├── orchestrator.py              # Task scheduling + structured results
 │   └── scripts/                     # Verification + deployment scripts
+├── tools/                           # gen_umodel_yaml.py (schema generator)
 ├── .claude/skills/                  # 6 Claude verification skills
 ├── .codex/skills/                   # 6 Codex verification skills
 ├── shared/verification/             # Verification contracts

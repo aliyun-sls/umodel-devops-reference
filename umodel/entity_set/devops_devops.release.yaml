@@ -1,0 +1,286 @@
+kind: entity_set
+metadata:
+    description:
+        en_us: Git repository release/tag (renamed from code_release).
+        zh_cn: 发布实体代表Git仓库的版本发布标签（旧 code_release 重命名）。
+    display_name:
+        en_us: Release
+        zh_cn: 发布
+    domain: devops
+    kind: entity_set
+    name: devops.release
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dynamic: false
+    fields:
+        - description:
+            en_us: 发布唯一标识
+            zh_cn: 发布唯一标识
+          display_name:
+            en_us: Release Id
+            zh_cn: 发布唯一标识
+          filterable: true
+          name: release_id
+          orderable: true
+          short_description:
+            en_us: Release Id
+            zh_cn: 发布唯一标识
+          type: string
+        - description:
+            en_us: 所属仓库
+            zh_cn: 所属仓库
+          display_name:
+            en_us: Repository Id
+            zh_cn: 所属仓库
+          filterable: true
+          name: repository_id
+          orderable: true
+          short_description:
+            en_us: Repository Id
+            zh_cn: 所属仓库
+          type: string
+        - description:
+            en_us: 发布名称
+            zh_cn: 发布名称
+          display_name:
+            en_us: Name
+            zh_cn: 发布名称
+          filterable: true
+          name: name
+          orderable: true
+          short_description:
+            en_us: Name
+            zh_cn: 发布名称
+          type: string
+        - description:
+            en_us: 版本号
+            zh_cn: 版本号
+          display_name:
+            en_us: Version
+            zh_cn: 版本号
+          filterable: true
+          name: version
+          orderable: true
+          short_description:
+            en_us: Version
+            zh_cn: 版本号
+          type: string
+        - description:
+            en_us: 发布说明
+            zh_cn: 发布说明
+          display_name:
+            en_us: Description
+            zh_cn: 发布说明
+          filterable: true
+          name: description
+          orderable: true
+          short_description:
+            en_us: Description
+            zh_cn: 发布说明
+          type: string
+        - description:
+            en_us: 发布类型 major/minor/patch/hotfix
+            zh_cn: 发布类型 major/minor/patch/hotfix
+          display_name:
+            en_us: Release Type
+            zh_cn: 发布类型 major/minor/patch/hotfix
+          filterable: true
+          name: release_type
+          orderable: true
+          short_description:
+            en_us: Release Type
+            zh_cn: 发布类型 major/minor/patch/hotfix
+          type: enum
+        - description:
+            en_us: 发布状态 draft/planned/in_progress/completed/cancelled
+            zh_cn: 发布状态 draft/planned/in_progress/completed/cancelled
+          display_name:
+            en_us: Status
+            zh_cn: 发布状态 draft/planned/in_progress/completed/cancelled
+          filterable: true
+          name: status
+          orderable: true
+          short_description:
+            en_us: Status
+            zh_cn: 发布状态 draft/planned/in_progress/completed/cancelled
+          type: enum
+        - description:
+            en_us: 数据来源 github/gitlab/yunxiao
+            zh_cn: 数据来源 github/gitlab/yunxiao
+          display_name:
+            en_us: Data Source
+            zh_cn: 数据来源 github/gitlab/yunxiao
+          filterable: true
+          name: data_source
+          orderable: true
+          short_description:
+            en_us: Data Source
+            zh_cn: 数据来源 github/gitlab/yunxiao
+          type: string
+        - description:
+            en_us: 平台发布ID
+            zh_cn: 平台发布ID
+          display_name:
+            en_us: Platform Release Id
+            zh_cn: 平台发布ID
+          filterable: true
+          name: platform_release_id
+          orderable: true
+          short_description:
+            en_us: Platform Release Id
+            zh_cn: 平台发布ID
+          type: string
+        - description:
+            en_us: 发布URL
+            zh_cn: 发布URL
+          display_name:
+            en_us: Url
+            zh_cn: 发布URL
+          filterable: true
+          name: url
+          orderable: true
+          short_description:
+            en_us: Url
+            zh_cn: 发布URL
+          type: string
+        - description:
+            en_us: 创建者
+            zh_cn: 创建者
+          display_name:
+            en_us: Created By
+            zh_cn: 创建者
+          filterable: true
+          name: created_by
+          orderable: true
+          short_description:
+            en_us: Created By
+            zh_cn: 创建者
+          type: string
+        - description:
+            en_us: Git标签
+            zh_cn: Git标签
+          display_name:
+            en_us: Tag Name
+            zh_cn: Git标签
+          filterable: true
+          name: tag_name
+          orderable: true
+          short_description:
+            en_us: Tag Name
+            zh_cn: Git标签
+          type: string
+        - description:
+            en_us: 目标分支/提交
+            zh_cn: 目标分支/提交
+          display_name:
+            en_us: Target Commitish
+            zh_cn: 目标分支/提交
+          filterable: true
+          name: target_commitish
+          orderable: true
+          short_description:
+            en_us: Target Commitish
+            zh_cn: 目标分支/提交
+          type: string
+        - description:
+            en_us: 包含的产物列表
+            zh_cn: 包含的产物列表
+          display_name:
+            en_us: Artifacts
+            zh_cn: 包含的产物列表
+          filterable: false
+          name: artifacts
+          orderable: false
+          short_description:
+            en_us: Artifacts
+            zh_cn: 包含的产物列表
+          type: json
+        - description:
+            en_us: 部署列表
+            zh_cn: 部署列表
+          display_name:
+            en_us: Deployments
+            zh_cn: 部署列表
+          filterable: false
+          name: deployments
+          orderable: false
+          short_description:
+            en_us: Deployments
+            zh_cn: 部署列表
+          type: json
+        - description:
+            en_us: 包含的PR列表
+            zh_cn: 包含的PR列表
+          display_name:
+            en_us: Pull Requests
+            zh_cn: 包含的PR列表
+          filterable: false
+          name: pull_requests
+          orderable: false
+          short_description:
+            en_us: Pull Requests
+            zh_cn: 包含的PR列表
+          type: json
+        - description:
+            en_us: 是否预发布
+            zh_cn: 是否预发布
+          display_name:
+            en_us: Is Prerelease
+            zh_cn: 是否预发布
+          filterable: true
+          name: is_prerelease
+          orderable: true
+          short_description:
+            en_us: Is Prerelease
+            zh_cn: 是否预发布
+          type: boolean
+        - description:
+            en_us: 创建时间
+            zh_cn: 创建时间
+          display_name:
+            en_us: Created At
+            zh_cn: 创建时间
+          filterable: true
+          name: created_at
+          orderable: true
+          short_description:
+            en_us: Created At
+            zh_cn: 创建时间
+          type: datetime
+        - description:
+            en_us: 正式发布时间
+            zh_cn: 正式发布时间
+          display_name:
+            en_us: Published At
+            zh_cn: 正式发布时间
+          filterable: true
+          name: published_at
+          orderable: true
+          short_description:
+            en_us: Published At
+            zh_cn: 正式发布时间
+          type: datetime
+        - description:
+            en_us: 所有部署完成时间
+            zh_cn: 所有部署完成时间
+          display_name:
+            en_us: Completed At
+            zh_cn: 所有部署完成时间
+          filterable: true
+          name: completed_at
+          orderable: true
+          short_description:
+            en_us: Completed At
+            zh_cn: 所有部署完成时间
+          type: datetime
+    keep_alive_seconds: 86400
+    name_fields:
+        - name
+        - release_id
+        - version
+    primary_key_fields:
+        - release_id
+    time_field: __time__
+    type: entity_set

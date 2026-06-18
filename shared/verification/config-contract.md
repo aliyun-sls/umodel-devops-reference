@@ -9,7 +9,6 @@ Primary source:
 Supporting mapping files:
 - `devops_data_generator/config/data_mapping.yaml`
 - `devops_data_generator/config/repo_image_mapping.yaml`
-- `devops_data_generator/config/manage_mapping.yaml`
 - `devops_data_generator/config/static_topo.yaml`
 
 ## Active Git Provider

@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 class CodeupAdapter(IGitAdapter):
     """Codeup provider adapter (alibabacloud_devops20210625 SDK)."""
 
-    PROVIDER_NAME = "aliyun"
+    # 值从 "aliyun" 改为 "codeup"（决策 D）；写入 user/repository 等记录的 data_source 字段。
+    PROVIDER_NAME = "codeup"
     DEFAULT_BRANCH_FALLBACK = "master"
 
     # auth_mode controls how the adapter authenticates with Codeup:
@@ -94,25 +95,31 @@ class CodeupAdapter(IGitAdapter):
                 break
 
             for repo_data in result:
+                repo_id = str(getattr(repo_data, "id", "") or "")
+                name = getattr(repo_data, "name", "") or ""
                 base = {
-                    "repo_id": str(getattr(repo_data, "id", "") or ""),
-                    "repo_name": getattr(repo_data, "name", "") or "",
-                    "repo_url": getattr(repo_data, "web_url", "") or "",
+                    "repository_id": repo_id,
+                    "name": name,
+                    "full_path": getattr(repo_data, "path", "") or "",
+                    "description": getattr(repo_data, "description", "") or "",
+                    "owner_id": "",
+                    "data_source": self.PROVIDER_NAME,
+                    "platform_repo_id": repo_id,
+                    "url": getattr(repo_data, "web_url", "") or "",
+                    "default_branch": getattr(repo_data, "default_branch", "") or self.DEFAULT_BRANCH_FALLBACK,
+                    "visibility": getattr(repo_data, "visibility_level", "") or "",
                     "language": "",
                     "language_breakdown": {},
-                    "framework": "",
-                    "description": getattr(repo_data, "description", "") or "",
-                    "default_branch": getattr(repo_data, "default_branch", "") or self.DEFAULT_BRANCH_FALLBACK,
-                    "path_with_namespace": getattr(repo_data, "path", "") or "",
-                    "visibility": getattr(repo_data, "visibility_level", "") or "",
+                    "created_at": "",
+                    "updated_at": "",
                 }
 
-                if fetch_details and base["repo_id"]:
+                if fetch_details and base["repository_id"]:
                     try:
-                        detail = self._get_repository_details(base["repo_id"])
+                        detail = self._get_repository_details(base["repository_id"])
                         base.update({k: v for k, v in detail.items() if v not in (None, "")})
                     except Exception as exc:  # noqa: BLE001
-                        logger.warning("Failed to fetch details for repo %s: %s", base["repo_name"], exc)
+                        logger.warning("Failed to fetch details for repo %s: %s", name, exc)
                 repositories.append(base)
 
             if len(result) < per_page:
@@ -132,20 +139,24 @@ class CodeupAdapter(IGitAdapter):
             return []
         members: List[Dict[str, Any]] = []
         for member_data in response.body.result or []:
+            user_id_raw = str(getattr(member_data, "id", "") or "")
             members.append(
                 {
-                    "user_id": str(getattr(member_data, "id", "") or ""),
-                    "name": getattr(member_data, "name", "") or getattr(member_data, "display_name", "") or "",
+                    "user_id": f"{self.PROVIDER_NAME}:{user_id_raw}" if user_id_raw else "",
+                    "full_name": getattr(member_data, "name", "") or getattr(member_data, "display_name", "") or "",
                     "email": getattr(member_data, "email", "") or "",
-                    "username": getattr(member_data, "username", "")
+                    "display_name": getattr(member_data, "username", "")
                     or getattr(member_data, "login_name", "")
                     or "",
                     "avatar_url": getattr(member_data, "avatar_url", "") or "",
+                    "data_source": self.PROVIDER_NAME,
+                    "platform_user_id": user_id_raw,
+                    "department": "",
+                    "is_active": getattr(member_data, "state", "active") == "active",
                     "role": getattr(member_data, "role", "member") or "member",
                     # Codeup does not expose an access_level; fill 0 so the
-                    # SLS schema matches the GitLab superset (developer.repositories[*]).
+                    # SLS schema matches the GitLab superset.
                     "access_level": getattr(member_data, "access_level", 0) or 0,
-                    "state": getattr(member_data, "state", "active") or "active",
                 }
             )
         return members
@@ -157,9 +168,79 @@ class CodeupAdapter(IGitAdapter):
     def get_release_by_tag(self, repo_id: str, tag: str) -> Optional[Dict[str, Any]]:
         # Codeup does not expose a "get tag by name" API; degrade to list + filter.
         for release in self.list_repository_releases(repo_id):
-            if release and release.get("tag") == tag:
+            if release and release.get("tag_name") == tag:
                 return release
         return None
+
+    def list_pull_requests(self, repo_id: str) -> List[Dict[str, Any]]:
+        """Return codeup merge requests for a repository in the unified pull_request schema.
+
+        Uses ListMergeRequest (if available) on the alibabacloud-devops SDK; degrades
+        to an empty list when the SDK lacks the call or returns nothing.
+        """
+        pull_requests: List[Dict[str, Any]] = []
+        list_mr = getattr(self.client, "list_merge_request_with_options", None)
+        if not list_mr:
+            logger.debug("codeup SDK has no list_merge_request; skipping PR fetch for repo %s", repo_id)
+            return pull_requests
+        page = 1
+        per_page = 100
+        while True:
+            request = devops_models.ListMergeRequest(
+                organization_id=self.organization_id,
+                page=page,
+                per_page=per_page,
+            )
+            if self.auth_mode == "pat" and self.access_token:
+                request.access_token = self.access_token
+            try:
+                response = list_mr(repo_id, request, {}, util_models.RuntimeOptions())
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("codeup ListMergeRequest failed for repo %s: %s", repo_id, exc)
+                break
+            if response.status_code != 200 or not response.body:
+                break
+            result = response.body.result or []
+            if not result:
+                break
+            for mr in result:
+                pr_num = getattr(mr, "number", "") or getattr(mr, "id", "")
+                pr_id_raw = str(pr_num)
+                author_id = str(getattr(mr, "author_id", "") or "")
+                pull_requests.append(
+                    {
+                        "pr_id": f"{self.PROVIDER_NAME}:{repo_id}!{pr_id_raw}" if pr_id_raw else "",
+                        "project_id": "",
+                        "repository_id": repo_id,
+                        "number": pr_id_raw,
+                        "title": getattr(mr, "title", "") or "",
+                        "description": getattr(mr, "description", "") or "",
+                        "author_id": f"{self.PROVIDER_NAME}:{author_id}" if author_id else "",
+                        "source_branch": getattr(mr, "source_branch", "") or "",
+                        "target_branch": getattr(mr, "target_branch", "") or "",
+                        "status": self._map_mr_state(getattr(mr, "state", "")),
+                        "data_source": self.PROVIDER_NAME,
+                        "platform_pr_id": pr_id_raw,
+                        "url": getattr(mr, "web_url", "") or "",
+                        "created_at": getattr(mr, "created_at", "") or "",
+                        "updated_at": getattr(mr, "updated_at", "") or "",
+                        "merged_at": getattr(mr, "merge_commit_sha", "") and getattr(mr, "updated_at", "") or "",
+                        "closed_at": "",
+                    }
+                )
+            if len(result) < per_page:
+                break
+            page += 1
+        return pull_requests
+
+    @staticmethod
+    def _map_mr_state(state: str) -> str:
+        return {
+            "open": "open",
+            "opened": "open",
+            "merged": "merged",
+            "closed": "closed",
+        }.get((state or "").lower(), "open")
 
     # ------------------------------------------------------------------
     # codeup-specific helpers
@@ -175,9 +256,8 @@ class CodeupAdapter(IGitAdapter):
         detail = response.body.repository
         return {
             "description": getattr(detail, "description", "") or "",
-            "repo_url": getattr(detail, "web_url", "") or "",
+            "url": getattr(detail, "web_url", "") or "",
             "language": getattr(detail, "language", "") or "",
-            "framework": getattr(detail, "framework", "") or "",
             "default_branch": getattr(detail, "default_branch", "") or self.DEFAULT_BRANCH_FALLBACK,
         }
 
@@ -237,13 +317,20 @@ class CodeupAdapter(IGitAdapter):
         author = tag.get("tagger_name") or tag.get("committer_name") or tag.get("author_name") or "Unknown"
         author_email = tag.get("tagger_email") or tag.get("committer_email") or tag.get("author_email") or ""
         return {
-            "release_id": f"{repo_id}/{tag_name}",
-            "repo_id": repo_id,
-            "tag": tag_name,
+            "release_id": f"{self.PROVIDER_NAME}:{repo_id}/{tag_name}",
+            "repository_id": repo_id,
+            "name": tag_name,
+            "version": tag_name.lstrip("v"),
+            "description": tag.get("message", ""),
+            "release_type": "",  # derived by release_classifier in the task
+            "status": "completed",
+            "data_source": self.PROVIDER_NAME,
+            "platform_release_id": f"{repo_id}/{tag_name}",
+            "url": "",
+            "created_by": author,
+            "tag_name": tag_name,
+            "target_commitish": "",
             "commit_sha": tag.get("commit_sha", ""),
-            "release_notes": tag.get("message", ""),
             "release_time": release_time,
-            "author": author,
-            "author_email": author_email,
             "tag_type": tag.get("tag_type", "lightweight"),
         }

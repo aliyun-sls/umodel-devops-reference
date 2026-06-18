@@ -1,0 +1,325 @@
+kind: entity_set
+metadata:
+    description:
+        en_us: Kubernetes application package artifact.
+        zh_cn: Helm Chart实体代表Kubernetes应用包产物。
+    display_name:
+        en_us: Helm Chart
+        zh_cn: Helm Chart
+    domain: devops
+    kind: entity_set
+    name: devops.helm_chart
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dynamic: false
+    fields:
+        - description:
+            en_us: Helm Chart唯一标识
+            zh_cn: Helm Chart唯一标识
+          display_name:
+            en_us: Helm Chart Id
+            zh_cn: Helm Chart唯一标识
+          filterable: true
+          name: helm_chart_id
+          orderable: true
+          short_description:
+            en_us: Helm Chart Id
+            zh_cn: Helm Chart唯一标识
+          type: string
+        - description:
+            en_us: 关联的Artifact ID
+            zh_cn: 关联的Artifact ID
+          display_name:
+            en_us: Artifact Id
+            zh_cn: 关联的Artifact ID
+          filterable: true
+          name: artifact_id
+          orderable: true
+          short_description:
+            en_us: Artifact Id
+            zh_cn: 关联的Artifact ID
+          type: string
+        - description:
+            en_us: Chart名称
+            zh_cn: Chart名称
+          display_name:
+            en_us: Chart Name
+            zh_cn: Chart名称
+          filterable: true
+          name: chart_name
+          orderable: true
+          short_description:
+            en_us: Chart Name
+            zh_cn: Chart名称
+          type: string
+        - description:
+            en_us: Chart版本
+            zh_cn: Chart版本
+          display_name:
+            en_us: Chart Version
+            zh_cn: Chart版本
+          filterable: true
+          name: chart_version
+          orderable: true
+          short_description:
+            en_us: Chart Version
+            zh_cn: Chart版本
+          type: string
+        - description:
+            en_us: 应用版本
+            zh_cn: 应用版本
+          display_name:
+            en_us: App Version
+            zh_cn: 应用版本
+          filterable: true
+          name: app_version
+          orderable: true
+          short_description:
+            en_us: App Version
+            zh_cn: 应用版本
+          type: string
+        - description:
+            en_us: Chart仓库
+            zh_cn: Chart仓库
+          display_name:
+            en_us: Registry
+            zh_cn: Chart仓库
+          filterable: true
+          name: registry
+          orderable: true
+          short_description:
+            en_us: Registry
+            zh_cn: Chart仓库
+          type: string
+        - description:
+            en_us: 仓库路径
+            zh_cn: 仓库路径
+          display_name:
+            en_us: Repository
+            zh_cn: 仓库路径
+          filterable: true
+          name: repository
+          orderable: true
+          short_description:
+            en_us: Repository
+            zh_cn: 仓库路径
+          type: string
+        - description:
+            en_us: Chart描述
+            zh_cn: Chart描述
+          display_name:
+            en_us: Description
+            zh_cn: Chart描述
+          filterable: true
+          name: description
+          orderable: true
+          short_description:
+            en_us: Description
+            zh_cn: Chart描述
+          type: string
+        - description:
+            en_us: 主页URL
+            zh_cn: 主页URL
+          display_name:
+            en_us: Home Url
+            zh_cn: 主页URL
+          filterable: true
+          name: home_url
+          orderable: true
+          short_description:
+            en_us: Home Url
+            zh_cn: 主页URL
+          type: string
+        - description:
+            en_us: 源码仓库列表
+            zh_cn: 源码仓库列表
+          display_name:
+            en_us: Sources
+            zh_cn: 源码仓库列表
+          filterable: false
+          name: sources
+          orderable: false
+          short_description:
+            en_us: Sources
+            zh_cn: 源码仓库列表
+          type: array
+        - description:
+            en_us: 维护者信息
+            zh_cn: 维护者信息
+          display_name:
+            en_us: Maintainers
+            zh_cn: 维护者信息
+          filterable: false
+          name: maintainers
+          orderable: false
+          short_description:
+            en_us: Maintainers
+            zh_cn: 维护者信息
+          type: array
+        - description:
+            en_us: 关键词
+            zh_cn: 关键词
+          display_name:
+            en_us: Keywords
+            zh_cn: 关键词
+          filterable: false
+          name: keywords
+          orderable: false
+          short_description:
+            en_us: Keywords
+            zh_cn: 关键词
+          type: array
+        - description:
+            en_us: 图标URL
+            zh_cn: 图标URL
+          display_name:
+            en_us: Icon
+            zh_cn: 图标URL
+          filterable: true
+          name: icon
+          orderable: true
+          short_description:
+            en_us: Icon
+            zh_cn: 图标URL
+          type: string
+        - description:
+            en_us: Chart依赖
+            zh_cn: Chart依赖
+          display_name:
+            en_us: Dependencies
+            zh_cn: Chart依赖
+          filterable: false
+          name: dependencies
+          orderable: false
+          short_description:
+            en_us: Dependencies
+            zh_cn: Chart依赖
+          type: json
+        - description:
+            en_us: 模板文件列表
+            zh_cn: 模板文件列表
+          display_name:
+            en_us: Templates
+            zh_cn: 模板文件列表
+          filterable: false
+          name: templates
+          orderable: false
+          short_description:
+            en_us: Templates
+            zh_cn: 模板文件列表
+          type: array
+        - description:
+            en_us: values.yaml schema
+            zh_cn: values.yaml schema
+          display_name:
+            en_us: Values Schema
+            zh_cn: values.yaml schema
+          filterable: false
+          name: values_schema
+          orderable: false
+          short_description:
+            en_us: Values Schema
+            zh_cn: values.yaml schema
+          type: json
+        - description:
+            en_us: 默认值
+            zh_cn: 默认值
+          display_name:
+            en_us: Default Values
+            zh_cn: 默认值
+          filterable: false
+          name: default_values
+          orderable: false
+          short_description:
+            en_us: Default Values
+            zh_cn: 默认值
+          type: json
+        - description:
+            en_us: API版本 如v2
+            zh_cn: API版本 如v2
+          display_name:
+            en_us: Api Version
+            zh_cn: API版本 如v2
+          filterable: true
+          name: api_version
+          orderable: true
+          short_description:
+            en_us: Api Version
+            zh_cn: API版本 如v2
+          type: string
+        - description:
+            en_us: Chart类型 application/library
+            zh_cn: Chart类型 application/library
+          display_name:
+            en_us: Type
+            zh_cn: Chart类型 application/library
+          filterable: true
+          name: type
+          orderable: true
+          short_description:
+            en_us: Type
+            zh_cn: Chart类型 application/library
+          type: enum
+        - description:
+            en_us: 是否废弃
+            zh_cn: 是否废弃
+          display_name:
+            en_us: Deprecated
+            zh_cn: 是否废弃
+          filterable: true
+          name: deprecated
+          orderable: true
+          short_description:
+            en_us: Deprecated
+            zh_cn: 是否废弃
+          type: boolean
+        - description:
+            en_us: 数据来源 chartmuseum/harbor
+            zh_cn: 数据来源 chartmuseum/harbor
+          display_name:
+            en_us: Data Source
+            zh_cn: 数据来源 chartmuseum/harbor
+          filterable: true
+          name: data_source
+          orderable: true
+          short_description:
+            en_us: Data Source
+            zh_cn: 数据来源 chartmuseum/harbor
+          type: string
+        - description:
+            en_us: 平台Chart ID
+            zh_cn: 平台Chart ID
+          display_name:
+            en_us: Platform Chart Id
+            zh_cn: 平台Chart ID
+          filterable: true
+          name: platform_chart_id
+          orderable: true
+          short_description:
+            en_us: Platform Chart Id
+            zh_cn: 平台Chart ID
+          type: string
+        - description:
+            en_us: 创建时间
+            zh_cn: 创建时间
+          display_name:
+            en_us: Created At
+            zh_cn: 创建时间
+          filterable: true
+          name: created_at
+          orderable: true
+          short_description:
+            en_us: Created At
+            zh_cn: 创建时间
+          type: datetime
+    keep_alive_seconds: 86400
+    name_fields:
+        - chart_name
+        - helm_chart_id
+        - chart_version
+    primary_key_fields:
+        - helm_chart_id
+    time_field: __time__
+    type: entity_set

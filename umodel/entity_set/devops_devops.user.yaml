@@ -1,0 +1,169 @@
+kind: entity_set
+metadata:
+    description:
+        en_us: User entity — core participant of the DevOps process (renamed from developer).
+        zh_cn: 用户实体是DevOps流程的核心参与者（旧 developer 重命名）。
+    display_name:
+        en_us: User
+        zh_cn: 用户
+    domain: devops
+    kind: entity_set
+    name: devops.user
+schema:
+    url: umodel.aliyun.com
+    version: v0.1.0
+spec:
+    dynamic: false
+    fields:
+        - description:
+            en_us: 用户唯一标识
+            zh_cn: 用户唯一标识
+          display_name:
+            en_us: User Id
+            zh_cn: 用户唯一标识
+          filterable: true
+          name: user_id
+          orderable: true
+          short_description:
+            en_us: User Id
+            zh_cn: 用户唯一标识
+          type: string
+        - description:
+            en_us: 员工工号
+            zh_cn: 员工工号
+          display_name:
+            en_us: Work No
+            zh_cn: 员工工号
+          filterable: true
+          name: work_no
+          orderable: true
+          short_description:
+            en_us: Work No
+            zh_cn: 员工工号
+          type: string
+        - description:
+            en_us: 用户全名
+            zh_cn: 用户全名
+          display_name:
+            en_us: Full Name
+            zh_cn: 用户全名
+          filterable: true
+          name: full_name
+          orderable: true
+          short_description:
+            en_us: Full Name
+            zh_cn: 用户全名
+          type: string
+        - description:
+            en_us: 主邮箱
+            zh_cn: 主邮箱
+          display_name:
+            en_us: Email
+            zh_cn: 主邮箱
+          filterable: true
+          name: email
+          orderable: true
+          short_description:
+            en_us: Email
+            zh_cn: 主邮箱
+          type: string
+        - description:
+            en_us: 显示名称
+            zh_cn: 显示名称
+          display_name:
+            en_us: Display Name
+            zh_cn: 显示名称
+          filterable: true
+          name: display_name
+          orderable: true
+          short_description:
+            en_us: Display Name
+            zh_cn: 显示名称
+          type: string
+        - description:
+            en_us: 头像URL
+            zh_cn: 头像URL
+          display_name:
+            en_us: Avatar Url
+            zh_cn: 头像URL
+          filterable: true
+          name: avatar_url
+          orderable: true
+          short_description:
+            en_us: Avatar Url
+            zh_cn: 头像URL
+          type: string
+        - description:
+            en_us: 数据来源
+            zh_cn: 数据来源
+          display_name:
+            en_us: Data Source
+            zh_cn: 数据来源
+          filterable: true
+          name: data_source
+          orderable: true
+          short_description:
+            en_us: Data Source
+            zh_cn: 数据来源
+          type: string
+        - description:
+            en_us: 平台用户ID
+            zh_cn: 平台用户ID
+          display_name:
+            en_us: Platform User Id
+            zh_cn: 平台用户ID
+          filterable: true
+          name: platform_user_id
+          orderable: true
+          short_description:
+            en_us: Platform User Id
+            zh_cn: 平台用户ID
+          type: string
+        - description:
+            en_us: 组织归属
+            zh_cn: 组织归属
+          display_name:
+            en_us: Department
+            zh_cn: 组织归属
+          filterable: true
+          name: department
+          orderable: true
+          short_description:
+            en_us: Department
+            zh_cn: 组织归属
+          type: string
+        - description:
+            en_us: 是否活跃
+            zh_cn: 是否活跃
+          display_name:
+            en_us: Is Active
+            zh_cn: 是否活跃
+          filterable: true
+          name: is_active
+          orderable: true
+          short_description:
+            en_us: Is Active
+            zh_cn: 是否活跃
+          type: boolean
+        - description:
+            en_us: 角色列表
+            zh_cn: 角色列表
+          display_name:
+            en_us: Roles
+            zh_cn: 角色列表
+          filterable: false
+          name: roles
+          orderable: false
+          short_description:
+            en_us: Roles
+            zh_cn: 角色列表
+          type: json
+    keep_alive_seconds: 86400
+    name_fields:
+        - full_name
+        - user_id
+        - email
+    primary_key_fields:
+        - user_id
+    time_field: __time__
+    type: entity_set

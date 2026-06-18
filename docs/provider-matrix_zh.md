@@ -12,7 +12,7 @@
 | 认证方式 | Personal / Project / Group Access Token | RAM AccessKey + Organization ID，或 PAT（`auth_mode`）|
 | API 端点 | 用户自配 | 默认 `devops.cn-hangzhou.aliyuncs.com`（可覆盖）|
 | 默认分支回退 | `main` | `master` |
-| `git_provider` 字段值（写入 SLS）| `"gitlab"` | `"aliyun"` |
+| `data_source` 字段值（写入 SLS）| `"gitlab"` | `"codeup"` |
 | Docker Compose | `docker compose up --build` | `docker compose up --build` |
 | 配置样例 | `app_config.gitlab.yaml.sample` | `app_config.codeup.yaml.sample` |
 
@@ -61,17 +61,16 @@ AK/SK 始终需要（用于 API 请求签名）。`auth_mode` 仅控制是否发
 
 | 字段 | GitLab | Codeup |
 |---|---|---|
-| `repo_id` | GitLab project id（字符串）| Codeup repository id（字符串）|
-| `repo_name` | `path_with_namespace`（如 `root/demo-app`）| Codeup `name` |
-| `repo_url` | `web_url` | Codeup `web_url` |
-| `git_provider` | `"gitlab"` | `"aliyun"` |
+| `repository_id` | GitLab project id（字符串）| Codeup repository id（字符串）|
+| `name` | `path_with_namespace`（如 `root/demo-app`）| Codeup `name` |
+| `url` | `web_url` | Codeup `web_url` |
+| `data_source` | `"gitlab"` | `"codeup"` |
 | `language` | `languages()` 排序首位 | Codeup `language` |
-| `framework` | `""`（GitLab 不暴露）| Codeup `framework`（如可用）|
 | `default_branch` | API 值；回退 `main` | API 值；回退 `master` |
 
-`developer.repositories[*].access_level`：GitLab 填实际值（10–50）；Codeup 填 `0`。
+`user.repositories[*].access_level`：GitLab 填实际值（10–50）；Codeup 填 `0`。
 
-`code_release.release_type`：由 `tasks/utils/release_classifier.py` 统一正则归类。
+`release.release_type`：由 `tasks/utils/release_classifier.py` 统一正则归类。
 
 ## 分页与限制
 
