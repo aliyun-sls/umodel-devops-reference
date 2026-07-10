@@ -9,6 +9,7 @@ docker_image.
 
 import hashlib
 import logging
+import re
 from typing import Dict, List, Any
 
 from .base_task import BaseTask
@@ -38,7 +39,7 @@ class PodUsesDockerImageTask(BaseTask):
                 logger.warning("No docker_image data found in shared context")
                 return []
 
-            image_lookup = self._build_image_lookup(images)
+            image_index = self._build_image_index(images)
             relationships: List[Dict[str, Any]] = []
 
             for pod in pods:
@@ -47,11 +48,18 @@ class PodUsesDockerImageTask(BaseTask):
                 if not pod_images or not pod_id:
                     continue
                 for container_image in pod_images:
-                    matching_image = self._find_matching_image(container_image, image_lookup)
+                    matching_image = self._find_matching_image(container_image, image_index)
                     if matching_image:
                         relationship = self._create_relationship(pod, matching_image, container_image)
                         if relationship:
                             relationships.append(relationship)
+                    else:
+                        logger.info(
+                            "pod %s image %s has no exact docker_image match "
+                            "(ns+repo+tag/digest); no uses edge",
+                            pod_id,
+                            container_image,
+                        )
 
             self.set_shared_data("pod_uses_docker_image_list", relationships, "relationship_data")
             logger.info("Generated %s pod_uses_docker_image relationships", len(relationships))
@@ -61,56 +69,135 @@ class PodUsesDockerImageTask(BaseTask):
             logger.error(error_msg)
             raise RuntimeError(error_msg) from e
 
-    def _build_image_lookup(self, images: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
-        image_lookup: Dict[str, Dict[str, Any]] = {}
-        for image in images:
-            repository = image.get("repository", "") or ""
-            tag = image.get("tag", "") or ""
-            full_image_name = image.get("full_image_name", "") or ""
-            if not repository and not full_image_name:
-                continue
-            identifiers: List[str] = []
-            if tag:
-                if full_image_name:
-                    identifiers.append(f"{full_image_name}")
-                if repository:
-                    identifiers.append(f"{repository}:{tag}")
-                    identifiers.append(f"{repository.split('/')[-1]}:{tag}")
-            if full_image_name:
-                identifiers.append(full_image_name)
-            if repository:
-                identifiers.append(repository)
-                identifiers.append(repository.split('/')[-1])
-            for identifier in identifiers:
-                if identifier:
-                    image_lookup[identifier] = image
-        return image_lookup
+    # No edge is better than a wrong edge: a wrong uses edge sends the trace
+    # chain to the wrong artifact, release, and owner. The former repo-last-
+    # segment fallback made o11y-demo/demo match otel-demo/demo, so matching is
+    # now strict on full namespace, repository, and tag, with digest priority.
+    _DIGEST_RE = re.compile(r'@?sha256:([0-9a-fA-F]{64})')
 
-    def _find_matching_image(self, container_image: str, image_lookup: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
-        if not container_image:
+    # Alternate endpoints for the same ACR instance may be mapped to one value.
+    # An empty map keeps host best-effort and identifies images by path and tag.
+    REGISTRY_ALIASES = {
+        # "o11y-demo-registry-vpc.cn-hongkong.cr.aliyuncs.com": "acr-instance",
+        # "cri-yb40y6ac9o7xgej2.cn-hongkong.cr.aliyuncs.com": "acr-instance",
+    }
+
+    def _parse_image_ref(self, ref: str) -> Dict[str, Any]:
+        """Parse an image ref into host, namespace, repo, tag, and digest."""
+        if not ref:
             return None
-        possible_matches = [
-            container_image,
-            container_image.split('/')[-1] if '/' in container_image else container_image,
-            container_image.split(':')[0] if ':' in container_image else None,
-            container_image.split('/')[-1].split(':')[0] if ('/' in container_image and ':' in container_image) else None,
-        ]
-        possible_matches = [m for m in possible_matches if m]
-        for match_key in possible_matches:
-            if match_key in image_lookup:
-                return image_lookup[match_key]
-        # Fuzzy fallback on image-name stem.
-        container_stem = self._image_stem(container_image)
-        for lookup_key, image in image_lookup.items():
-            if container_stem and self._image_stem(lookup_key) == container_stem:
-                return image
-        return None
 
-    @staticmethod
-    def _image_stem(full_image: str) -> str:
-        if not full_image:
-            return ""
-        return full_image.split(":")[0].split("/")[-1]
+        ref = ref.strip()
+        if '://' in ref:
+            ref = ref.split('://', 1)[1]
+
+        digest = None
+        digest_match = self._DIGEST_RE.search(ref)
+        if digest_match:
+            digest = digest_match.group(1).lower()
+            ref = ref[:digest_match.start()] + ref[digest_match.end():]
+
+        host = ''
+        if '/' in ref:
+            head = ref.split('/', 1)[0]
+            if '.' in head or ':' in head:
+                host, ref = head, ref.split('/', 1)[1]
+
+        tag = 'latest'
+        if ':' in ref:
+            ref, tag = ref.rsplit(':', 1)
+
+        parts = [part for part in ref.split('/') if part]
+        if not parts:
+            return None
+        return {
+            'host': host,
+            'namespace': '/'.join(parts[:-1]),
+            'repo': parts[-1],
+            'tag': tag,
+            'digest': digest,
+        }
+
+    def _normalize_host(self, host: str) -> str:
+        if not host:
+            return ''
+        if host in self.REGISTRY_ALIASES:
+            return self.REGISTRY_ALIASES[host]
+        host = host.lower()
+        return host[:-4] + '.' if host.endswith('-vpc.') else host
+
+    def _build_image_index(self, images: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Index docker_image records by full namespace/repo/tag and digest."""
+        by_path: Dict[tuple, Dict[str, Any]] = {}
+        by_digest: Dict[str, Dict[str, Any]] = {}
+        for image in images or []:
+            if not isinstance(image, dict):
+                continue
+            repository = image.get('repository', '') or ''
+            path_parts = [part for part in repository.split('/') if part]
+            if not path_parts:
+                continue
+
+            key = (
+                '/'.join(path_parts[:-1]),
+                path_parts[-1],
+                image.get('tag', '') or '',
+            )
+            by_path.setdefault(key, image)
+
+            digest = (image.get('digest') or '').lower()
+            digest_match = self._DIGEST_RE.search(digest)
+            if digest_match:
+                digest = digest_match.group(1).lower()
+            if digest:
+                by_digest.setdefault(digest, image)
+        return {'by_path': by_path, 'by_digest': by_digest}
+
+    def _find_matching_image(
+        self,
+        container_image: str,
+        image_index: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Return only an exact docker_image match; otherwise return None."""
+        parsed = self._parse_image_ref(container_image)
+        if not parsed:
+            return None
+
+        # A double-host path can be self-consistent with a malformed ACR
+        # repository, but it is never a valid image namespace. Do not create
+        # an edge to that garbage entity even when its path and tag match.
+        namespace_segments = [
+            segment for segment in parsed['namespace'].split('/') if segment
+        ]
+        if any('aliyuncs.com' in segment for segment in namespace_segments):
+            logger.info(
+                "rejecting malformed (double-host) image ref, no uses edge: %s",
+                container_image,
+            )
+            return None
+
+        if parsed['digest']:
+            return image_index['by_digest'].get(parsed['digest'])
+
+        key = (parsed['namespace'], parsed['repo'], parsed['tag'])
+        candidate = image_index['by_path'].get(key)
+        if not candidate:
+            return None
+
+        if self.REGISTRY_ALIASES and parsed['host']:
+            candidate_ref = self._parse_image_ref(candidate.get('full_image_name', '') or '')
+            candidate_host = self._normalize_host((candidate_ref or {}).get('host', ''))
+            pod_host = self._normalize_host(parsed['host'])
+            if candidate_host and pod_host and candidate_host != pod_host:
+                logger.warning(
+                    "pod image %s host %s != docker_image host %s (after alias); skipping edge",
+                    container_image,
+                    parsed['host'],
+                    (candidate_ref or {}).get('host', ''),
+                )
+                return None
+
+        return candidate
 
     def _create_relationship(self, pod: Dict[str, Any], image: Dict[str, Any], container_image: str) -> Dict[str, Any]:
         try:

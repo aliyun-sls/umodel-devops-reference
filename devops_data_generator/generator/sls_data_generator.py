@@ -186,7 +186,8 @@ class SlsDataGenerator:
             # 添加固定值字段数据
             for field_name, field_value in fixed_fields.items():
                 entity_item[field_name] = self._resolve_field_value(field_value)
-            
+
+            self._stamp_keep_alive(entity_item, int(time.time()))
             return entity_item
         
         except Exception as e:
@@ -221,6 +222,98 @@ class SlsDataGenerator:
                     return value
         
         return value
+
+    def enrich_relationship_data(
+        self,
+        relationship_type: str,
+        raw_data: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
+        """
+        Apply topo config to relationship records before SLS upload.
+
+        Relationship tasks emit business keys. CMS topology resolves edges by
+        entity ``__entity_id__``, so endpoints must use the same id strategy as
+        entity records: md5(primaryKeys) by default, or the configured
+        ``use_field_as_entity_id`` value for entities such as k8s.pod.
+        Unknown relationship types, for example static_topo, pass through.
+        """
+        if relationship_type not in self.relationships:
+            return raw_data
+
+        rel_cfg = self.relationships[relationship_type]
+        src_pks = rel_cfg.get('src_entity_primarykeys', []) or []
+        dest_pks = rel_cfg.get('dest_entity_primarykeys', []) or []
+        fixed_fields = rel_cfg.get('fixed_fields', {}) or {}
+        src_use_field = self._entity_use_field(rel_cfg.get('__src_entity_type__'))
+        dest_use_field = self._entity_use_field(rel_cfg.get('__dest_entity_type__'))
+        link_type = fixed_fields.get('__link_type__')
+        link_type = self._resolve_field_value(link_type) if link_type is not None else None
+
+        now = int(time.time())
+        enriched = []
+        for record in raw_data or []:
+            if not isinstance(record, dict):
+                enriched.append(record)
+                continue
+
+            rec = dict(record)
+            if src_use_field:
+                rec.setdefault('__src_entity_id__', str(rec.get(src_use_field, '')))
+            else:
+                rec['__src_entity_id__'] = self._hash_primary_keys(rec, src_pks)
+
+            if dest_use_field:
+                rec.setdefault('__dest_entity_id__', str(rec.get(dest_use_field, '')))
+            else:
+                rec['__dest_entity_id__'] = self._hash_primary_keys(rec, dest_pks)
+
+            rec['__src_domain__'] = rel_cfg.get('__src_domain__')
+            rec['__src_entity_type__'] = rel_cfg.get('__src_entity_type__')
+            rec['__dest_domain__'] = rel_cfg.get('__dest_domain__')
+            rec['__dest_entity_type__'] = rel_cfg.get('__dest_entity_type__')
+
+            if link_type is not None:
+                rec['__link_type__'] = link_type
+                rec.setdefault('__relation_type__', link_type)
+
+            for field_name, field_value in fixed_fields.items():
+                if field_name == '__link_type__':
+                    continue
+                rec.setdefault(field_name, self._resolve_field_value(field_value))
+
+            self._stamp_keep_alive(rec, now)
+            enriched.append(rec)
+
+        logger.info(
+            "Enriched %d %s relationship records (src_use_field=%s, dest_use_field=%s)",
+            len(enriched),
+            relationship_type,
+            src_use_field,
+            dest_use_field,
+        )
+        return enriched
+
+    def _entity_use_field(self, entity_type: str) -> str:
+        if not entity_type:
+            return ''
+        for _name, cfg in self.entities.items():
+            if cfg.get('__entity_type__') == entity_type:
+                return cfg.get('use_field_as_entity_id') or ''
+        return ''
+
+    def _hash_primary_keys(self, record: Dict[str, Any], primary_keys: List[str]) -> str:
+        values = [str(record.get(key, '')) for key in primary_keys]
+        return hashlib.md5('|'.join(values).encode('utf-8')).hexdigest()
+
+    # CMS EntityStore only resolves entities and edges within this live window.
+    KEEP_ALIVE_SECONDS = 1800
+
+    def _stamp_keep_alive(self, record: Dict[str, Any], observed_time: int) -> None:
+        """Stamp the fields required for a raw SLS record to enter the CMS graph."""
+        record['__method__'] = 'Update'
+        record['__last_observed_time__'] = observed_time
+        record['__keep_alive_seconds__'] = self.KEEP_ALIVE_SECONDS
+        record.setdefault('__first_observed_time__', 0)
     
     def generate_relationship_data(self, relationship_type: str, 
                                    src_entities: List[Dict[str, Any]], 

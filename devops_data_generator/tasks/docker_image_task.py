@@ -15,6 +15,7 @@ folded into this task.
 """
 
 import logging
+import time
 from typing import List, Dict, Any
 
 try:
@@ -51,6 +52,7 @@ class DockerImageTask(BaseTask):
         self.region = config.get('region', 'cn-hangzhou')
         self.max_repositories = config.get('max_repositories', 0)
         self.max_tags_per_repo = config.get('max_tags_per_repo', 0)
+        self.fetch_interval_ms = config.get('fetch_interval_ms', 0)
         self.client = None
         logger.info(
             "DockerImageTask initialized with instance_id: %s, max_repositories: %s, max_tags_per_repo: %s",
@@ -166,6 +168,8 @@ class DockerImageTask(BaseTask):
                         images.append(image)
                     if artifact:
                         artifacts.append(artifact)
+                if self.fetch_interval_ms:
+                    time.sleep(self.fetch_interval_ms / 1000.0)
                 if len(tags) < page_size:
                     break
                 if self.max_tags_per_repo and len(images) >= self.max_tags_per_repo:

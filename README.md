@@ -40,6 +40,11 @@ Ingest developer, repository, release, image, and topology data from your git pr
 cp devops_data_generator/config/app_config.gitlab.yaml.sample \
    devops_data_generator/config/app_config.yaml
 # Edit app_config.yaml — fill in url, access_token, project_id, SLS/ACR/CMS credentials
+# Create .env for the schema uploader (this file is gitignored):
+# ALIBABA_CLOUD_ACCESS_KEY_ID=<your-access-key-id>
+# ALIBABA_CLOUD_ACCESS_KEY_SECRET=<your-access-key-secret>
+# UMODEL_ENDPOINT=metrics.<REGION>.aliyuncs.com
+# UMODEL_WORKSPACE=<your-workspace>
 
 docker compose up --build
 ```
@@ -50,11 +55,14 @@ docker compose up --build
 cp devops_data_generator/config/app_config.codeup.yaml.sample \
    devops_data_generator/config/app_config.yaml
 # Edit app_config.yaml — fill in organization_id, access_key, SLS/ACR/CMS credentials
+# Create .env for the schema uploader as shown above.
 
 docker compose up --build
 ```
 
-Same container, same command — which provider runs is determined by `git_provider.type` in `app_config.yaml`.
+The producer is selected by `git_provider.type` in `app_config.yaml`. The same Compose run also
+starts the one-shot `umodel-schema-uploader`, which idempotently upserts the 17 EntitySets and
+36 EntitySetLinks before exiting.
 
 ## UModel Schema
 
@@ -92,6 +100,15 @@ Six provider-aware verification skills validate the full pipeline:
 Entry points: `.claude/skills/<name>/SKILL.md` and `.codex/skills/<name>/SKILL.md`.
 
 ## Upload UModel Definitions
+
+Compose runs the schema uploader automatically. Run it independently when validating or repairing
+schema registration:
+
+```bash
+docker compose run --rm umodel-schema-uploader
+```
+
+The direct uploader command remains available for manual troubleshooting:
 
 ```bash
 python3 umodel_uploader/umodel_batch_uploader.py umodel \

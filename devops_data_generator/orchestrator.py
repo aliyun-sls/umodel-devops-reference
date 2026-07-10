@@ -217,6 +217,7 @@ class DevOpsDataOrchestrator:
                         executed_tasks.append({"task": task_name, "count": relation_count, "task_type": "relationship"})
                         relationships_generated.append({"type": task_name, "count": relation_count})
                         if task_name not in self.skip_sls_upload and raw_data:
+                            raw_data = self.data_generator.enrich_relationship_data(task_name, raw_data)
                             self.data_sender.send_relationship_data(task_name, raw_data)
                 except Exception as exc:
                     error_text = str(exc)
