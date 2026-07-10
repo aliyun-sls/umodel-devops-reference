@@ -27,6 +27,8 @@ acr:
   # 0 = unlimited (pull all); set a number to cap per-API results
   max_repositories: 0       # max ACR registries to pull
   max_tags_per_repo: 0      # max image tags per registry
+  # Pacing between ListRepoTag API calls (ms). Prevention, not retry/backoff.
+  fetch_interval_ms: 200
 
 cms:
   endpoint: "metrics.<YOUR_REGION_ID>.aliyuncs.com"
