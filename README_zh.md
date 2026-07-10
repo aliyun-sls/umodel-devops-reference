@@ -40,6 +40,11 @@
 cp devops_data_generator/config/app_config.gitlab.yaml.sample \
    devops_data_generator/config/app_config.yaml
 # 编辑 app_config.yaml，填入 url、access_token、project_id、SLS/ACR/CMS 凭据
+# 创建供 schema uploader 使用的 .env（该文件已被 gitignore）：
+# ALIBABA_CLOUD_ACCESS_KEY_ID=<your-access-key-id>
+# ALIBABA_CLOUD_ACCESS_KEY_SECRET=<your-access-key-secret>
+# UMODEL_ENDPOINT=metrics.<REGION>.aliyuncs.com
+# UMODEL_WORKSPACE=<your-workspace>
 
 docker compose up --build
 ```
@@ -50,11 +55,13 @@ docker compose up --build
 cp devops_data_generator/config/app_config.codeup.yaml.sample \
    devops_data_generator/config/app_config.yaml
 # 编辑 app_config.yaml，填入 organization_id、access_key、SLS/ACR/CMS 凭据
+# 按上方说明创建供 schema uploader 使用的 .env。
 
 docker compose up --build
 ```
 
-同一个容器、同一条命令——拉 GitLab 还是 Codeup 取决于 `app_config.yaml` 中的 `git_provider.type`。
+producer 由 `app_config.yaml` 中的 `git_provider.type` 选择。同一次 Compose 启动还会运行一次性
+`umodel-schema-uploader`，幂等 upsert 17 个 EntitySet 和 36 条 EntitySetLink 后退出。
 
 ## UModel 实体
 
@@ -86,6 +93,14 @@ docker compose up --build
 入口：`.claude/skills/<name>/SKILL.md` 和 `.codex/skills/<name>/SKILL.md`。
 
 ## 上传 UModel 定义
+
+Compose 会自动运行 schema uploader。需要单独验证或修复 schema 注册时，执行：
+
+```bash
+docker compose run --rm umodel-schema-uploader
+```
+
+以下直接调用 uploader 的方式保留作手动排障入口：
 
 ```bash
 python3 umodel_uploader/umodel_batch_uploader.py umodel \

@@ -427,12 +427,13 @@ class KubernetesPodTask(BaseTask):
                     if name:
                         container_names.append(name)
             
-            # 生成新的Entity ID，遵循规定规则
-            entity_id = self._generate_pod_entity_id(self.cluster_id, namespace, pod_name)
+            # CMS owns k8s.pod ids. Recomputing this value creates an edge
+            # endpoint that does not match the pod node already in the graph.
+            entity_id = original_entity_id
             
             # 构建 Pod 数据
             pod_data = {
-                'pod_id': entity_id,  # 使用新生成的entity_id
+                'pod_id': entity_id,
                 'entity_id': entity_id,
                 'domain': domain,
                 'entity_type': entity_type,

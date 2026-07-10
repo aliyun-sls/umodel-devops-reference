@@ -1,4 +1,5 @@
 /devops_data_generator/config/app_config.yaml
+.env
 /devops_data_generator/logs/
 /logs/
 /__pycache__/

@@ -12,6 +12,28 @@ services:
       PYTHONUNBUFFERED: "1"
     command: ["python3", "main.py", "--mode", "continuous", "--config", "/app/config"]
 
+  umodel-schema-uploader:
+    build:
+      context: ./devops_data_generator
+      dockerfile: Dockerfile
+    image: umodel-devops-schema-uploader:latest
+    container_name: umodel-devops-schema-uploader
+    restart: "no"
+    environment:
+      ALIBABA_CLOUD_ACCESS_KEY_ID: ${ALIBABA_CLOUD_ACCESS_KEY_ID}
+      ALIBABA_CLOUD_ACCESS_KEY_SECRET: ${ALIBABA_CLOUD_ACCESS_KEY_SECRET}
+    volumes:
+      - ./umodel:/app/umodel:ro
+      - ./umodel_uploader:/app/umodel_uploader:ro
+    command:
+      - python3
+      - umodel_uploader/umodel_batch_uploader.py
+      - umodel
+      - --endpoint
+      - ${UMODEL_ENDPOINT:-metrics.cn-hongkong.aliyuncs.com}
+      - --workspace
+      - ${UMODEL_WORKSPACE:-default-cms-1819385687343877-cn-hongkong}
+
 # Usage:
 #   1. Copy the sample config for your provider:
 #      cp devops_data_generator/config/app_config.gitlab.yaml.sample \

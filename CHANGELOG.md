@@ -56,6 +56,13 @@ All notable changes to this repository. Dates are YYYY-MM-DD.
 - **verification 文档失效断言**：`shared/verification/workflow-stages_zh.md` 等的 `git_provider=aliyun` 断言改为 `data_source=codeup`，对齐决策 D。
 - **`.mimocode/` 加入 .gitignore**：本地工作产物（与 `.spec/` `.review/` 同类）不再误入版本库。
 
+### 图可遍历性修复
+
+- **schema 注册入口**：Compose 新增一次性 `umodel-schema-uploader`，从 gitignore 的 `.env` 读取 AK/SK，幂等 upsert `umodel/` 下 17 个 EntitySet 和 36 条 EntitySetLink。
+- **关系端点一致性**：发送前按 `data_mapping.yaml` 的 `topo` 配置将关系端点转换为与节点一致的 entity id，补齐 domain/type/link 字段；`use_field_as_entity_id` 的端点保留原值。
+- **CMS 图保活**：producer 生成的 DevOps 实体和关系统一写入 `Update`、observed time、1800 秒 keep-alive 和 first observed time，避免裸 SLS 记录被 EntityStore 判为非活。
+- **跨域 Pod 关系**：CMS 数据源的 `k8s.pod` 保留 CMS 原始 entity id，避免重算 id 导致 `pod_uses_docker_image` 边端点悬空。
+
 ### Schema 层
 
 - 新增 `tools/gen_umodel_yaml.py`：数据驱动的 schema 生成器，产出 17 EntitySet + 36 EntitySetLink。
