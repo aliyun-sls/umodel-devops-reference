@@ -51,6 +51,12 @@ python3 devops_data_generator/scripts/verify_devops_details.py --config devops_d
 - `devops.user.user_id` is non-empty
 - `devops.artifact.artifact_id` pairs with `devops.docker_image.artifact_id` (decision B)
 
+### Image alignment (cross-domain edge correctness)
+- The canonical command finishes with `pod -> docker_image topology evidence`, queried from the configured SLS relationship logstore. Use those rows as the evidence source for `container_image`, `repository`, `tag`, endpoint IDs, relation/link type, and edge keep-alive fields; do not infer an edge only from entity records.
+- Registry host must be normalized across sources. The same ACR instance may be reached via multiple endpoints (for example a VPC endpoint and a canonical endpoint). Pod `containers.image` and `devops.docker_image.full_image_name` must be compared after registry alias normalization, not by raw host string.
+- Match requires namespace + repo + tag (or digest) all equal. Matching only on the bare repo name (for example `demo`) ignores namespace and tag and produces wrong cross-domain edges. No match -> no edge; do not force a fallback link.
+- Test/branch tag images may have no corresponding `devops.release` record; this is a real release gap, not a field defect. Report the gap instead of forcing a link to a versioned release.
+
 ## Receipt Format
 ```
 - stage: cms-field-check
@@ -65,6 +71,10 @@ python3 devops_data_generator/scripts/verify_devops_details.py --config devops_d
     release:
       release_type: <actual value> — PASS|FAIL
       ...
+    docker_image:
+      full_image_name: PASS|FAIL
+      registry_alias_normalized: <evidence from task configuration> — PASS|FAIL
+      image_alignment (namespace+repo+tag vs pod containers.image): <topology rows> — PASS|FAIL
 - verdict: PASS | FAIL
 ```
 
