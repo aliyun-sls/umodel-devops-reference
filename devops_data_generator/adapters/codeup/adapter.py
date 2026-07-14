@@ -269,7 +269,7 @@ class CodeupAdapter(IGitAdapter):
             request = devops_models.ListRepositoryTagsRequest(
                 organization_id=self.organization_id,
                 page=page,
-                per_page=per_page,
+                page_size=per_page,
             )
             response = self.client.list_repository_tags_with_options(
                 repo_id, request, {}, util_models.RuntimeOptions()
