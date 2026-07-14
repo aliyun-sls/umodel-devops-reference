@@ -53,6 +53,14 @@ class DockerImageTask(BaseTask):
         self.max_repositories = config.get('max_repositories', 0)
         self.max_tags_per_repo = config.get('max_tags_per_repo', 0)
         self.fetch_interval_ms = config.get('fetch_interval_ms', 0)
+        # Optional allowlist of "namespace/repo" (e.g. "o11y-demo/order-service").
+        # When non-empty, only matching ACR repos are fetched. Used to let the
+        # codeup generator fetch only the order-service image (so its
+        # release_contains_artifact can see the artifact in-process) without
+        # re-enabling a full ACR sweep that would double ListRepoTag calls and
+        # re-trigger the account-level Throttling.User the pacing fix removed.
+        # Empty = no filter (legacy full-sweep behaviour, used by gitlab).
+        self.repo_filter = {str(x) for x in (config.get('repo_filter') or [])}
         self.client = None
         logger.info(
             "DockerImageTask initialized with instance_id: %s, max_repositories: %s, max_tags_per_repo: %s",
@@ -98,6 +106,10 @@ class DockerImageTask(BaseTask):
                 if not repo_id:
                     logger.warning("ACR repo without repo_id, skipping: %s/%s", repo_namespace, repo_name)
                     continue
+                if self.repo_filter:
+                    full_ns_name = f"{repo_namespace}/{repo_name}" if repo_namespace else repo_name
+                    if full_ns_name not in self.repo_filter:
+                        continue
                 images, artifacts = self._list_repo_tags(repo, repo_id)
                 all_images.extend(images)
                 all_artifacts.extend(artifacts)
