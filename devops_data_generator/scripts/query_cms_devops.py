@@ -58,14 +58,18 @@ def main():
     client = create_cms_client(runtime_cfg)
     workspace = runtime_cfg.workspace
 
+    entity_projection = (
+        "__entity_id__, __entity_type__, __domain__, __method__, "
+        "__last_observed_time__, __keep_alive_seconds__, __first_observed_time__"
+    )
     queries = [
-        (".entity with(domain='devops') |project __entity_id__, __entity_type__, __domain__", "All devops domain entities"),
-        (".entity with(domain='devops', type='devops.repository') |project __entity_id__, __entity_type__, __domain__", "devops.repository"),
-        (".entity with(domain='devops', type='devops.release') |project __entity_id__, __entity_type__, __domain__", "devops.release"),
-        (".entity with(domain='devops', type='devops.user') |project __entity_id__, __entity_type__, __domain__", "devops.user"),
-        (".entity with(domain='devops', type='devops.pull_request') |project __entity_id__, __entity_type__, __domain__", "devops.pull_request"),
-        (".entity with(domain='devops', type='devops.artifact') |project __entity_id__, __entity_type__, __domain__", "devops.artifact"),
-        (".entity with(domain='devops', type='devops.docker_image') |project __entity_id__, __entity_type__, __domain__", "devops.docker_image"),
+        (f".entity with(domain='devops') |project {entity_projection}", "All devops domain entities"),
+        (f".entity with(domain='devops', type='devops.repository') |project {entity_projection}", "devops.repository"),
+        (f".entity with(domain='devops', type='devops.release') |project {entity_projection}", "devops.release"),
+        (f".entity with(domain='devops', type='devops.user') |project {entity_projection}", "devops.user"),
+        (f".entity with(domain='devops', type='devops.pull_request') |project {entity_projection}", "devops.pull_request"),
+        (f".entity with(domain='devops', type='devops.artifact') |project {entity_projection}", "devops.artifact"),
+        (f".entity with(domain='devops', type='devops.docker_image') |project {entity_projection}", "devops.docker_image"),
         (".entity |project __entity_id__, __entity_type__, __domain__", "ALL entity types (no domain filter)"),
         (".entity |project __entity_type__ |sort __entity_type__", "All unique entity types"),
     ]
