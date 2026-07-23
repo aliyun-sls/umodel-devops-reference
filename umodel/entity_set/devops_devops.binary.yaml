@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: 二进制文件唯一标识
+            en_us: Binary unique identifier
             zh_cn: 二进制文件唯一标识
           display_name:
             en_us: Binary Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: 二进制文件唯一标识
           type: string
         - description:
-            en_us: 关联的Artifact ID
+            en_us: Linked artifact ID
             zh_cn: 关联的Artifact ID
           display_name:
             en_us: Artifact Id
@@ -42,7 +42,7 @@ spec:
             zh_cn: 关联的Artifact ID
           type: string
         - description:
-            en_us: 二进制类型 executable/library/archive
+            en_us: Binary type: executable/library/archive
             zh_cn: 二进制类型 executable/library/archive
           display_name:
             en_us: Binary Type
@@ -55,7 +55,7 @@ spec:
             zh_cn: 二进制类型 executable/library/archive
           type: enum
         - description:
-            en_us: 文件名
+            en_us: File name
             zh_cn: 文件名
           display_name:
             en_us: File Name
@@ -68,7 +68,7 @@ spec:
             zh_cn: 文件名
           type: string
         - description:
-            en_us: 文件扩展名
+            en_us: File extension
             zh_cn: 文件扩展名
           display_name:
             en_us: File Extension
@@ -81,7 +81,7 @@ spec:
             zh_cn: 文件扩展名
           type: string
         - description:
-            en_us: MIME类型
+            en_us: MIME type
             zh_cn: MIME类型
           display_name:
             en_us: Mime Type
@@ -94,7 +94,7 @@ spec:
             zh_cn: MIME类型
           type: string
         - description:
-            en_us: 平台 windows/linux/darwin
+            en_us: Platform: windows/linux/darwin
             zh_cn: 平台 windows/linux/darwin
           display_name:
             en_us: Platform
@@ -107,7 +107,7 @@ spec:
             zh_cn: 平台 windows/linux/darwin
           type: string
         - description:
-            en_us: 架构 x86_64/arm64
+            en_us: Architecture: x86_64/arm64
             zh_cn: 架构 x86_64/arm64
           display_name:
             en_us: Architecture
@@ -120,7 +120,7 @@ spec:
             zh_cn: 架构 x86_64/arm64
           type: string
         - description:
-            en_us: 操作系统版本
+            en_us: Operating system version
             zh_cn: 操作系统版本
           display_name:
             en_us: Os Version
@@ -133,7 +133,7 @@ spec:
             zh_cn: 操作系统版本
           type: string
         - description:
-            en_us: 编译器
+            en_us: Compiler
             zh_cn: 编译器
           display_name:
             en_us: Compiler
@@ -146,7 +146,7 @@ spec:
             zh_cn: 编译器
           type: string
         - description:
-            en_us: 编译器版本
+            en_us: Compiler version
             zh_cn: 编译器版本
           display_name:
             en_us: Compiler Version
@@ -159,7 +159,7 @@ spec:
             zh_cn: 编译器版本
           type: string
         - description:
-            en_us: 编译选项
+            en_us: Build flags
             zh_cn: 编译选项
           display_name:
             en_us: Build Flags
@@ -172,7 +172,7 @@ spec:
             zh_cn: 编译选项
           type: array
         - description:
-            en_us: 优化级别
+            en_us: Optimization level
             zh_cn: 优化级别
           display_name:
             en_us: Optimization Level
@@ -185,7 +185,7 @@ spec:
             zh_cn: 优化级别
           type: string
         - description:
-            en_us: Maven Group ID
+            en_us: Maven group ID
             zh_cn: Maven Group ID
           display_name:
             en_us: Group Id
@@ -198,7 +198,7 @@ spec:
             zh_cn: Maven Group ID
           type: string
         - description:
-            en_us: Maven Artifact ID
+            en_us: Maven artifact ID
             zh_cn: Maven Artifact ID
           display_name:
             en_us: Artifact Id Maven
@@ -211,7 +211,7 @@ spec:
             zh_cn: Maven Artifact ID
           type: string
         - description:
-            en_us: 分类器
+            en_us: Classifier
             zh_cn: 分类器
           display_name:
             en_us: Classifier
@@ -224,7 +224,7 @@ spec:
             zh_cn: 分类器
           type: string
         - description:
-            en_us: 打包类型 jar/war/ear
+            en_us: Packaging: jar/war/ear
             zh_cn: 打包类型 jar/war/ear
           display_name:
             en_us: Packaging
@@ -237,7 +237,7 @@ spec:
             zh_cn: 打包类型 jar/war/ear
           type: string
         - description:
-            en_us: Go版本
+            en_us: Go version
             zh_cn: Go版本
           display_name:
             en_us: Go Version
@@ -250,7 +250,7 @@ spec:
             zh_cn: Go版本
           type: string
         - description:
-            en_us: Go模块路径
+            en_us: Go module path
             zh_cn: Go模块路径
           display_name:
             en_us: Module Path
@@ -263,7 +263,7 @@ spec:
             zh_cn: Go模块路径
           type: string
         - description:
-            en_us: 是否包含调试符号
+            en_us: Has debug symbols
             zh_cn: 是否包含调试符号
           display_name:
             en_us: Has Debug Symbols
@@ -276,7 +276,7 @@ spec:
             zh_cn: 是否包含调试符号
           type: boolean
         - description:
-            en_us: 是否剥离符号
+            en_us: Is stripped
             zh_cn: 是否剥离符号
           display_name:
             en_us: Is Stripped
@@ -289,7 +289,7 @@ spec:
             zh_cn: 是否剥离符号
           type: boolean
         - description:
-            en_us: 符号文件路径
+            en_us: Symbol file path
             zh_cn: 符号文件路径
           display_name:
             en_us: Symbol File Path
@@ -302,7 +302,7 @@ spec:
             zh_cn: 符号文件路径
           type: string
         - description:
-            en_us: 代码签名
+            en_us: Code signature
             zh_cn: 代码签名
           display_name:
             en_us: Code Signature
@@ -315,7 +315,7 @@ spec:
             zh_cn: 代码签名
           type: string
         - description:
-            en_us: 证书信息
+            en_us: Certificate info
             zh_cn: 证书信息
           display_name:
             en_us: Certificate Info
@@ -328,7 +328,7 @@ spec:
             zh_cn: 证书信息
           type: json
         - description:
-            en_us: 数据来源 artifactory/nexus
+            en_us: Data source: artifactory/nexus
             zh_cn: 数据来源 artifactory/nexus
           display_name:
             en_us: Data Source
@@ -341,7 +341,7 @@ spec:
             zh_cn: 数据来源 artifactory/nexus
           type: string
         - description:
-            en_us: 平台二进制ID
+            en_us: Platform binary ID
             zh_cn: 平台二进制ID
           display_name:
             en_us: Platform Binary Id
@@ -354,7 +354,7 @@ spec:
             zh_cn: 平台二进制ID
           type: string
         - description:
-            en_us: 创建时间
+            en_us: Creation time
             zh_cn: 创建时间
           display_name:
             en_us: Created At

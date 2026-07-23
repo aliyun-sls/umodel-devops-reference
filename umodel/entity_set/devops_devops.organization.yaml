@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: 组织唯一标识
+            en_us: Organization unique identifier
             zh_cn: 组织唯一标识
           display_name:
             en_us: Organization Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: 组织唯一标识
           type: string
         - description:
-            en_us: 组织名称
+            en_us: Organization name
             zh_cn: 组织名称
           display_name:
             en_us: Name
@@ -42,7 +42,7 @@ spec:
             zh_cn: 组织名称
           type: string
         - description:
-            en_us: 显示名称
+            en_us: Display name
             zh_cn: 显示名称
           display_name:
             en_us: Display Name
@@ -55,7 +55,7 @@ spec:
             zh_cn: 显示名称
           type: string
         - description:
-            en_us: 组织类型 company/department/team/group
+            en_us: Organization type: company/department/team/group
             zh_cn: 组织类型 company/department/team/group
           display_name:
             en_us: Org Type
@@ -68,7 +68,7 @@ spec:
             zh_cn: 组织类型 company/department/team/group
           type: enum
         - description:
-            en_us: 父组织ID
+            en_us: Parent organization ID
             zh_cn: 父组织ID
           display_name:
             en_us: Parent Id
@@ -81,7 +81,7 @@ spec:
             zh_cn: 父组织ID
           type: string
         - description:
-            en_us: 组织路径
+            en_us: Organization path
             zh_cn: 组织路径
           display_name:
             en_us: Path
@@ -94,7 +94,7 @@ spec:
             zh_cn: 组织路径
           type: string
         - description:
-            en_us: 组织层级
+            en_us: Organization level
             zh_cn: 组织层级
           display_name:
             en_us: Level
@@ -107,7 +107,7 @@ spec:
             zh_cn: 组织层级
           type: integer
         - description:
-            en_us: 组织描述
+            en_us: Organization description
             zh_cn: 组织描述
           display_name:
             en_us: Description
@@ -120,7 +120,7 @@ spec:
             zh_cn: 组织描述
           type: string
         - description:
-            en_us: 负责人
+            en_us: Leader ID
             zh_cn: 负责人
           display_name:
             en_us: Leader Id
@@ -133,7 +133,7 @@ spec:
             zh_cn: 负责人
           type: string
         - description:
-            en_us: 数据来源
+            en_us: Data source
             zh_cn: 数据来源
           display_name:
             en_us: Data Source
@@ -146,7 +146,7 @@ spec:
             zh_cn: 数据来源
           type: string
         - description:
-            en_us: 平台组织ID
+            en_us: Platform organization ID
             zh_cn: 平台组织ID
           display_name:
             en_us: Platform Org Id
@@ -159,7 +159,7 @@ spec:
             zh_cn: 平台组织ID
           type: string
         - description:
-            en_us: 组织URL
+            en_us: Organization URL
             zh_cn: 组织URL
           display_name:
             en_us: Url
@@ -172,7 +172,7 @@ spec:
             zh_cn: 组织URL
           type: string
         - description:
-            en_us: 直属成员数
+            en_us: Direct member count
             zh_cn: 直属成员数
           display_name:
             en_us: Member Count
@@ -185,7 +185,7 @@ spec:
             zh_cn: 直属成员数
           type: integer
         - description:
-            en_us: 总成员数
+            en_us: Total member count
             zh_cn: 总成员数
           display_name:
             en_us: Total Member Count
@@ -198,7 +198,7 @@ spec:
             zh_cn: 总成员数
           type: integer
         - description:
-            en_us: 状态 active/inactive/dissolved
+            en_us: Status: active/inactive/dissolved
             zh_cn: 状态 active/inactive/dissolved
           display_name:
             en_us: Status
@@ -211,7 +211,7 @@ spec:
             zh_cn: 状态 active/inactive/dissolved
           type: enum
         - description:
-            en_us: 创建时间
+            en_us: Creation time
             zh_cn: 创建时间
           display_name:
             en_us: Created At
@@ -224,7 +224,7 @@ spec:
             zh_cn: 创建时间
           type: datetime
         - description:
-            en_us: 更新时间
+            en_us: Update time
             zh_cn: 更新时间
           display_name:
             en_us: Updated At

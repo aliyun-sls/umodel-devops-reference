@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: Helm Chart唯一标识
+            en_us: Helm chart unique identifier
             zh_cn: Helm Chart唯一标识
           display_name:
             en_us: Helm Chart Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: Helm Chart唯一标识
           type: string
         - description:
-            en_us: 关联的Artifact ID
+            en_us: Linked artifact ID
             zh_cn: 关联的Artifact ID
           display_name:
             en_us: Artifact Id
@@ -42,7 +42,7 @@ spec:
             zh_cn: 关联的Artifact ID
           type: string
         - description:
-            en_us: Chart名称
+            en_us: Chart name
             zh_cn: Chart名称
           display_name:
             en_us: Chart Name
@@ -55,7 +55,7 @@ spec:
             zh_cn: Chart名称
           type: string
         - description:
-            en_us: Chart版本
+            en_us: Chart version
             zh_cn: Chart版本
           display_name:
             en_us: Chart Version
@@ -68,7 +68,7 @@ spec:
             zh_cn: Chart版本
           type: string
         - description:
-            en_us: 应用版本
+            en_us: App version
             zh_cn: 应用版本
           display_name:
             en_us: App Version
@@ -81,7 +81,7 @@ spec:
             zh_cn: 应用版本
           type: string
         - description:
-            en_us: Chart仓库
+            en_us: Chart registry
             zh_cn: Chart仓库
           display_name:
             en_us: Registry
@@ -94,7 +94,7 @@ spec:
             zh_cn: Chart仓库
           type: string
         - description:
-            en_us: 仓库路径
+            en_us: Repository path
             zh_cn: 仓库路径
           display_name:
             en_us: Repository
@@ -107,7 +107,7 @@ spec:
             zh_cn: 仓库路径
           type: string
         - description:
-            en_us: Chart描述
+            en_us: Chart description
             zh_cn: Chart描述
           display_name:
             en_us: Description
@@ -120,7 +120,7 @@ spec:
             zh_cn: Chart描述
           type: string
         - description:
-            en_us: 主页URL
+            en_us: Home URL
             zh_cn: 主页URL
           display_name:
             en_us: Home Url
@@ -133,7 +133,7 @@ spec:
             zh_cn: 主页URL
           type: string
         - description:
-            en_us: 源码仓库列表
+            en_us: Source repository list
             zh_cn: 源码仓库列表
           display_name:
             en_us: Sources
@@ -146,7 +146,7 @@ spec:
             zh_cn: 源码仓库列表
           type: array
         - description:
-            en_us: 维护者信息
+            en_us: Maintainer info
             zh_cn: 维护者信息
           display_name:
             en_us: Maintainers
@@ -159,7 +159,7 @@ spec:
             zh_cn: 维护者信息
           type: array
         - description:
-            en_us: 关键词
+            en_us: Keywords
             zh_cn: 关键词
           display_name:
             en_us: Keywords
@@ -172,7 +172,7 @@ spec:
             zh_cn: 关键词
           type: array
         - description:
-            en_us: 图标URL
+            en_us: Icon URL
             zh_cn: 图标URL
           display_name:
             en_us: Icon
@@ -185,7 +185,7 @@ spec:
             zh_cn: 图标URL
           type: string
         - description:
-            en_us: Chart依赖
+            en_us: Chart dependencies
             zh_cn: Chart依赖
           display_name:
             en_us: Dependencies
@@ -198,7 +198,7 @@ spec:
             zh_cn: Chart依赖
           type: json
         - description:
-            en_us: 模板文件列表
+            en_us: Template file list
             zh_cn: 模板文件列表
           display_name:
             en_us: Templates
@@ -224,7 +224,7 @@ spec:
             zh_cn: values.yaml schema
           type: json
         - description:
-            en_us: 默认值
+            en_us: Default values
             zh_cn: 默认值
           display_name:
             en_us: Default Values
@@ -237,7 +237,7 @@ spec:
             zh_cn: 默认值
           type: json
         - description:
-            en_us: API版本 如v2
+            en_us: API version, e.g. v2
             zh_cn: API版本 如v2
           display_name:
             en_us: Api Version
@@ -250,7 +250,7 @@ spec:
             zh_cn: API版本 如v2
           type: string
         - description:
-            en_us: Chart类型 application/library
+            en_us: Chart type: application/library
             zh_cn: Chart类型 application/library
           display_name:
             en_us: Type
@@ -263,7 +263,7 @@ spec:
             zh_cn: Chart类型 application/library
           type: enum
         - description:
-            en_us: 是否废弃
+            en_us: Deprecated
             zh_cn: 是否废弃
           display_name:
             en_us: Deprecated
@@ -276,7 +276,7 @@ spec:
             zh_cn: 是否废弃
           type: boolean
         - description:
-            en_us: 数据来源 chartmuseum/harbor
+            en_us: Data source: chartmuseum/harbor
             zh_cn: 数据来源 chartmuseum/harbor
           display_name:
             en_us: Data Source
@@ -289,7 +289,7 @@ spec:
             zh_cn: 数据来源 chartmuseum/harbor
           type: string
         - description:
-            en_us: 平台Chart ID
+            en_us: Platform chart ID
             zh_cn: 平台Chart ID
           display_name:
             en_us: Platform Chart Id
@@ -302,7 +302,7 @@ spec:
             zh_cn: 平台Chart ID
           type: string
         - description:
-            en_us: 创建时间
+            en_us: Creation time
             zh_cn: 创建时间
           display_name:
             en_us: Created At

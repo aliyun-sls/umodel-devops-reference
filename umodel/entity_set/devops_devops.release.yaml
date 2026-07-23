@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: 发布唯一标识
+            en_us: Release unique identifier
             zh_cn: 发布唯一标识
           display_name:
             en_us: Release Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: 发布唯一标识
           type: string
         - description:
-            en_us: 所属仓库
+            en_us: Owning repository ID
             zh_cn: 所属仓库
           display_name:
             en_us: Repository Id
@@ -42,7 +42,7 @@ spec:
             zh_cn: 所属仓库
           type: string
         - description:
-            en_us: 发布名称
+            en_us: Release name
             zh_cn: 发布名称
           display_name:
             en_us: Name
@@ -55,7 +55,7 @@ spec:
             zh_cn: 发布名称
           type: string
         - description:
-            en_us: 版本号
+            en_us: Version
             zh_cn: 版本号
           display_name:
             en_us: Version
@@ -68,7 +68,7 @@ spec:
             zh_cn: 版本号
           type: string
         - description:
-            en_us: 发布说明
+            en_us: Release notes
             zh_cn: 发布说明
           display_name:
             en_us: Description
@@ -81,7 +81,7 @@ spec:
             zh_cn: 发布说明
           type: string
         - description:
-            en_us: 发布类型 major/minor/patch/hotfix
+            en_us: Release type: major/minor/patch/hotfix
             zh_cn: 发布类型 major/minor/patch/hotfix
           display_name:
             en_us: Release Type
@@ -94,7 +94,7 @@ spec:
             zh_cn: 发布类型 major/minor/patch/hotfix
           type: enum
         - description:
-            en_us: 发布状态 draft/planned/in_progress/completed/cancelled
+            en_us: Release status: draft/planned/in_progress/completed/cancelled
             zh_cn: 发布状态 draft/planned/in_progress/completed/cancelled
           display_name:
             en_us: Status
@@ -107,7 +107,7 @@ spec:
             zh_cn: 发布状态 draft/planned/in_progress/completed/cancelled
           type: enum
         - description:
-            en_us: 数据来源 github/gitlab/yunxiao
+            en_us: Data source: github/gitlab/yunxiao
             zh_cn: 数据来源 github/gitlab/yunxiao
           display_name:
             en_us: Data Source
@@ -120,7 +120,7 @@ spec:
             zh_cn: 数据来源 github/gitlab/yunxiao
           type: string
         - description:
-            en_us: 平台发布ID
+            en_us: Platform release ID
             zh_cn: 平台发布ID
           display_name:
             en_us: Platform Release Id
@@ -133,7 +133,7 @@ spec:
             zh_cn: 平台发布ID
           type: string
         - description:
-            en_us: 发布URL
+            en_us: Release URL
             zh_cn: 发布URL
           display_name:
             en_us: Url
@@ -146,7 +146,7 @@ spec:
             zh_cn: 发布URL
           type: string
         - description:
-            en_us: 创建者
+            en_us: Created by
             zh_cn: 创建者
           display_name:
             en_us: Created By
@@ -159,7 +159,7 @@ spec:
             zh_cn: 创建者
           type: string
         - description:
-            en_us: Git标签
+            en_us: Git tag name
             zh_cn: Git标签
           display_name:
             en_us: Tag Name
@@ -172,7 +172,7 @@ spec:
             zh_cn: Git标签
           type: string
         - description:
-            en_us: 目标分支/提交
+            en_us: Target branch/commit
             zh_cn: 目标分支/提交
           display_name:
             en_us: Target Commitish
@@ -185,7 +185,7 @@ spec:
             zh_cn: 目标分支/提交
           type: string
         - description:
-            en_us: 包含的产物列表
+            en_us: Included artifact list
             zh_cn: 包含的产物列表
           display_name:
             en_us: Artifacts
@@ -198,7 +198,7 @@ spec:
             zh_cn: 包含的产物列表
           type: json
         - description:
-            en_us: 部署列表
+            en_us: Deployment list
             zh_cn: 部署列表
           display_name:
             en_us: Deployments
@@ -211,7 +211,7 @@ spec:
             zh_cn: 部署列表
           type: json
         - description:
-            en_us: 包含的PR列表
+            en_us: Included pull request list
             zh_cn: 包含的PR列表
           display_name:
             en_us: Pull Requests
@@ -224,7 +224,7 @@ spec:
             zh_cn: 包含的PR列表
           type: json
         - description:
-            en_us: 是否预发布
+            en_us: Is pre-release
             zh_cn: 是否预发布
           display_name:
             en_us: Is Prerelease
@@ -237,7 +237,7 @@ spec:
             zh_cn: 是否预发布
           type: boolean
         - description:
-            en_us: 创建时间
+            en_us: Creation time
             zh_cn: 创建时间
           display_name:
             en_us: Created At
@@ -250,7 +250,7 @@ spec:
             zh_cn: 创建时间
           type: datetime
         - description:
-            en_us: 正式发布时间
+            en_us: Published time
             zh_cn: 正式发布时间
           display_name:
             en_us: Published At
@@ -263,7 +263,7 @@ spec:
             zh_cn: 正式发布时间
           type: datetime
         - description:
-            en_us: 所有部署完成时间
+            en_us: All-deployments completion time
             zh_cn: 所有部署完成时间
           display_name:
             en_us: Completed At

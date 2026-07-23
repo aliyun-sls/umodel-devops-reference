@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: 工作项唯一标识
+            en_us: Work item unique identifier
             zh_cn: 工作项唯一标识
           display_name:
             en_us: Work Item Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: 工作项唯一标识
           type: string
         - description:
-            en_us: 所属项目
+            en_us: Owning project ID
             zh_cn: 所属项目
           display_name:
             en_us: Project Id
@@ -42,7 +42,7 @@ spec:
             zh_cn: 所属项目
           type: string
         - description:
-            en_us: 标题
+            en_us: Title
             zh_cn: 标题
           display_name:
             en_us: Title
@@ -55,7 +55,7 @@ spec:
             zh_cn: 标题
           type: string
         - description:
-            en_us: 详细描述
+            en_us: Detailed description
             zh_cn: 详细描述
           display_name:
             en_us: Description
@@ -68,7 +68,7 @@ spec:
             zh_cn: 详细描述
           type: string
         - description:
-            en_us: 工作项类型 feature/bug/task/epic
+            en_us: Work item type: feature/bug/task/epic
             zh_cn: 工作项类型 feature/bug/task/epic
           display_name:
             en_us: Item Type
@@ -81,7 +81,7 @@ spec:
             zh_cn: 工作项类型 feature/bug/task/epic
           type: enum
         - description:
-            en_us: 状态 new/in_progress/testing/done/closed
+            en_us: Status: new/in_progress/testing/done/closed
             zh_cn: 状态 new/in_progress/testing/done/closed
           display_name:
             en_us: Status
@@ -94,7 +94,7 @@ spec:
             zh_cn: 状态 new/in_progress/testing/done/closed
           type: enum
         - description:
-            en_us: 优先级 critical/high/medium/low
+            en_us: Priority: critical/high/medium/low
             zh_cn: 优先级 critical/high/medium/low
           display_name:
             en_us: Priority
@@ -107,7 +107,7 @@ spec:
             zh_cn: 优先级 critical/high/medium/low
           type: enum
         - description:
-            en_us: 创建者
+            en_us: Creator ID
             zh_cn: 创建者
           display_name:
             en_us: Creator Id
@@ -120,7 +120,7 @@ spec:
             zh_cn: 创建者
           type: string
         - description:
-            en_us: 负责人
+            en_us: Assignee ID
             zh_cn: 负责人
           display_name:
             en_us: Assignee Id
@@ -133,7 +133,7 @@ spec:
             zh_cn: 负责人
           type: string
         - description:
-            en_us: 父工作项ID
+            en_us: Parent work item ID
             zh_cn: 父工作项ID
           display_name:
             en_us: Parent Id
@@ -146,7 +146,7 @@ spec:
             zh_cn: 父工作项ID
           type: string
         - description:
-            en_us: 所属里程碑
+            en_us: Owning milestone ID
             zh_cn: 所属里程碑
           display_name:
             en_us: Milestone Id
@@ -159,7 +159,7 @@ spec:
             zh_cn: 所属里程碑
           type: string
         - description:
-            en_us: 数据来源
+            en_us: Data source
             zh_cn: 数据来源
           display_name:
             en_us: Data Source
@@ -172,7 +172,7 @@ spec:
             zh_cn: 数据来源
           type: string
         - description:
-            en_us: 平台工作项ID
+            en_us: Platform work item ID
             zh_cn: 平台工作项ID
           display_name:
             en_us: Platform Item Id
@@ -185,7 +185,7 @@ spec:
             zh_cn: 平台工作项ID
           type: string
         - description:
-            en_us: 工作项URL
+            en_us: Work item URL
             zh_cn: 工作项URL
           display_name:
             en_us: Url
@@ -198,7 +198,7 @@ spec:
             zh_cn: 工作项URL
           type: string
         - description:
-            en_us: 标签列表
+            en_us: Label list
             zh_cn: 标签列表
           display_name:
             en_us: Labels
@@ -211,7 +211,7 @@ spec:
             zh_cn: 标签列表
           type: json
         - description:
-            en_us: 估算工时
+            en_us: Estimated hours
             zh_cn: 估算工时
           display_name:
             en_us: Estimated Hours
@@ -224,7 +224,7 @@ spec:
             zh_cn: 估算工时
           type: double
         - description:
-            en_us: 实际工时
+            en_us: Spent hours
             zh_cn: 实际工时
           display_name:
             en_us: Spent Hours
@@ -237,7 +237,7 @@ spec:
             zh_cn: 实际工时
           type: double
         - description:
-            en_us: 创建时间
+            en_us: Creation time
             zh_cn: 创建时间
           display_name:
             en_us: Created At
@@ -250,7 +250,7 @@ spec:
             zh_cn: 创建时间
           type: datetime
         - description:
-            en_us: 更新时间
+            en_us: Update time
             zh_cn: 更新时间
           display_name:
             en_us: Updated At
@@ -263,7 +263,7 @@ spec:
             zh_cn: 更新时间
           type: datetime
         - description:
-            en_us: 关闭时间
+            en_us: Closed time
             zh_cn: 关闭时间
           display_name:
             en_us: Closed At

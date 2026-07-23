@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: 测试用例唯一标识
+            en_us: Test case unique identifier
             zh_cn: 测试用例唯一标识
           display_name:
             en_us: Test Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: 测试用例唯一标识
           type: string
         - description:
-            en_us: 所属仓库
+            en_us: Owning repository ID
             zh_cn: 所属仓库
           display_name:
             en_us: Repository Id
@@ -42,7 +42,7 @@ spec:
             zh_cn: 所属仓库
           type: string
         - description:
-            en_us: 触发测试的提交
+            en_us: Commit that triggered the test
             zh_cn: 触发测试的提交
           display_name:
             en_us: Commit Sha
@@ -55,7 +55,7 @@ spec:
             zh_cn: 触发测试的提交
           type: string
         - description:
-            en_us: 关联流水线运行
+            en_us: Linked pipeline run ID
             zh_cn: 关联流水线运行
           display_name:
             en_us: Pipeline Run Id
@@ -68,7 +68,7 @@ spec:
             zh_cn: 关联流水线运行
           type: string
         - description:
-            en_us: 名称
+            en_us: Name
             zh_cn: 名称
           display_name:
             en_us: Name
@@ -81,7 +81,7 @@ spec:
             zh_cn: 名称
           type: string
         - description:
-            en_us: 单测执行结果 如PASS/FAIL
+            en_us: Test result, e.g. PASS/FAIL
             zh_cn: 单测执行结果 如PASS/FAIL
           display_name:
             en_us: Result
@@ -94,7 +94,7 @@ spec:
             zh_cn: 单测执行结果 如PASS/FAIL
           type: string
         - description:
-            en_us: 触发者信息
+            en_us: Trigger info
             zh_cn: 触发者信息
           display_name:
             en_us: Trigger By
@@ -107,7 +107,7 @@ spec:
             zh_cn: 触发者信息
           type: json
         - description:
-            en_us: 单测任务URL
+            en_us: Test job URL
             zh_cn: 单测任务URL
           display_name:
             en_us: Url
@@ -120,7 +120,7 @@ spec:
             zh_cn: 单测任务URL
           type: string
         - description:
-            en_us: 数据来源 如aone
+            en_us: Data source, e.g. aone
             zh_cn: 数据来源 如aone
           display_name:
             en_us: Data Source
@@ -133,7 +133,7 @@ spec:
             zh_cn: 数据来源 如aone
           type: string
         - description:
-            en_us: 平台测试ID
+            en_us: Platform test ID
             zh_cn: 平台测试ID
           display_name:
             en_us: Platform Test Id
@@ -146,7 +146,7 @@ spec:
             zh_cn: 平台测试ID
           type: string
         - description:
-            en_us: 创建时间
+            en_us: Creation time
             zh_cn: 创建时间
           display_name:
             en_us: Created At
@@ -159,7 +159,7 @@ spec:
             zh_cn: 创建时间
           type: datetime
         - description:
-            en_us: 开始时间
+            en_us: Start time
             zh_cn: 开始时间
           display_name:
             en_us: Started At
@@ -172,7 +172,7 @@ spec:
             zh_cn: 开始时间
           type: datetime
         - description:
-            en_us: 完成时间
+            en_us: Completion time
             zh_cn: 完成时间
           display_name:
             en_us: Completed At

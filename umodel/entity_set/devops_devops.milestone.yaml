@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: 里程碑唯一标识
+            en_us: Milestone unique identifier
             zh_cn: 里程碑唯一标识
           display_name:
             en_us: Milestone Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: 里程碑唯一标识
           type: string
         - description:
-            en_us: 所属项目
+            en_us: Owning project ID
             zh_cn: 所属项目
           display_name:
             en_us: Project Id
@@ -42,7 +42,7 @@ spec:
             zh_cn: 所属项目
           type: string
         - description:
-            en_us: 里程碑名称
+            en_us: Milestone name
             zh_cn: 里程碑名称
           display_name:
             en_us: Name
@@ -55,7 +55,7 @@ spec:
             zh_cn: 里程碑名称
           type: string
         - description:
-            en_us: 里程碑目标
+            en_us: Milestone goal
             zh_cn: 里程碑目标
           display_name:
             en_us: Description
@@ -68,7 +68,7 @@ spec:
             zh_cn: 里程碑目标
           type: string
         - description:
-            en_us: 开始时间
+            en_us: Start time
             zh_cn: 开始时间
           display_name:
             en_us: Start Time
@@ -81,7 +81,7 @@ spec:
             zh_cn: 开始时间
           type: datetime
         - description:
-            en_us: 计划结束时间
+            en_us: Planned end time
             zh_cn: 计划结束时间
           display_name:
             en_us: End Time
@@ -94,7 +94,7 @@ spec:
             zh_cn: 计划结束时间
           type: datetime
         - description:
-            en_us: 状态 planned/active/completed/cancelled
+            en_us: Status: planned/active/completed/cancelled
             zh_cn: 状态 planned/active/completed/cancelled
           display_name:
             en_us: Status
@@ -107,7 +107,7 @@ spec:
             zh_cn: 状态 planned/active/completed/cancelled
           type: enum
         - description:
-            en_us: 数据来源
+            en_us: Data source
             zh_cn: 数据来源
           display_name:
             en_us: Data Source
@@ -120,7 +120,7 @@ spec:
             zh_cn: 数据来源
           type: string
         - description:
-            en_us: 平台里程碑ID
+            en_us: Platform milestone ID
             zh_cn: 平台里程碑ID
           display_name:
             en_us: Platform Milestone Id
@@ -133,7 +133,7 @@ spec:
             zh_cn: 平台里程碑ID
           type: string
         - description:
-            en_us: 里程碑URL
+            en_us: Milestone URL
             zh_cn: 里程碑URL
           display_name:
             en_us: Url
@@ -146,7 +146,7 @@ spec:
             zh_cn: 里程碑URL
           type: string
         - description:
-            en_us: 计划容量
+            en_us: Planned capacity
             zh_cn: 计划容量
           display_name:
             en_us: Planned Capacity
@@ -159,7 +159,7 @@ spec:
             zh_cn: 计划容量
           type: integer
         - description:
-            en_us: 已完成数
+            en_us: Completed count
             zh_cn: 已完成数
           display_name:
             en_us: Completed Count
@@ -172,7 +172,7 @@ spec:
             zh_cn: 已完成数
           type: integer
         - description:
-            en_us: 总数
+            en_us: Total count
             zh_cn: 总数
           display_name:
             en_us: Total Count
