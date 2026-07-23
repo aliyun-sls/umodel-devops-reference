@@ -159,7 +159,12 @@ class GitLabAdapter(IGitAdapter):
             return [self.client.projects.get(self.project_id)]
         if self.group_id:
             group = self.client.groups.get(self.group_id)
-            return [self.client.projects.get(p.id) for p in group.projects.list(all=True)]
+            # include_subgroups=True covers descendant-group projects (previously
+            # only direct group projects). The per-project projects.get() is NOT
+            # redundant: group.projects.list() returns partial GroupProject objects
+            # that lack .languages(), so full Project objects are still required.
+            listed = group.projects.list(all=True, include_subgroups=True)
+            return [self.client.projects.get(p.id) for p in listed]
         return self.client.projects.list(membership=True, all=True)
 
     def _safe_languages(self, project: Any) -> Dict[str, float]:

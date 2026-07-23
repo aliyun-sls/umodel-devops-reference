@@ -18,6 +18,7 @@ Flask API端点：
 import os
 import sys
 import logging
+import hmac
 import json
 import threading
 import time
@@ -36,6 +37,24 @@ from orchestrator import DevOpsDataOrchestrator
 
 # 创建Flask应用
 app = Flask(__name__)
+
+# Opt-in token auth for control endpoints. Set AUTH_TOKEN to require an
+# X-Auth-Token header on /invoke, /status, /stop; /health stays open so the
+# Dockerfile HEALTHCHECK works without a token. Unset = no auth (backward
+# compatible; rely on network isolation for internal deployments).
+AUTH_TOKEN = os.environ.get("AUTH_TOKEN", "")
+
+
+@app.before_request
+def _require_auth():
+    if not AUTH_TOKEN:
+        return
+    # /health stays open so healthchecks work without a token.
+    if request.endpoint == "health_check":
+        return
+    provided = request.headers.get("X-Auth-Token", "")
+    if not hmac.compare_digest(provided, AUTH_TOKEN):
+        return jsonify({"error": "Unauthorized"}), 401
 
 # 全局变量
 orchestrator = None
