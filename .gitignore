@@ -10,6 +10,7 @@
 .spec/
 .review/
 .mimocode/
+.zcode/
 /gitlab_skill/
 /docs/DevOps UModel设计-new.md
 /docs/umodel-alignment-spec.md

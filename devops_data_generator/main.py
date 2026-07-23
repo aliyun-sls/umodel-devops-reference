@@ -14,7 +14,7 @@ from orchestrator import DevOpsDataOrchestrator
 
 
 def setup_logging(log_config: dict):
-    log_file = log_config.get("file", "logs/gitlab_data_generator.log")
+    log_file = log_config.get("file", "logs/devops_data_generator.log")
     log_dir = os.path.dirname(log_file)
     if log_dir and not os.path.exists(log_dir):
         os.makedirs(log_dir)
@@ -26,7 +26,7 @@ def setup_logging(log_config: dict):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="GitLab DevOps data generator")
+    parser = argparse.ArgumentParser(description="DevOps data generator (GitLab / Codeup)")
     parser.add_argument("--mode", choices=["single", "continuous"], default="single")
     parser.add_argument("--interval", type=int)
     parser.add_argument("--config", type=str)
