@@ -9,9 +9,9 @@ description: Query the CMS workspace to verify whether devops entities are visib
 - Check whether `devops.*` entities are visible in the CMS workspace.
 
 ## Read First
-- `shared/verification/workflow-stages.md`
-- `shared/verification/script-map.md`
-- `shared/verification/receipt-contract.md`
+- `verification/workflow-stages.md`
+- `verification/script-map.md`
+- `verification/receipt-contract.md`
 
 ## Canonical Command
 ```bash

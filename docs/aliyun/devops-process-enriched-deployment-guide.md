@@ -99,8 +99,11 @@ GitLab 访问权限由 GitLab 自身的访问令牌控制，不通过阿里云 `
    ```
    # 克隆代码并进入目录
    cd devops_data_generator
-   # 配置应用参数
-   cp config/app_config.yaml.sample config/app_config.yaml
+   # 配置应用参数（按你的 Git 提供商，将对应的示例文件复制为 app_config.yaml）
+   # GitLab
+   cp config/app_config.gitlab.yaml.sample config/app_config.yaml
+   # Codeup（如使用 Codeup，则改用下面这条命令）
+   # cp config/app_config.codeup.yaml.sample config/app_config.yaml
    ```
 
    **devops_data_generator介绍**
@@ -366,9 +369,9 @@ GitLab 访问权限由 GitLab 自身的访问令牌控制，不通过阿里云 `
        build: .
        container_name: devops-data-generator
        restart: unless-stopped
-       command: python3 main.py --mode single
-       ports:
-         - "5000:5000"
+       environment:
+         PYTHONUNBUFFERED: "1"
+       command: ["python3", "main.py", "--mode", "continuous", "--config", "/app/config"]
        volumes:
          - ./config:/app/config:ro
          - ./logs:/app/logs

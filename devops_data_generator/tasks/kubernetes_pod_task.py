@@ -232,6 +232,21 @@ class KubernetesPodTask(BaseTask):
             logger.error(error_msg)
             raise RuntimeError(error_msg) from e
 
+    @staticmethod
+    def _sanitize_namespace_filter(value: str) -> str:
+        """Allowlist-validate namespace_filter before SPL interpolation.
+
+        Accepts only [A-Za-z0-9._-]; raises ValueError on anything else to fail
+        loudly on operator misconfiguration instead of injecting into the query.
+        """
+        ns = (value or "").strip()
+        allowed = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-")
+        if not ns or any(c not in allowed for c in ns):
+            raise ValueError(
+                f"invalid namespace_filter {value!r}: allowed chars are [A-Za-z0-9._-]"
+            )
+        return ns
+
     def _get_pod_data_from_cms(self, client) -> Dict[str, Any]:
         """
         从 CMS API 获取 Pod 数据
@@ -243,8 +258,9 @@ class KubernetesPodTask(BaseTask):
             Dict[str, Any]: API 响应数据
         """
         try:
-            # 构建查询语句
-            query = f".entity with(domain='k8s', type='k8s.pod', query='namespace: {self.namespace_filter}') |project __entity_id__, containers, __domain__, __entity_type__"
+            # 构建查询语句（namespace_filter 经 allowlist 校验，防 SPL 注入）
+            ns = self._sanitize_namespace_filter(self.namespace_filter)
+            query = f".entity with(domain='k8s', type='k8s.pod', query='namespace: {ns}') |project __entity_id__, containers, __domain__, __entity_type__"
             
             # 计算时间戳：最近5分钟
             current_time = int(time.time())

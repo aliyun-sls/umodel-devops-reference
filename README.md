@@ -64,6 +64,19 @@ The producer is selected by `git_provider.type` in `app_config.yaml`. The same C
 starts the one-shot `umodel-schema-uploader`, which idempotently upserts the 17 EntitySets and
 36 EntitySetLinks before exiting.
 
+### Entry Points
+
+The generator ships two entry points — pick the one that matches your run model:
+
+- **`main.py`** (CLI, the default in `docker-compose.yml`): runs a single cycle
+  (`--mode single`) or continuous scheduled loops (`--mode continuous --interval`). No HTTP
+  listener — this is what `docker compose up` runs.
+- **`app.py`** (Flask HTTP API, the Dockerfile default `CMD`): exposes `POST /invoke`,
+  `GET /status`, `GET /health`, `POST /stop` on port 5000 for externally-triggered runs.
+
+Both share the same orchestrator and config; select by entry point rather than reimplementing
+scheduling.
+
 ## UModel Schema
 
 17 EntitySets span the full DevOps lifecycle (org → project → code → CI/CD → release → deployment).
@@ -131,7 +144,7 @@ umodel-devops-reference/
 ├── tools/                           # gen_umodel_yaml.py (schema generator)
 ├── .claude/skills/                  # 6 Claude verification skills
 ├── .codex/skills/                   # 6 Codex verification skills
-├── shared/verification/             # Verification contracts
+├── verification/             # Verification contracts
 ├── docker-compose.yml               # Data generator (provider selected by config)
 └── docs/                            # Design + deployment + provider guides
 ```

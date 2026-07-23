@@ -2,7 +2,7 @@
 
 > 状态：**枚举基线**，所有 producer 写入实体 `data_source` 字段时的唯一取值来源。
 > 关联：`docs/umodel-entity-field-contract.md` §1 引用本文档。
-> 背景：决策 D 删除 `git_provider`，统一为 `data_source`；codeup 旧值 `aliyun`（`adapters/codeup/adapter.py:22`）须改为 `codeup`。
+> 背景：决策 D 删除 `git_provider`，统一为 `data_source`；codeup 旧值 `aliyun`（`adapters/codeup/adapter.py:22`）已改为 `codeup`。
 
 ## 1. 目的
 
@@ -13,7 +13,7 @@
 | data_source | 中文名 | 适用实体 | 来源系统 | 备注 |
 |---|---|---|---|---|
 | `gitlab` | GitLab | repository/user/release/pull_request/pipeline/pipeline_run | GitLab（self-hosted / SaaS） | |
-| `codeup` | 云效代码库 Codeup | repository/user/release/pull_request/pipeline/pipeline_run | 阿里云 Codeup | **不是 `aliyun`**（旧 PROVIDER_NAME 须改） |
+| `codeup` | 云效代码库 Codeup | repository/user/release/pull_request/pipeline/pipeline_run | 阿里云 Codeup | **不是 `aliyun`**（旧 PROVIDER_NAME 已改） |
 | `github` | GitHub | repository/user/release/pull_request/pipeline/pipeline_run | GitHub | |
 | `github_actions` | GitHub Actions | pipeline/pipeline_run | GitHub Actions | CI 类，与 git 平台区分 |
 | `gitlab_ci` | GitLab CI | pipeline/pipeline_run | GitLab CI/CD | CI 类 |
@@ -42,7 +42,7 @@
 3. **CI vs git 平台区分**：git 平台用 `gitlab`/`codeup`/`github`；CI 系统用 `github_actions`/`gitlab_ci`/`jenkins`/`yunxiao_flow`，即便同一厂商也分开，便于区分「代码托管」与「流水线」两类数据源。
 4. **派生实体**：`artifact` 是派生实体（决策 B），其 `data_source` 跟随具体产物来源（如 docker_image 来自 `aliyun_acr`，则对应 artifact 的 `data_source=aliyun_acr`）。
 
-## 4. 强制变更项
+## 4. 已落地变更项
 
 | 位置 | 旧值 | 新值 |
 |---|---|---|

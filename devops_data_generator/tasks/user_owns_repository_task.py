@@ -1,8 +1,8 @@
 """user_owns_repository relationship task.
 
-Derives the ``owns`` relation from repository member access (users with a
-manage/maintain level on a repository own it). Falls back to every member if
-no access-level threshold is applied.
+Derives the ``owns`` relation from repository member access: only members at
+or above ``OWNS_ACCESS_LEVEL_THRESHOLD`` (maintainer/owner, level >= 40) own a
+repository. Lower access levels (guest/developer) do not receive an owns edge.
 """
 
 import logging
@@ -40,8 +40,10 @@ class UserOwnsRepositoryTask(BaseTask):
                 if not repository_id:
                     continue
                 access_level = repo_ref.get("access_level", 0) or 0
-                # Owns when access level qualifies; otherwise still emit at
-                # relationship level for completeness of the graph.
+                # "owns" is reserved for maintainer/owner access (level >= 40);
+                # guest/developer and lower levels do not own the repository.
+                if access_level < OWNS_ACCESS_LEVEL_THRESHOLD:
+                    continue
                 relationships.append(
                     {
                         "__link_type__": "owns",
@@ -50,7 +52,7 @@ class UserOwnsRepositoryTask(BaseTask):
                         "user_id": user_id,
                         "repository_id": repository_id,
                         "access_level": access_level,
-                        "role": repo_ref.get("role", "member"),
+                        "role": repo_ref.get("role", "maintainer"),
                     }
                 )
 

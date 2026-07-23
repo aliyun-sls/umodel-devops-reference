@@ -4,12 +4,13 @@ git_provider:
 
 # --- Codeup (Alibaba Cloud DevOps) credentials -----------------------------
 # Verified against: Alibaba Cloud DevOps (Codeup) API 2021-06-25
-# SDK: alibabacloud-devops20210625 3.0.0
+# SDK: alibabacloud-devops20210625 5.0.3
 # Replace placeholders with real values; do NOT commit a populated copy.
 codeup:
   organization_id: "<YOUR_ORGANIZATION_ID>"
-  access_key_id: "<YOUR_ALIYUN_AK>"
-  access_key_secret: "<YOUR_ALIYUN_SK>"
+  # &ak / &sk anchors: fill AK/SK once here; acr/cms/sls reuse via *ak / *sk.
+  access_key_id: &ak "<YOUR_ALIYUN_AK>"
+  access_key_secret: &sk "<YOUR_ALIYUN_SK>"
   # Auth mode: "ram" or "pat"
   #   ram — repos visible = those granted to the RAM user (AK/SK only)
   #   pat — repos visible = all the PAT owner can see (needs access_token below)
@@ -21,27 +22,33 @@ codeup:
   access_token: ""
   # Optional override; defaults to devops.cn-hangzhou.aliyuncs.com
   endpoint: ""
+  # Fetch per-repo detail (GetRepository) for richer fields. Set false to
+  # speed up large orgs at the cost of detail-level attributes.
+  fetch_details: true
   release_tag: null
 
 # --- ACR (container registry, shared across providers) ---------------------
 acr:
   instance_id: "<YOUR_ACR_INSTANCE_ID>"
   region: "cn-hangzhou"
-  access_key_id: "<YOUR_ALIYUN_AK>"
-  access_key_secret: "<YOUR_ALIYUN_SK>"
+  access_key_id: *ak
+  access_key_secret: *sk
   # 0 = unlimited (pull all); set a number to cap per-API results
   max_repositories: 0       # max ACR registries to pull
   max_tags_per_repo: 0      # max image tags per registry
   # Pacing between ListRepoTag API calls (ms). Prevention, not retry/backoff.
   fetch_interval_ms: 200
+  # Optional whitelist of repo full-namespace names to fetch (e.g.
+  # ["library/nginx"]). Empty = fetch all repos in the instance.
+  repo_filter: []
 
 # --- CMS (Workspace for k8s.pod data) -------------------------------------
 cms:
   endpoint: "metrics.<YOUR_REGION_ID>.aliyuncs.com"
   workspace: "<YOUR_CMS_WORKSPACE>"
   namespace_filter: "<YOUR_NAMESPACE_FILTER>"
-  access_key_id: "<YOUR_ALIYUN_AK>"
-  access_key_secret: "<YOUR_ALIYUN_SK>"
+  access_key_id: *ak
+  access_key_secret: *sk
 
 # --- Kubernetes ------------------------------------------------------------
 kubernetes:
@@ -60,8 +67,8 @@ static_topo:
 # --- SLS upload target -----------------------------------------------------
 sls:
   endpoint: "cn-hongkong.log.aliyuncs.com"
-  access_key_id: "<YOUR_ALIYUN_AK>"
-  access_key_secret: "<YOUR_ALIYUN_SK>"
+  access_key_id: *ak
+  access_key_secret: *sk
   project: "<YOUR_SLS_PROJECT>"
   logstore_mapping:
     entities:
@@ -71,6 +78,7 @@ sls:
       pull_request: "<YOUR_ENTITY_NAME>"
       artifact: "<YOUR_ENTITY_NAME>"
       docker_image: "<YOUR_ENTITY_NAME>"
+      kubernetes_pod: "<YOUR_ENTITY_NAME>"
     relationships:
       user_owns_repository: "<YOUR_TOPO_NAME>"
       repository_tags_release: "<YOUR_TOPO_NAME>"
@@ -100,7 +108,6 @@ tasks:
     - pod_uses_docker_image
     - static_topo
   interval: 300
-  batch_size: 100
   shared_data_ttl: 86400
   skip_sls_upload:
     - skip_to_upload

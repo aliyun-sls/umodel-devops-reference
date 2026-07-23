@@ -19,7 +19,7 @@ class SlsDataSender:
     """
     SLS数据发送器
     
-    使用阿里云新版本SDK (alibabacloud_sls20201230) 发送数据到SLS LogStore
+    使用 aliyun-log-python-sdk (LogClient) 发送数据到SLS LogStore
     """
 
     def __init__(self, config: Dict[str, Any]):
@@ -207,32 +207,17 @@ class SlsDataSender:
         Returns:
             bool: 连接是否有效
         """
+        if not self.sdk_available or not self.client:
+            logger.error("aliyun-log-python-sdk is unavailable; SLS connection invalid")
+            return False
         try:
-            # 构造请求
-            list_logstores_request = sls_20201230_models.ListLogstoresRequest()
-            list_logstores_headers = sls_20201230_models.ListLogstoresHeaders()
-            runtime = util_models.RuntimeOptions()
-
             # 尝试列出LogStore来验证连接
-            response = self.client.list_logstores_with_options(
-                self.project,
-                list_logstores_request,
-                list_logstores_headers,
-                runtime
-            )
-
-            if response.status_code == 200:
-                logger.info("SLS connection validated successfully")
-                return True
-            else:
-                logger.error(f"SLS connection validation failed, status: {response.status_code}")
-                return False
-
+            self.client.list_logstore(self.project, size=1)
+            logger.info("SLS connection validated successfully")
+            return True
         except Exception as e:
             logger.error(f"Error validating SLS connection: {str(e)}")
-            # 如果没有配置或测试环境，返回True继续执行
-            logger.info("Using mock SLS connection for testing")
-            return True
+            return False
 
     def get_project_info(self) -> Dict[str, Any]:
         """
@@ -242,36 +227,17 @@ class SlsDataSender:
             Dict[str, Any]: 项目信息
         """
         try:
-            get_project_request = sls_20201230_models.GetProjectRequest()
-            get_project_headers = sls_20201230_models.GetProjectHeaders()
-            runtime = util_models.RuntimeOptions()
-
-            response = self.client.get_project_with_options(
-                self.project,
-                get_project_request,
-                get_project_headers,
-                runtime
-            )
-
-            if response.status_code == 200:
-                return {
-                    'project_name': self.project,
-                    'endpoint': self.endpoint,
-                    'status': 'connected'
-                }
-            else:
-                return {
-                    'project_name': self.project,
-                    'endpoint': self.endpoint,
-                    'status': 'error',
-                    'status_code': response.status_code
-                }
-
+            self.client.get_project(self.project)
+            return {
+                'project_name': self.project,
+                'endpoint': self.endpoint,
+                'status': 'connected'
+            }
         except Exception as e:
             logger.error(f"Error getting project info: {str(e)}")
             return {
                 'project_name': self.project,
                 'endpoint': self.endpoint,
-                'status': 'mock',
+                'status': 'error',
                 'error': str(e)
             }

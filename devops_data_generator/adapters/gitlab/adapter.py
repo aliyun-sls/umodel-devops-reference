@@ -119,7 +119,12 @@ class GitLabAdapter(IGitAdapter):
             pr_num = getattr(mr, "iid", "")
             pr_id = f"{self.PROVIDER_NAME}:{repo_id}!{pr_num}" if pr_num else ""
             author = getattr(mr, "author", {}) or {}
-            author_id = str(getattr(author, "id", "")) if author else ""
+            author_id = str(author.get("id", "") or "") if isinstance(author, dict) else ""
+            reviewers = []
+            for reviewer in getattr(mr, "reviewers", None) or []:
+                reviewer_id = str(reviewer.get("id", "") or "") if isinstance(reviewer, dict) else ""
+                if reviewer_id:
+                    reviewers.append(f"{self.PROVIDER_NAME}:{reviewer_id}")
             pull_requests.append(
                 {
                     "pr_id": pr_id,
@@ -129,6 +134,7 @@ class GitLabAdapter(IGitAdapter):
                     "title": getattr(mr, "title", "") or "",
                     "description": getattr(mr, "description", "") or "",
                     "author_id": f"{self.PROVIDER_NAME}:{author_id}" if author_id else "",
+                    "reviewers": reviewers,
                     "source_branch": getattr(mr, "source_branch", "") or "",
                     "target_branch": getattr(mr, "target_branch", "") or "",
                     "source_commit_sha": getattr(mr, "sha", "") or "",
@@ -153,7 +159,12 @@ class GitLabAdapter(IGitAdapter):
             return [self.client.projects.get(self.project_id)]
         if self.group_id:
             group = self.client.groups.get(self.group_id)
-            return [self.client.projects.get(p.id) for p in group.projects.list(all=True)]
+            # include_subgroups=True covers descendant-group projects (previously
+            # only direct group projects). The per-project projects.get() is NOT
+            # redundant: group.projects.list() returns partial GroupProject objects
+            # that lack .languages(), so full Project objects are still required.
+            listed = group.projects.list(all=True, include_subgroups=True)
+            return [self.client.projects.get(p.id) for p in listed]
         return self.client.projects.list(membership=True, all=True)
 
     def _safe_languages(self, project: Any) -> Dict[str, float]:
@@ -184,7 +195,7 @@ class GitLabAdapter(IGitAdapter):
             "opened": "open",
             "merged": "merged",
             "closed": "closed",
-        }.get(state, "draft")
+        }.get(state, "open")
 
     def _normalize_release(self, repo_id: str, release: Any) -> Dict[str, Any]:
         author = getattr(release, "author", {}) or {}
@@ -204,7 +215,7 @@ class GitLabAdapter(IGitAdapter):
             "url": getattr(release, "_links", {}).get("self", "") if isinstance(getattr(release, "_links", None), dict) else "",
             "created_by": author.get("name", "") if isinstance(author, dict) else "",
             "tag_name": tag,
-            "target_commitish": getattr(release, "commit", {}).get("committed_id", "") if isinstance(commit, dict) else "",
+            "target_commitish": commit.get("id", "") if isinstance(commit, dict) else "",
             "commit_sha": commit_sha,
             "release_time": getattr(release, "released_at", "") or getattr(release, "created_at", "") or "",
             "tag_type": "release",

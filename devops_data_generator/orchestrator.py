@@ -188,6 +188,16 @@ class DevOpsDataOrchestrator:
             for task_name in execution_order:
                 task = self.tasks.get(task_name)
                 if not task:
+                    warning = (
+                        f"Unknown enabled task '{task_name}': no handler is "
+                        f"registered. Skipping — verify the task name in "
+                        f"app_config.yaml matches a registered task."
+                    )
+                    warnings.append(warning)
+                    skipped_tasks.append(
+                        {"task": task_name, "reason": "unknown_task_name"}
+                    )
+                    logger.warning(warning)
                     continue
                 if not task.validate_config():
                     warning = f"Skipping task '{task_name}' because configuration is invalid or incomplete"

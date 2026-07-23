@@ -18,6 +18,7 @@ Flask API端点：
 import os
 import sys
 import logging
+import hmac
 import json
 import threading
 import time
@@ -28,10 +29,32 @@ from flask import Flask, request, jsonify
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
+# 模块级 logger：避免函数内 "先用后定义" 导致的 UnboundLocalError
+# （如 /invoke 的 octet-stream 解析异常分支早于局部 logger 赋值）。
+logger = logging.getLogger(__name__)
+
 from orchestrator import DevOpsDataOrchestrator
 
 # 创建Flask应用
 app = Flask(__name__)
+
+# Opt-in token auth for control endpoints. Set AUTH_TOKEN to require an
+# X-Auth-Token header on /invoke, /status, /stop; /health stays open so the
+# Dockerfile HEALTHCHECK works without a token. Unset = no auth (backward
+# compatible; rely on network isolation for internal deployments).
+AUTH_TOKEN = os.environ.get("AUTH_TOKEN", "")
+
+
+@app.before_request
+def _require_auth():
+    if not AUTH_TOKEN:
+        return
+    # /health stays open so healthchecks work without a token.
+    if request.endpoint == "health_check":
+        return
+    provided = request.headers.get("X-Auth-Token", "")
+    if not hmac.compare_digest(provided, AUTH_TOKEN):
+        return jsonify({"error": "Unauthorized"}), 401
 
 # 全局变量
 orchestrator = None
@@ -91,7 +114,6 @@ def init_orchestrator(config_dir=None):
         log_config = orchestrator.config_loader.get_logging_config()
         setup_logging(log_config)
         
-        logger = logging.getLogger(__name__)
         logger.info("=== DevOps数据生成器初始化完成 ===")
         
         return True
@@ -108,8 +130,7 @@ def continuous_runner(interval):
         interval (int): 执行间隔（秒）
     """
     global stop_continuous
-    logger = logging.getLogger(__name__)
-    
+
     while not stop_continuous:
         try:
             result = orchestrator.run_single_cycle_result()
@@ -223,7 +244,6 @@ def invoke_task():
         interval = data.get('interval', 300)  # 默认5分钟
         dry_run = data.get('dry_run', False)
         
-        logger = logging.getLogger(__name__)
         logger.info(f"收到invoke请求 - mode: {mode}, interval: {interval}, dry_run: {dry_run}")
         
         if dry_run:
@@ -307,7 +327,6 @@ def stop_continuous_task():
                 'message': '没有正在运行的持续任务'
             })
         
-        logger = logging.getLogger(__name__)
         logger.info("收到停止持续运行的请求")
         
         stop_continuous = True
@@ -384,7 +403,6 @@ def main():
             print("Failed to initialize orchestrator")
             sys.exit(1)
         
-        logger = logging.getLogger(__name__)
         logger.info(f"=== DevOps数据生成器Flask应用启动 ===")
         logger.info(f"监听地址: {args.host}:{args.port}")
         logger.info(f"API端点:")

@@ -72,16 +72,26 @@ AK/SK 始终需要（用于 API 请求签名）。`auth_mode` 仅控制是否发
 
 `release.release_type`：由 `tasks/utils/release_classifier.py` 统一正则归类。
 
+## 仓库详情抓取
+
+`codeup.fetch_details` / `gitlab.fetch_details`（布尔，默认 `true`）控制 adapter 是否为每个仓库抓取详情（Codeup `GetRepository` / GitLab project detail）以获得更丰富的字段。设为 `false` 可在大组织/大实例下加速，代价是丢失详情级属性。
+
 ## 分页与限制
 
-所有列表 API 默认全量分页。`acr:` 下两个参数控制拉取量：
+所有列表 API 默认全量分页。`acr:` 下的参数控制拉取范围、节奏与数量：
 
-| 参数 | 默认 | 效果 |
-|---|---|---|
-| `max_repositories` | `0`（无限）| ACR 镜像仓库最大数 |
-| `max_tags_per_repo` | `0`（无限）| 每个仓库最大 tag 数 |
+| 参数 | 类型 | 默认 | 效果 |
+|---|---|---|---|
+| `acr.repo_filter` | list | `[]`（拉取全部）| 仓库全命名空间名称白名单（如 `["library/nginx"]`）；空 = 拉取实例内所有仓库 |
+| `acr.fetch_interval_ms` | int | `200` | ListRepoTag API 调用之间的间隔（毫秒）；属预防性限速，非重试/退避 |
+| `acr.max_repositories` | int | `0`（无限）| ACR 镜像仓库最大数 |
+| `acr.max_tags_per_repo` | int | `0`（无限）| 每个仓库最大 tag 数 |
+
+## SLS 实体映射
+
+每个实体需在 `sls.logstore_mapping.entities` 下显式配置对应的 SLS logstore（实体名）。其中 `sls.logstore_mapping.entities.kubernetes_pod`（`kubernetes_pod` 实体所用的 logstore）必须存在——缺失时 `kubernetes_pod` 任务会回退到错误的名称，导致 pod 数据写入 SLS 失败。样例见 `app_config.*.yaml.sample` 的 `sls.logstore_mapping.entities` 块。
 
 ## 尚未实现的平台
 
-- Jenkins — 见 `adapters/jenkins/README.md`
+- Jenkins
 - GitHub Actions / Argo / Tekton

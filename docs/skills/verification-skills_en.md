@@ -66,4 +66,4 @@ Each skill outputs a structured receipt:
 - [stage-specific fields]
 ```
 
-See `shared/verification/receipt-contract.md` for the full schema.
+See `verification/receipt-contract.md` for the full schema.

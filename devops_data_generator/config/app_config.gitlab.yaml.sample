@@ -17,25 +17,32 @@ gitlab:
   access_token: "<YOUR_GITLAB_TOKEN>"
   group_id: null
   project_id: null
+  # Fetch per-repo detail for richer fields. Set false to speed up large
+  # instances at the cost of detail-level attributes.
+  fetch_details: true
   release_tag: null
 
 acr:
   instance_id: "<YOUR_ACR_INSTANCE_ID>"
   region: "cn-hangzhou"
-  access_key_id: "<YOUR_ACCESS_KEY_ID>"
-  access_key_secret: "<YOUR_ACCESS_KEY_SECRET>"
+  # &ak / &sk anchors: fill AK/SK once here; cms/sls reuse via *ak / *sk.
+  access_key_id: &ak "<YOUR_ACCESS_KEY_ID>"
+  access_key_secret: &sk "<YOUR_ACCESS_KEY_SECRET>"
   # 0 = unlimited (pull all); set a number to cap per-API results
   max_repositories: 0       # max ACR registries to pull
   max_tags_per_repo: 0      # max image tags per registry
   # Pacing between ListRepoTag API calls (ms). Prevention, not retry/backoff.
   fetch_interval_ms: 200
+  # Optional whitelist of repo full-namespace names to fetch (e.g.
+  # ["library/nginx"]). Empty = fetch all repos in the instance.
+  repo_filter: []
 
 cms:
   endpoint: "metrics.<YOUR_REGION_ID>.aliyuncs.com"
   workspace: "<YOUR_CMS_WORKSPACE>"
   namespace_filter: "<YOUR_NAMESPACE_FILTER>"
-  access_key_id: "<YOUR_ACCESS_KEY_ID>"
-  access_key_secret: "<YOUR_ACCESS_KEY_SECRET>"
+  access_key_id: *ak
+  access_key_secret: *sk
 
 kubernetes:
   # "k8s": read pods directly from kubeconfig
@@ -51,8 +58,8 @@ static_topo:
 
 sls:
   endpoint: "cn-hongkong.log.aliyuncs.com"
-  access_key_id: "<YOUR_ACCESS_KEY_ID>"
-  access_key_secret: "<YOUR_ACCESS_KEY_SECRET>"
+  access_key_id: *ak
+  access_key_secret: *sk
   project: "<YOUR_SLS_PROJECT>"
   logstore_mapping:
     entities:
@@ -62,6 +69,7 @@ sls:
       pull_request: "<YOUR_ENTITY_NAME>"
       artifact: "<YOUR_ENTITY_NAME>"
       docker_image: "<YOUR_ENTITY_NAME>"
+      kubernetes_pod: "<YOUR_ENTITY_NAME>"
     relationships:
       user_owns_repository: "<YOUR_TOPO_NAME>"
       repository_tags_release: "<YOUR_TOPO_NAME>"
@@ -90,7 +98,6 @@ tasks:
     - pod_uses_docker_image
     - static_topo
   interval: 300
-  batch_size: 100
   shared_data_ttl: 86400
   skip_sls_upload:
     - skip_to_upload
