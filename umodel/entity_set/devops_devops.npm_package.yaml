@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: NPM包唯一标识
+            en_us: NPM package unique identifier
             zh_cn: NPM包唯一标识
           display_name:
             en_us: Npm Package Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: NPM包唯一标识
           type: string
         - description:
-            en_us: 关联的Artifact ID
+            en_us: Linked artifact ID
             zh_cn: 关联的Artifact ID
           display_name:
             en_us: Artifact Id
@@ -42,7 +42,7 @@ spec:
             zh_cn: 关联的Artifact ID
           type: string
         - description:
-            en_us: 包名称
+            en_us: Package name
             zh_cn: 包名称
           display_name:
             en_us: Package Name
@@ -55,7 +55,7 @@ spec:
             zh_cn: 包名称
           type: string
         - description:
-            en_us: 作用域
+            en_us: Scope
             zh_cn: 作用域
           display_name:
             en_us: Scope
@@ -68,7 +68,7 @@ spec:
             zh_cn: 作用域
           type: string
         - description:
-            en_us: 版本号
+            en_us: Version
             zh_cn: 版本号
           display_name:
             en_us: Version
@@ -81,7 +81,7 @@ spec:
             zh_cn: 版本号
           type: string
         - description:
-            en_us: NPM仓库
+            en_us: NPM registry
             zh_cn: NPM仓库
           display_name:
             en_us: Registry
@@ -94,7 +94,7 @@ spec:
             zh_cn: NPM仓库
           type: string
         - description:
-            en_us: 包描述
+            en_us: Package description
             zh_cn: 包描述
           display_name:
             en_us: Description
@@ -107,7 +107,7 @@ spec:
             zh_cn: 包描述
           type: string
         - description:
-            en_us: 主入口文件
+            en_us: Main entry file
             zh_cn: 主入口文件
           display_name:
             en_us: Main Entry
@@ -120,7 +120,7 @@ spec:
             zh_cn: 主入口文件
           type: string
         - description:
-            en_us: 类型定义入口
+            en_us: Type definition entry
             zh_cn: 类型定义入口
           display_name:
             en_us: Types Entry
@@ -133,7 +133,7 @@ spec:
             zh_cn: 类型定义入口
           type: string
         - description:
-            en_us: 许可证
+            en_us: License
             zh_cn: 许可证
           display_name:
             en_us: License
@@ -146,7 +146,7 @@ spec:
             zh_cn: 许可证
           type: string
         - description:
-            en_us: 关键词
+            en_us: Keywords
             zh_cn: 关键词
           display_name:
             en_us: Keywords
@@ -159,7 +159,7 @@ spec:
             zh_cn: 关键词
           type: array
         - description:
-            en_us: 生产依赖
+            en_us: Production dependencies
             zh_cn: 生产依赖
           display_name:
             en_us: Dependencies
@@ -172,7 +172,7 @@ spec:
             zh_cn: 生产依赖
           type: json
         - description:
-            en_us: 开发依赖
+            en_us: Development dependencies
             zh_cn: 开发依赖
           display_name:
             en_us: Dev Dependencies
@@ -185,7 +185,7 @@ spec:
             zh_cn: 开发依赖
           type: json
         - description:
-            en_us: 对等依赖
+            en_us: Peer dependencies
             zh_cn: 对等依赖
           display_name:
             en_us: Peer Dependencies
@@ -198,7 +198,7 @@ spec:
             zh_cn: 对等依赖
           type: json
         - description:
-            en_us: 可选依赖
+            en_us: Optional dependencies
             zh_cn: 可选依赖
           display_name:
             en_us: Optional Dependencies
@@ -211,7 +211,7 @@ spec:
             zh_cn: 可选依赖
           type: json
         - description:
-            en_us: 作者信息
+            en_us: Author info
             zh_cn: 作者信息
           display_name:
             en_us: Author
@@ -224,7 +224,7 @@ spec:
             zh_cn: 作者信息
           type: json
         - description:
-            en_us: 贡献者列表
+            en_us: Contributor list
             zh_cn: 贡献者列表
           display_name:
             en_us: Contributors
@@ -237,7 +237,7 @@ spec:
             zh_cn: 贡献者列表
           type: array
         - description:
-            en_us: 主页
+            en_us: Homepage
             zh_cn: 主页
           display_name:
             en_us: Homepage
@@ -250,7 +250,7 @@ spec:
             zh_cn: 主页
           type: string
         - description:
-            en_us: 仓库信息
+            en_us: Repository info
             zh_cn: 仓库信息
           display_name:
             en_us: Repository
@@ -263,7 +263,7 @@ spec:
             zh_cn: 仓库信息
           type: json
         - description:
-            en_us: Issue Tracker
+            en_us: Issue tracker URL
             zh_cn: Issue Tracker
           display_name:
             en_us: Bugs
@@ -276,7 +276,7 @@ spec:
             zh_cn: Issue Tracker
           type: string
         - description:
-            en_us: NPM脚本
+            en_us: NPM scripts
             zh_cn: NPM脚本
           display_name:
             en_us: Scripts
@@ -289,7 +289,7 @@ spec:
             zh_cn: NPM脚本
           type: json
         - description:
-            en_us: 引擎要求
+            en_us: Engine requirements
             zh_cn: 引擎要求
           display_name:
             en_us: Engines
@@ -302,7 +302,7 @@ spec:
             zh_cn: 引擎要求
           type: json
         - description:
-            en_us: 包含的文件
+            en_us: Included files
             zh_cn: 包含的文件
           display_name:
             en_us: Files
@@ -328,7 +328,7 @@ spec:
             zh_cn: Tarball URL
           type: string
         - description:
-            en_us: SHA1校验和
+            en_us: SHA1 checksum
             zh_cn: SHA1校验和
           display_name:
             en_us: Shasum
@@ -341,7 +341,7 @@ spec:
             zh_cn: SHA1校验和
           type: string
         - description:
-            en_us: 数据来源 npm_registry/verdaccio
+            en_us: Data source: npm_registry/verdaccio
             zh_cn: 数据来源 npm_registry/verdaccio
           display_name:
             en_us: Data Source
@@ -354,7 +354,7 @@ spec:
             zh_cn: 数据来源 npm_registry/verdaccio
           type: string
         - description:
-            en_us: 平台包ID
+            en_us: Platform package ID
             zh_cn: 平台包ID
           display_name:
             en_us: Platform Package Id
@@ -367,7 +367,7 @@ spec:
             zh_cn: 平台包ID
           type: string
         - description:
-            en_us: 创建时间
+            en_us: Creation time
             zh_cn: 创建时间
           display_name:
             en_us: Created At

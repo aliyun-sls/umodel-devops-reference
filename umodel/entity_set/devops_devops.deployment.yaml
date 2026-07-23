@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: 部署唯一标识
+            en_us: Deployment unique identifier
             zh_cn: 部署唯一标识
           display_name:
             en_us: Deployment Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: 部署唯一标识
           type: string
         - description:
-            en_us: 部署标题
+            en_us: Deployment title
             zh_cn: 部署标题
           display_name:
             en_us: Title
@@ -42,7 +42,7 @@ spec:
             zh_cn: 部署标题
           type: string
         - description:
-            en_us: 部署描述
+            en_us: Deployment description
             zh_cn: 部署描述
           display_name:
             en_us: Description
@@ -55,7 +55,7 @@ spec:
             zh_cn: 部署描述
           type: string
         - description:
-            en_us: 代码仓库
+            en_us: Source repository ID
             zh_cn: 代码仓库
           display_name:
             en_us: Repository Id
@@ -68,7 +68,7 @@ spec:
             zh_cn: 代码仓库
           type: string
         - description:
-            en_us: 关联流水线运行
+            en_us: Linked pipeline run ID
             zh_cn: 关联流水线运行
           display_name:
             en_us: Run Id
@@ -81,7 +81,7 @@ spec:
             zh_cn: 关联流水线运行
           type: string
         - description:
-            en_us: 部署环境ID
+            en_us: Deployment environment ID
             zh_cn: 部署环境ID
           display_name:
             en_us: Environment Id
@@ -94,7 +94,7 @@ spec:
             zh_cn: 部署环境ID
           type: string
         - description:
-            en_us: 部署版本
+            en_us: Deployed commit SHA
             zh_cn: 部署版本
           display_name:
             en_us: Commit Sha
@@ -107,7 +107,7 @@ spec:
             zh_cn: 部署版本
           type: string
         - description:
-            en_us: 应用版本号
+            en_us: Application version
             zh_cn: 应用版本号
           display_name:
             en_us: Version
@@ -120,7 +120,7 @@ spec:
             zh_cn: 应用版本号
           type: string
         - description:
-            en_us: 部署状态 queued/in_progress/success/failure/cancelled
+            en_us: Deployment status: queued/in_progress/success/failure/cancelled
             zh_cn: 部署状态 queued/in_progress/success/failure/cancelled
           display_name:
             en_us: Status
@@ -133,7 +133,7 @@ spec:
             zh_cn: 部署状态 queued/in_progress/success/failure/cancelled
           type: enum
         - description:
-            en_us: 部署结论 success/failure/rolled_back
+            en_us: Deployment conclusion: success/failure/rolled_back
             zh_cn: 部署结论 success/failure/rolled_back
           display_name:
             en_us: Conclusion
@@ -146,7 +146,7 @@ spec:
             zh_cn: 部署结论 success/failure/rolled_back
           type: enum
         - description:
-            en_us: 数据来源 yunxiao_appstack/aone/github
+            en_us: Data source: yunxiao_appstack/aone/github
             zh_cn: 数据来源 yunxiao_appstack/aone/github
           display_name:
             en_us: Data Source
@@ -159,7 +159,7 @@ spec:
             zh_cn: 数据来源 yunxiao_appstack/aone/github
           type: string
         - description:
-            en_us: 平台部署ID
+            en_us: Platform deployment ID
             zh_cn: 平台部署ID
           display_name:
             en_us: Platform Deployment Id
@@ -172,7 +172,7 @@ spec:
             zh_cn: 平台部署ID
           type: string
         - description:
-            en_us: 部署URL
+            en_us: Deployment URL
             zh_cn: 部署URL
           display_name:
             en_us: Url
@@ -185,7 +185,7 @@ spec:
             zh_cn: 部署URL
           type: string
         - description:
-            en_us: 部署人
+            en_us: Deployed by
             zh_cn: 部署人
           display_name:
             en_us: Deployed By
@@ -198,7 +198,7 @@ spec:
             zh_cn: 部署人
           type: string
         - description:
-            en_us: 所属发布
+            en_us: Owning release ID
             zh_cn: 所属发布
           display_name:
             en_us: Release Id
@@ -211,7 +211,7 @@ spec:
             zh_cn: 所属发布
           type: string
         - description:
-            en_us: 部署产物
+            en_us: Deployed artifacts
             zh_cn: 部署产物
           display_name:
             en_us: Artifacts
@@ -224,7 +224,7 @@ spec:
             zh_cn: 部署产物
           type: json
         - description:
-            en_us: 创建时间
+            en_us: Creation time
             zh_cn: 创建时间
           display_name:
             en_us: Created At
@@ -237,7 +237,7 @@ spec:
             zh_cn: 创建时间
           type: datetime
         - description:
-            en_us: 开始时间
+            en_us: Start time
             zh_cn: 开始时间
           display_name:
             en_us: Started At
@@ -250,7 +250,7 @@ spec:
             zh_cn: 开始时间
           type: datetime
         - description:
-            en_us: 完成时间
+            en_us: Completion time
             zh_cn: 完成时间
           display_name:
             en_us: Completed At
@@ -263,7 +263,7 @@ spec:
             zh_cn: 完成时间
           type: datetime
         - description:
-            en_us: 回滚开始时间
+            en_us: Rollback start time
             zh_cn: 回滚开始时间
           display_name:
             en_us: Rollback Started At
@@ -276,7 +276,7 @@ spec:
             zh_cn: 回滚开始时间
           type: datetime
         - description:
-            en_us: 回滚完成时间
+            en_us: Rollback completion time
             zh_cn: 回滚完成时间
           display_name:
             en_us: Rollback Completed At
@@ -289,7 +289,7 @@ spec:
             zh_cn: 回滚完成时间
           type: datetime
         - description:
-            en_us: 部署时长(秒)
+            en_us: Deployment duration (seconds)
             zh_cn: 部署时长(秒)
           display_name:
             en_us: Duration Seconds

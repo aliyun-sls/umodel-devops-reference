@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: 运行实例唯一标识
+            en_us: Pipeline run unique identifier
             zh_cn: 运行实例唯一标识
           display_name:
             en_us: Run Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: 运行实例唯一标识
           type: string
         - description:
-            en_us: 所属流水线
+            en_us: Owning pipeline ID
             zh_cn: 所属流水线
           display_name:
             en_us: Pipeline Id
@@ -42,7 +42,7 @@ spec:
             zh_cn: 所属流水线
           type: string
         - description:
-            en_us: 所属仓库
+            en_us: Owning repository ID
             zh_cn: 所属仓库
           display_name:
             en_us: Repository Id
@@ -55,7 +55,7 @@ spec:
             zh_cn: 所属仓库
           type: string
         - description:
-            en_us: 运行编号
+            en_us: Run number
             zh_cn: 运行编号
           display_name:
             en_us: Number
@@ -68,7 +68,7 @@ spec:
             zh_cn: 运行编号
           type: integer
         - description:
-            en_us: 关联PR
+            en_us: Linked pull request ID
             zh_cn: 关联PR
           display_name:
             en_us: Pr Id
@@ -81,7 +81,7 @@ spec:
             zh_cn: 关联PR
           type: string
         - description:
-            en_us: 构建提交
+            en_us: Build commit SHA
             zh_cn: 构建提交
           display_name:
             en_us: Commit Sha
@@ -94,7 +94,7 @@ spec:
             zh_cn: 构建提交
           type: string
         - description:
-            en_us: 分支名
+            en_us: Branch name
             zh_cn: 分支名
           display_name:
             en_us: Branch
@@ -107,7 +107,7 @@ spec:
             zh_cn: 分支名
           type: string
         - description:
-            en_us: 触发方式 push/pull_request/schedule/manual/tag
+            en_us: Trigger type: push/pull_request/schedule/manual/tag
             zh_cn: 触发方式 push/pull_request/schedule/manual/tag
           display_name:
             en_us: Trigger Type
@@ -120,7 +120,7 @@ spec:
             zh_cn: 触发方式 push/pull_request/schedule/manual/tag
           type: enum
         - description:
-            en_us: 运行状态 queued/in_progress/success/failure/cancelled/skipped
+            en_us: Run status: queued/in_progress/success/failure/cancelled/skipped
             zh_cn: 运行状态 queued/in_progress/success/failure/cancelled/skipped
           display_name:
             en_us: Status
@@ -133,7 +133,7 @@ spec:
             zh_cn: 运行状态 queued/in_progress/success/failure/cancelled/skipped
           type: enum
         - description:
-            en_us: 运行结论 success/failure/cancelled/timeout
+            en_us: Run conclusion: success/failure/cancelled/timeout
             zh_cn: 运行结论 success/failure/cancelled/timeout
           display_name:
             en_us: Conclusion
@@ -146,7 +146,7 @@ spec:
             zh_cn: 运行结论 success/failure/cancelled/timeout
           type: enum
         - description:
-            en_us: 数据来源 github_actions/gitlab_ci/jenkins
+            en_us: Data source: github_actions/gitlab_ci/jenkins
             zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
           display_name:
             en_us: Data Source
@@ -159,7 +159,7 @@ spec:
             zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
           type: string
         - description:
-            en_us: 平台运行ID
+            en_us: Platform run ID
             zh_cn: 平台运行ID
           display_name:
             en_us: Platform Run Id
@@ -172,7 +172,7 @@ spec:
             zh_cn: 平台运行ID
           type: string
         - description:
-            en_us: 运行URL
+            en_us: Run URL
             zh_cn: 运行URL
           display_name:
             en_us: Url
@@ -185,7 +185,7 @@ spec:
             zh_cn: 运行URL
           type: string
         - description:
-            en_us: 触发者
+            en_us: Triggered by
             zh_cn: 触发者
           display_name:
             en_us: Triggered By
@@ -198,7 +198,7 @@ spec:
             zh_cn: 触发者
           type: string
         - description:
-            en_us: 阶段信息
+            en_us: Stage information
             zh_cn: 阶段信息
           display_name:
             en_us: Stages
@@ -211,7 +211,7 @@ spec:
             zh_cn: 阶段信息
           type: json
         - description:
-            en_us: 创建时间
+            en_us: Creation time
             zh_cn: 创建时间
           display_name:
             en_us: Created At
@@ -224,7 +224,7 @@ spec:
             zh_cn: 创建时间
           type: datetime
         - description:
-            en_us: 开始时间
+            en_us: Start time
             zh_cn: 开始时间
           display_name:
             en_us: Started At
@@ -237,7 +237,7 @@ spec:
             zh_cn: 开始时间
           type: datetime
         - description:
-            en_us: 完成时间
+            en_us: Completion time
             zh_cn: 完成时间
           display_name:
             en_us: Completed At
@@ -250,7 +250,7 @@ spec:
             zh_cn: 完成时间
           type: datetime
         - description:
-            en_us: 执行时长(秒)
+            en_us: Execution duration (seconds)
             zh_cn: 执行时长(秒)
           display_name:
             en_us: Duration Seconds
@@ -263,7 +263,7 @@ spec:
             zh_cn: 执行时长(秒)
           type: integer
         - description:
-            en_us: 排队时长(秒)
+            en_us: Queue duration (seconds)
             zh_cn: 排队时长(秒)
           display_name:
             en_us: Queue Duration Seconds

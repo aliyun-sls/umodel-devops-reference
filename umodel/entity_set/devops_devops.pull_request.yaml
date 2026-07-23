@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: PR唯一标识
+            en_us: Pull request unique identifier
             zh_cn: PR唯一标识
           display_name:
             en_us: Pr Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: PR唯一标识
           type: string
         - description:
-            en_us: 所属项目
+            en_us: Owning project ID
             zh_cn: 所属项目
           display_name:
             en_us: Project Id
@@ -42,7 +42,7 @@ spec:
             zh_cn: 所属项目
           type: string
         - description:
-            en_us: 所属仓库
+            en_us: Owning repository ID
             zh_cn: 所属仓库
           display_name:
             en_us: Repository Id
@@ -55,7 +55,7 @@ spec:
             zh_cn: 所属仓库
           type: string
         - description:
-            en_us: PR编号
+            en_us: Pull request number
             zh_cn: PR编号
           display_name:
             en_us: Number
@@ -68,7 +68,7 @@ spec:
             zh_cn: PR编号
           type: integer
         - description:
-            en_us: 标题
+            en_us: Title
             zh_cn: 标题
           display_name:
             en_us: Title
@@ -81,7 +81,7 @@ spec:
             zh_cn: 标题
           type: string
         - description:
-            en_us: 详细描述
+            en_us: Detailed description
             zh_cn: 详细描述
           display_name:
             en_us: Description
@@ -94,7 +94,7 @@ spec:
             zh_cn: 详细描述
           type: string
         - description:
-            en_us: 作者
+            en_us: Author ID
             zh_cn: 作者
           display_name:
             en_us: Author Id
@@ -107,7 +107,7 @@ spec:
             zh_cn: 作者
           type: string
         - description:
-            en_us: 源分支
+            en_us: Source branch
             zh_cn: 源分支
           display_name:
             en_us: Source Branch
@@ -120,7 +120,7 @@ spec:
             zh_cn: 源分支
           type: string
         - description:
-            en_us: 目标分支
+            en_us: Target branch
             zh_cn: 目标分支
           display_name:
             en_us: Target Branch
@@ -133,7 +133,7 @@ spec:
             zh_cn: 目标分支
           type: string
         - description:
-            en_us: 源提交哈希
+            en_us: Source commit SHA
             zh_cn: 源提交哈希
           display_name:
             en_us: Source Commit Sha
@@ -146,7 +146,7 @@ spec:
             zh_cn: 源提交哈希
           type: string
         - description:
-            en_us: 合并提交哈希
+            en_us: Merge commit SHA
             zh_cn: 合并提交哈希
           display_name:
             en_us: Merge Commit Sha
@@ -159,7 +159,7 @@ spec:
             zh_cn: 合并提交哈希
           type: string
         - description:
-            en_us: 状态 open/merged/closed/draft
+            en_us: Status: open/merged/closed/draft
             zh_cn: 状态 open/merged/closed/draft
           display_name:
             en_us: Status
@@ -172,7 +172,7 @@ spec:
             zh_cn: 状态 open/merged/closed/draft
           type: enum
         - description:
-            en_us: 数据来源
+            en_us: Data source
             zh_cn: 数据来源
           display_name:
             en_us: Data Source
@@ -185,7 +185,7 @@ spec:
             zh_cn: 数据来源
           type: string
         - description:
-            en_us: 平台PR ID
+            en_us: Platform pull request ID
             zh_cn: 平台PR ID
           display_name:
             en_us: Platform Pr Id
@@ -198,7 +198,7 @@ spec:
             zh_cn: 平台PR ID
           type: string
         - description:
-            en_us: PR URL
+            en_us: Pull request URL
             zh_cn: PR URL
           display_name:
             en_us: Url
@@ -211,7 +211,7 @@ spec:
             zh_cn: PR URL
           type: string
         - description:
-            en_us: 提交数量
+            en_us: Commits count
             zh_cn: 提交数量
           display_name:
             en_us: Commits Count
@@ -224,7 +224,7 @@ spec:
             zh_cn: 提交数量
           type: integer
         - description:
-            en_us: 变更文件数
+            en_us: Changed files count
             zh_cn: 变更文件数
           display_name:
             en_us: Changed Files
@@ -237,7 +237,7 @@ spec:
             zh_cn: 变更文件数
           type: integer
         - description:
-            en_us: 新增行数
+            en_us: Additions
             zh_cn: 新增行数
           display_name:
             en_us: Additions
@@ -250,7 +250,7 @@ spec:
             zh_cn: 新增行数
           type: integer
         - description:
-            en_us: 删除行数
+            en_us: Deletions
             zh_cn: 删除行数
           display_name:
             en_us: Deletions
@@ -263,7 +263,7 @@ spec:
             zh_cn: 删除行数
           type: integer
         - description:
-            en_us: 评论数量
+            en_us: Comments count
             zh_cn: 评论数量
           display_name:
             en_us: Comments Count
@@ -276,7 +276,7 @@ spec:
             zh_cn: 评论数量
           type: integer
         - description:
-            en_us: 评审者列表
+            en_us: Reviewer list
             zh_cn: 评审者列表
           display_name:
             en_us: Reviewers
@@ -289,7 +289,7 @@ spec:
             zh_cn: 评审者列表
           type: json
         - description:
-            en_us: 标签列表
+            en_us: Label list
             zh_cn: 标签列表
           display_name:
             en_us: Labels
@@ -302,7 +302,7 @@ spec:
             zh_cn: 标签列表
           type: json
         - description:
-            en_us: 是否有冲突
+            en_us: Has conflicts
             zh_cn: 是否有冲突
           display_name:
             en_us: Has Conflicts
@@ -315,7 +315,7 @@ spec:
             zh_cn: 是否有冲突
           type: boolean
         - description:
-            en_us: 是否AI评审
+            en_us: AI reviewed
             zh_cn: 是否AI评审
           display_name:
             en_us: Ai Reviewed
@@ -328,7 +328,7 @@ spec:
             zh_cn: 是否AI评审
           type: boolean
         - description:
-            en_us: 创建时间
+            en_us: Creation time
             zh_cn: 创建时间
           display_name:
             en_us: Created At
@@ -341,7 +341,7 @@ spec:
             zh_cn: 创建时间
           type: datetime
         - description:
-            en_us: 更新时间
+            en_us: Update time
             zh_cn: 更新时间
           display_name:
             en_us: Updated At
@@ -354,7 +354,7 @@ spec:
             zh_cn: 更新时间
           type: datetime
         - description:
-            en_us: 合并时间
+            en_us: Merged time
             zh_cn: 合并时间
           display_name:
             en_us: Merged At
@@ -367,7 +367,7 @@ spec:
             zh_cn: 合并时间
           type: datetime
         - description:
-            en_us: 关闭时间
+            en_us: Closed time
             zh_cn: 关闭时间
           display_name:
             en_us: Closed At

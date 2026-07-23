@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: 流水线唯一标识
+            en_us: Pipeline unique identifier
             zh_cn: 流水线唯一标识
           display_name:
             en_us: Pipeline Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: 流水线唯一标识
           type: string
         - description:
-            en_us: 所属仓库
+            en_us: Owning repository ID
             zh_cn: 所属仓库
           display_name:
             en_us: Repository Id
@@ -42,7 +42,7 @@ spec:
             zh_cn: 所属仓库
           type: string
         - description:
-            en_us: 流水线名称
+            en_us: Pipeline name
             zh_cn: 流水线名称
           display_name:
             en_us: Name
@@ -55,7 +55,7 @@ spec:
             zh_cn: 流水线名称
           type: string
         - description:
-            en_us: 配置文件路径
+            en_us: Config file path
             zh_cn: 配置文件路径
           display_name:
             en_us: File Path
@@ -68,7 +68,7 @@ spec:
             zh_cn: 配置文件路径
           type: string
         - description:
-            en_us: 流水线描述
+            en_us: Pipeline description
             zh_cn: 流水线描述
           display_name:
             en_us: Description
@@ -81,7 +81,7 @@ spec:
             zh_cn: 流水线描述
           type: string
         - description:
-            en_us: 数据来源 github_actions/gitlab_ci/jenkins
+            en_us: Data source: github_actions/gitlab_ci/jenkins
             zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
           display_name:
             en_us: Data Source
@@ -94,7 +94,7 @@ spec:
             zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
           type: string
         - description:
-            en_us: 平台流水线ID
+            en_us: Platform pipeline ID
             zh_cn: 平台流水线ID
           display_name:
             en_us: Platform Pipeline Id
@@ -107,7 +107,7 @@ spec:
             zh_cn: 平台流水线ID
           type: string
         - description:
-            en_us: 流水线URL
+            en_us: Pipeline URL
             zh_cn: 流水线URL
           display_name:
             en_us: Url
@@ -120,7 +120,7 @@ spec:
             zh_cn: 流水线URL
           type: string
         - description:
-            en_us: 是否激活
+            en_us: Is active
             zh_cn: 是否激活
           display_name:
             en_us: Is Active
@@ -133,7 +133,7 @@ spec:
             zh_cn: 是否激活
           type: boolean
         - description:
-            en_us: 创建时间
+            en_us: Creation time
             zh_cn: 创建时间
           display_name:
             en_us: Created At
@@ -146,7 +146,7 @@ spec:
             zh_cn: 创建时间
           type: datetime
         - description:
-            en_us: 更新时间
+            en_us: Update time
             zh_cn: 更新时间
           display_name:
             en_us: Updated At

@@ -16,7 +16,7 @@ spec:
     dynamic: false
     fields:
         - description:
-            en_us: 产物唯一标识
+            en_us: Artifact unique identifier
             zh_cn: 产物唯一标识
           display_name:
             en_us: Artifact Id
@@ -29,7 +29,7 @@ spec:
             zh_cn: 产物唯一标识
           type: string
         - description:
-            en_us: 产物名称
+            en_us: Artifact name
             zh_cn: 产物名称
           display_name:
             en_us: Name
@@ -42,7 +42,7 @@ spec:
             zh_cn: 产物名称
           type: string
         - description:
-            en_us: 版本号
+            en_us: Version
             zh_cn: 版本号
           display_name:
             en_us: Version
@@ -55,7 +55,7 @@ spec:
             zh_cn: 版本号
           type: string
         - description:
-            en_us: 产物类型 docker_image/helm_chart/binary/npm_package/maven_artifact
+            en_us: Artifact type: docker_image/helm_chart/binary/npm_package/maven_artifact
             zh_cn: 产物类型 docker_image/helm_chart/binary/npm_package/maven_artifact
           display_name:
             en_us: Artifact Type
@@ -68,7 +68,7 @@ spec:
             zh_cn: 产物类型 docker_image/helm_chart/binary/npm_package/maven_artifact
           type: enum
         - description:
-            en_us: 源代码仓库
+            en_us: Source repository ID
             zh_cn: 源代码仓库
           display_name:
             en_us: Repository Id
@@ -81,7 +81,7 @@ spec:
             zh_cn: 源代码仓库
           type: string
         - description:
-            en_us: 源码提交
+            en_us: Source commit SHA
             zh_cn: 源码提交
           display_name:
             en_us: Commit Sha
@@ -94,7 +94,7 @@ spec:
             zh_cn: 源码提交
           type: string
         - description:
-            en_us: Git标签
+            en_us: Git tag name
             zh_cn: Git标签
           display_name:
             en_us: Tag Name
@@ -107,7 +107,7 @@ spec:
             zh_cn: Git标签
           type: string
         - description:
-            en_us: 构建流水线
+            en_us: Build pipeline run ID
             zh_cn: 构建流水线
           display_name:
             en_us: Pipeline Run Id
@@ -120,7 +120,7 @@ spec:
             zh_cn: 构建流水线
           type: string
         - description:
-            en_us: 存储位置
+            en_us: Storage location
             zh_cn: 存储位置
           display_name:
             en_us: Storage Location
@@ -133,7 +133,7 @@ spec:
             zh_cn: 存储位置
           type: string
         - description:
-            en_us: 产物大小(字节)
+            en_us: Artifact size (bytes)
             zh_cn: 产物大小(字节)
           display_name:
             en_us: Size Bytes
@@ -146,7 +146,7 @@ spec:
             zh_cn: 产物大小(字节)
           type: integer
         - description:
-            en_us: 校验和
+            en_us: Checksum
             zh_cn: 校验和
           display_name:
             en_us: Checksum
@@ -159,7 +159,7 @@ spec:
             zh_cn: 校验和
           type: string
         - description:
-            en_us: 校验算法 sha256/md5
+            en_us: Checksum algorithm: sha256/md5
             zh_cn: 校验算法 sha256/md5
           display_name:
             en_us: Checksum Algorithm
@@ -172,7 +172,7 @@ spec:
             zh_cn: 校验算法 sha256/md5
           type: enum
         - description:
-            en_us: 安全扫描状态 passed/failed/skipped/in_progress
+            en_us: Security scan status: passed/failed/skipped/in_progress
             zh_cn: 安全扫描状态 passed/failed/skipped/in_progress
           display_name:
             en_us: Security Scan Status
@@ -185,7 +185,7 @@ spec:
             zh_cn: 安全扫描状态 passed/failed/skipped/in_progress
           type: enum
         - description:
-            en_us: 漏洞数量
+            en_us: Vulnerability count
             zh_cn: 漏洞数量
           display_name:
             en_us: Vulnerability Count
@@ -198,7 +198,7 @@ spec:
             zh_cn: 漏洞数量
           type: integer
         - description:
-            en_us: 漏洞严重级别统计
+            en_us: Vulnerability severity stats
             zh_cn: 漏洞严重级别统计
           display_name:
             en_us: Vulnerability Severity
@@ -211,7 +211,7 @@ spec:
             zh_cn: 漏洞严重级别统计
           type: json
         - description:
-            en_us: 产物状态 active/deprecated/deleted
+            en_us: Artifact status: active/deprecated/deleted
             zh_cn: 产物状态 active/deprecated/deleted
           display_name:
             en_us: Status
@@ -224,7 +224,7 @@ spec:
             zh_cn: 产物状态 active/deprecated/deleted
           type: enum
         - description:
-            en_us: 数据来源 harbor/artifactory/npm_registry
+            en_us: Data source: harbor/artifactory/npm_registry
             zh_cn: 数据来源 harbor/artifactory/npm_registry
           display_name:
             en_us: Data Source
@@ -237,7 +237,7 @@ spec:
             zh_cn: 数据来源 harbor/artifactory/npm_registry
           type: string
         - description:
-            en_us: 平台产物ID
+            en_us: Platform artifact ID
             zh_cn: 平台产物ID
           display_name:
             en_us: Platform Artifact Id
@@ -250,7 +250,7 @@ spec:
             zh_cn: 平台产物ID
           type: string
         - description:
-            en_us: 产物URL
+            en_us: Artifact URL
             zh_cn: 产物URL
           display_name:
             en_us: Url
@@ -263,7 +263,7 @@ spec:
             zh_cn: 产物URL
           type: string
         - description:
-            en_us: 扩展元数据
+            en_us: Extension metadata
             zh_cn: 扩展元数据
           display_name:
             en_us: Metadata
@@ -276,7 +276,7 @@ spec:
             zh_cn: 扩展元数据
           type: json
         - description:
-            en_us: 创建时间
+            en_us: Creation time
             zh_cn: 创建时间
           display_name:
             en_us: Created At
@@ -289,7 +289,7 @@ spec:
             zh_cn: 创建时间
           type: datetime
         - description:
-            en_us: 创建者
+            en_us: Created by
             zh_cn: 创建者
           display_name:
             en_us: Created By
