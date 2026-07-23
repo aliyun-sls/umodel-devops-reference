@@ -9,10 +9,10 @@ description: Diagnose CMS workspace and SLS alignment issues when refresh or vis
 - Identify why data is not visible or not aligned after the earlier stages have already failed or produced uncertainty.
 
 ## Read First
-- `shared/verification/failure-diagnosis.md`
-- `shared/verification/script-map.md`
-- `shared/verification/receipt-contract.md`
-- `shared/verification/config-contract.md`
+- `verification/failure-diagnosis.md`
+- `verification/script-map.md`
+- `verification/receipt-contract.md`
+- `verification/config-contract.md`
 
 ## Canonical Command
 ```bash

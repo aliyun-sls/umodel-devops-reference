@@ -10,9 +10,9 @@ description: Check whether the external resources required for the verification 
 - Stop early when required resources do not exist.
 
 ## Read First
-- `shared/verification/prerequisites.md`
-- `shared/verification/receipt-contract.md`
-- `shared/verification/workflow-stages.md`
+- `verification/prerequisites.md`
+- `verification/receipt-contract.md`
+- `verification/workflow-stages.md`
 - `devops_data_generator/config/app_config.yaml` — read `git_provider.type` to determine which credentials to check.
 
 ## Provider-Aware Checks
@@ -40,7 +40,7 @@ description: Check whether the external resources required for the verification 
 - `cms.endpoint` is set
 - `sls.project` is set and not a placeholder
 - `sls.endpoint` is set
-- Required config files exist: `app_config.yaml`, `data_mapping.yaml`, `repo_image_mapping.yaml`, `manage_mapping.yaml`, `static_topo.yaml`
+- Required config files exist: `app_config.yaml`, `data_mapping.yaml`, `repo_image_mapping.yaml`, `static_topo.yaml`
 
 ## Receipt Format
 ```

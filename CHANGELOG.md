@@ -54,7 +54,7 @@ All notable changes to this repository. Dates are YYYY-MM-DD.
 ### 收尾修复（评审遗留）
 
 - **user.roles 聚合 bug**：`user_task.py` 之前把 `user.roles` 写死为 `[]` 从不填充，灌进 UModel 的 user 记录 roles 恒为空。现改为从该 user 的所有 repository 成员资格聚合 `role` 字段、去重排序。
-- **verification 文档失效断言**：`shared/verification/workflow-stages_zh.md` 等的 `git_provider=aliyun` 断言改为 `data_source=codeup`，对齐决策 D。
+- **verification 文档失效断言**：`verification/workflow-stages_zh.md` 等的 `git_provider=aliyun` 断言改为 `data_source=codeup`，对齐决策 D。
 - **`.mimocode/` 加入 .gitignore**：本地工作产物（与 `.spec/` `.review/` 同类）不再误入版本库。
 
 ### 图可遍历性修复
@@ -103,6 +103,18 @@ All notable changes to this repository. Dates are YYYY-MM-DD.
 - **MR 未知状态默认值**：两实现统一为 `open`（原 GitLab 为 `draft`）。
 - **sample 配置契约补全**：两份 sample 补 `acr.repo_filter`、`fetch_details`、`logstore_mapping.entities.kubernetes_pod`。
 - **umodel metric link**：`devops.user_related_to_devops.metric.user_commit` 链名前缀自相矛盾，修正为 `devops.user_related_to_metric.user_commit` 并重新生成 YAML。
+
+### 续项修复（安全/逻辑/工程，2026-07-23）
+
+- **S2 Flask 鉴权**：`/invoke`、`/status`、`/stop` 支持可选 token 鉴权（`AUTH_TOKEN` 环境变量 + `X-Auth-Token` 常时比较）；`/health` 保持开放以兼容健康检查；未设 `AUTH_TOKEN` = 不鉴权（向后兼容）。
+- **S3 SPL 注入**：`kubernetes_pod_task` 的 `namespace_filter` 在拼入 SPL 查询前做 allowlist 校验（`[A-Za-z0-9._-]`），非法即报错。
+- **L1 GitLab group**：`group.projects.list` 加 `include_subgroups=True`（含子组项目）；保留 `projects.get()`（`GroupProject` 无 `.languages()`，需全量 Project 对象）。
+- **L2 `tasks.batch_size`**：代码从不读取，从两份 sample 删除。
+- **L3 Codeup PR 字段集**：Phase 1 已与 GitLab 对齐，本次确认无残留不一致。
+- **D1/D2 配置契约**：skill 文档删除不存在的 `manage_mapping.yaml`；`verification-skills` "必需配置文件" 6→4 并与 skill 清单一致。
+- **E1 顶层 `adapters/` 空壳**：删除 `adapters/jenkins/` stub；provider-matrix 的 Jenkins 条目去掉悬空引用。
+- **E2 `shared/` 重名**：顶层 `shared/verification/` → `verification/`，删空壳 `shared/`，全仓引用同步（README/skills/docs/CHANGELOG）。
+- **E3 sample AK/SK**：两份 sample 用 YAML 锚点（`&ak`/`&sk` + `*ak`/`*sk`），填一次复用。
 
 ### 待办（Phase 4，schema-only，待数据源）
 

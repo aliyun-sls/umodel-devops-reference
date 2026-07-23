@@ -100,7 +100,7 @@
   - git provider repository：存在且可达
   - ACR instance：存在
   - CMS workspace：存在
-  - 配置文件：6 个必需配置文件存在
+  - 配置文件：4 个必需配置文件存在
 - 缺失资源：无 / [列出缺失项]
 
 ### `workspace-alignment`

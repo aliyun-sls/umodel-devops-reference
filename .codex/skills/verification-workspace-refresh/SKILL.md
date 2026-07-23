@@ -9,10 +9,10 @@ description: Execute the canonical repository refresh path that writes entity an
 - Run the real refresh path that matters when the workspace has no fresh devops data.
 
 ## Read First
-- `shared/verification/workflow-stages.md`
-- `shared/verification/script-map.md`
-- `shared/verification/config-contract.md`
-- `shared/verification/receipt-contract.md`
+- `verification/workflow-stages.md`
+- `verification/script-map.md`
+- `verification/config-contract.md`
+- `verification/receipt-contract.md`
 
 ## Canonical Command
 ```bash
@@ -20,7 +20,7 @@ python3 devops_data_generator/main.py --mode single --config devops_data_generat
 ```
 
 ## Do
-- Use the canonical command from `shared/verification/script-map.md`.
+- Use the canonical command from `verification/script-map.md`.
 - Record the execution summary honestly.
 - Distinguish `success`, `partial_success`, `error`, and `blocked` clearly.
 

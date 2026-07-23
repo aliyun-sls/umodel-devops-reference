@@ -134,7 +134,7 @@ umodel-devops-reference/
 ├── tools/                           # gen_umodel_yaml.py（schema 生成器）
 ├── .claude/skills/                  # 6 个 Claude 验证 Skill
 ├── .codex/skills/                   # 6 个 Codex 验证 Skill
-├── shared/verification/             # 验证契约
+├── verification/             # 验证契约
 ├── docker-compose.yml               # 数据采集容器（平台由配置决定）
 └── docs/                            # 设计 + 部署 + 平台指南
 ```

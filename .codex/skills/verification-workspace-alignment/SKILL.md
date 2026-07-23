@@ -9,10 +9,10 @@ description: Verify that the repository config points at the correct CMS workspa
 - Confirm that refresh would write into the intended CMS workspace data plane.
 
 ## Read First
-- `shared/verification/workflow-stages.md`
-- `shared/verification/config-contract.md`
-- `shared/verification/receipt-contract.md`
-- `shared/verification/failure-diagnosis.md`
+- `verification/workflow-stages.md`
+- `verification/config-contract.md`
+- `verification/receipt-contract.md`
+- `verification/failure-diagnosis.md`
 - `devops_data_generator/config/app_config.yaml` — read `git_provider.type` for provider-specific alignment notes.
 
 ## Provider-Aware Alignment

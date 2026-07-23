@@ -93,5 +93,5 @@ AK/SK 始终需要（用于 API 请求签名）。`auth_mode` 仅控制是否发
 
 ## 尚未实现的平台
 
-- Jenkins — 见 `adapters/jenkins/README.md`
+- Jenkins
 - GitHub Actions / Argo / Tekton

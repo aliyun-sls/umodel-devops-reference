@@ -93,5 +93,5 @@ Each entity needs an explicit SLS logstore (entity name) configured under `sls.l
 
 ## Providers Not Yet Implemented
 
-- Jenkins — see `adapters/jenkins/README.md`
+- Jenkins
 - GitHub Actions / Argo / Tekton

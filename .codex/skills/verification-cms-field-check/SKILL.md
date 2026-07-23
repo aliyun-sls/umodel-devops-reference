@@ -9,9 +9,9 @@ description: Inspect key devops entity fields in the CMS workspace after visibil
 - Validate key fields on known entities once the workspace already shows the expected devops entity types.
 
 ## Read First
-- `shared/verification/workflow-stages.md`
-- `shared/verification/script-map.md`
-- `shared/verification/receipt-contract.md`
+- `verification/workflow-stages.md`
+- `verification/script-map.md`
+- `verification/receipt-contract.md`
 - `devops_data_generator/config/app_config.yaml` — read `git_provider.type` to determine expected field values.
 
 ## Canonical Command

@@ -8,8 +8,9 @@ git_provider:
 # Replace placeholders with real values; do NOT commit a populated copy.
 codeup:
   organization_id: "<YOUR_ORGANIZATION_ID>"
-  access_key_id: "<YOUR_ALIYUN_AK>"
-  access_key_secret: "<YOUR_ALIYUN_SK>"
+  # &ak / &sk anchors: fill AK/SK once here; acr/cms/sls reuse via *ak / *sk.
+  access_key_id: &ak "<YOUR_ALIYUN_AK>"
+  access_key_secret: &sk "<YOUR_ALIYUN_SK>"
   # Auth mode: "ram" or "pat"
   #   ram — repos visible = those granted to the RAM user (AK/SK only)
   #   pat — repos visible = all the PAT owner can see (needs access_token below)
@@ -30,8 +31,8 @@ codeup:
 acr:
   instance_id: "<YOUR_ACR_INSTANCE_ID>"
   region: "cn-hangzhou"
-  access_key_id: "<YOUR_ALIYUN_AK>"
-  access_key_secret: "<YOUR_ALIYUN_SK>"
+  access_key_id: *ak
+  access_key_secret: *sk
   # 0 = unlimited (pull all); set a number to cap per-API results
   max_repositories: 0       # max ACR registries to pull
   max_tags_per_repo: 0      # max image tags per registry
@@ -46,8 +47,8 @@ cms:
   endpoint: "metrics.<YOUR_REGION_ID>.aliyuncs.com"
   workspace: "<YOUR_CMS_WORKSPACE>"
   namespace_filter: "<YOUR_NAMESPACE_FILTER>"
-  access_key_id: "<YOUR_ALIYUN_AK>"
-  access_key_secret: "<YOUR_ALIYUN_SK>"
+  access_key_id: *ak
+  access_key_secret: *sk
 
 # --- Kubernetes ------------------------------------------------------------
 kubernetes:
@@ -66,8 +67,8 @@ static_topo:
 # --- SLS upload target -----------------------------------------------------
 sls:
   endpoint: "cn-hongkong.log.aliyuncs.com"
-  access_key_id: "<YOUR_ALIYUN_AK>"
-  access_key_secret: "<YOUR_ALIYUN_SK>"
+  access_key_id: *ak
+  access_key_secret: *sk
   project: "<YOUR_SLS_PROJECT>"
   logstore_mapping:
     entities:
@@ -107,7 +108,6 @@ tasks:
     - pod_uses_docker_image
     - static_topo
   interval: 300
-  batch_size: 100
   shared_data_ttl: 86400
   skip_sls_upload:
     - skip_to_upload

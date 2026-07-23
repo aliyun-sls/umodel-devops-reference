@@ -144,7 +144,7 @@ umodel-devops-reference/
 ├── tools/                           # gen_umodel_yaml.py (schema generator)
 ├── .claude/skills/                  # 6 Claude verification skills
 ├── .codex/skills/                   # 6 Codex verification skills
-├── shared/verification/             # Verification contracts
+├── verification/             # Verification contracts
 ├── docker-compose.yml               # Data generator (provider selected by config)
 └── docs/                            # Design + deployment + provider guides
 ```
