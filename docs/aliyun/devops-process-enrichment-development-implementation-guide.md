@@ -45,9 +45,7 @@
 │   └── requirements.txt             # Python依赖
 ├── umodel/                          # UModel Schema定义
 ├── umodel_uploader/                 # UModel上传工具
-├── verification/             # verification共享规则
-├── .codex/skills/                   # Codex skills
-└── .claude/skills/                  # Claude skills
+└── .agents/skills/                  # devops-verification skill (orchestrator + references)
 ```
 
 **说明**

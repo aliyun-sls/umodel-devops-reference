@@ -116,6 +116,14 @@ All notable changes to this repository. Dates are YYYY-MM-DD.
 - **E2 `shared/` 重名**：顶层 `shared/verification/` → `verification/`，删空壳 `shared/`，全仓引用同步（README/skills/docs/CHANGELOG）。
 - **E3 sample AK/SK**：两份 sample 用 YAML 锚点（`&ak`/`&sk` + `*ak`/`*sk`），填一次复用。
 
+### Skill 合并（verification 6→1 orchestrator，2026-07-23）
+
+- **6 个 verification skill 合并为 1 个 orchestrator**：`devops-verification`（`.agents/skills/devops-verification/`），仿 `starops-practice` 范式——`SKILL.md` 编排流水线 + `references/workflow.yaml` 机器可读流程（stages/routing/quality_gates/anti_patterns）+ `agents/openai.yaml`。
+- **契约层移入 skill**：顶层 `verification/`（16 个 zh/en 契约文件）移入 `references/`，并修正其中的路径感知行（`.claude/`/`.codex/` 引用改为 skill 内部相对引用）。
+- **删除双拷贝**：移除 `.claude/skills/` 与 `.codex/skills/`（6 skill ×2，逐字节相同、无同步机制）。ZCode workspace 级 skill 发现路径为 `.zcode/skills` 与 `.agents/skills`，`.claude`/`.codex` 不在其列。
+- **文档同步**：README/README_zh（树+入口）、dev-impl-guide（树）、`docs/skills/verification-skills*.md`（改为单 skill 简短指针，避免与 skill 内容漂移）。
+- 6 阶段（readiness/alignment/refresh/visibility/field-check/diagnose）顺序、receipt schema、provider-aware 断言不变，仅载体从"6 份 ×2 拷贝"变为"1 份 orchestrator + references"。
+
 ### 待办（Phase 4，schema-only，待数据源）
 
 以下实体仅有 schema 定义（EntitySet + EntitySetLink），无 producer，待对应数据源 adapter：

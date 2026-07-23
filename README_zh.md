@@ -92,7 +92,7 @@ producer 由 `app_config.yaml` 中的 `git_provider.type` 选择。同一次 Com
 
 ## 验证
 
-6 个验证 Skill 覆盖完整链路，按 `git_provider.type` 智能判断检查项：
+`devops-verification` skill 是单个 orchestrator，跑按 `git_provider.type` 智能判断的 6 阶段流水线：
 
 1. `verification-resource-readiness` — 配置与凭据检查
 2. `verification-workspace-alignment` — SLS project / logstore 对齐
@@ -101,7 +101,7 @@ producer 由 `app_config.yaml` 中的 `git_provider.type` 选择。同一次 Com
 5. `verification-cms-field-check` — 按平台验证字段值
 6. `verification-cms-sls-diagnose` — 仅失败时进入
 
-入口：`.claude/skills/<name>/SKILL.md` 和 `.codex/skills/<name>/SKILL.md`。
+入口：`.agents/skills/devops-verification/SKILL.md`（流水线在 `references/workflow.yaml`）。
 
 ## 上传 UModel 定义
 
@@ -132,9 +132,7 @@ umodel-devops-reference/
 │   ├── orchestrator.py              # 任务调度 + 结构化结果
 │   └── scripts/                     # 验证 + 部署脚本
 ├── tools/                           # gen_umodel_yaml.py（schema 生成器）
-├── .claude/skills/                  # 6 个 Claude 验证 Skill
-├── .codex/skills/                   # 6 个 Codex 验证 Skill
-├── verification/             # 验证契约
+├── .agents/skills/                  # devops-verification skill（orchestrator + references）
 ├── docker-compose.yml               # 数据采集容器（平台由配置决定）
 └── docs/                            # 设计 + 部署 + 平台指南
 ```

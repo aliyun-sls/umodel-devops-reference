@@ -101,7 +101,7 @@ npm_package, unit_testcase, deployment) are schema-only pending their data-sourc
 
 ## Verification
 
-Six provider-aware verification skills validate the full pipeline:
+The `devops-verification` skill is one orchestrator that runs a provider-aware 6-stage pipeline:
 
 1. `verification-resource-readiness` — config and credentials check
 2. `verification-workspace-alignment` — SLS project / logstore alignment
@@ -110,7 +110,7 @@ Six provider-aware verification skills validate the full pipeline:
 5. `verification-cms-field-check` — validate field values per provider
 6. `verification-cms-sls-diagnose` — failure-only diagnostics
 
-Entry points: `.claude/skills/<name>/SKILL.md` and `.codex/skills/<name>/SKILL.md`.
+Entry point: `.agents/skills/devops-verification/SKILL.md` (pipeline flow in `references/workflow.yaml`).
 
 ## Upload UModel Definitions
 
@@ -142,9 +142,7 @@ umodel-devops-reference/
 │   ├── orchestrator.py              # Task scheduling + structured results
 │   └── scripts/                     # Verification + deployment scripts
 ├── tools/                           # gen_umodel_yaml.py (schema generator)
-├── .claude/skills/                  # 6 Claude verification skills
-├── .codex/skills/                   # 6 Codex verification skills
-├── verification/             # Verification contracts
+├── .agents/skills/                  # devops-verification skill (orchestrator + references)
 ├── docker-compose.yml               # Data generator (provider selected by config)
 └── docs/                            # Design + deployment + provider guides
 ```

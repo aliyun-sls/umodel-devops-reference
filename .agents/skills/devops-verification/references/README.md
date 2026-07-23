@@ -1,8 +1,8 @@
-# Verification Shared Layer
+# Verification Reference Layer
 
 ## Purpose
-- `verification/` is the repository-root shared truth layer for the first-wave verification skills.
-- It exists so `.codex` and `.claude` skills can reuse one set of workflow rules instead of copying each other.
+- `references/` is the contract layer for the `devops-verification` skill (one skill, not a per-runtime copy).
+- It exists so the skill has one set of workflow rules instead of duplicating them per stage.
 
 ## Scope
 - workflow stages
@@ -17,7 +17,7 @@
 - not a Python runtime package
 - not a replacement for `devops_data_generator/shared`
 - not a place to store environment instance values or secrets
-- not the place to define `.codex` or `.claude` runtime-specific wrappers
+- not the place to define runtime-specific wrappers
 
 ## Canonical Rule
 - refresh data into CMS workspace first
@@ -25,6 +25,5 @@
 - diagnose only when refresh or verification does not produce the expected result
 
 ## Consumers
-- `.codex/skills/verification-*`
-- `.claude` verification skills
+- the `devops-verification` skill (`../SKILL.md` + `workflow.yaml`)
 - maintainers reading the repository workflow directly
