@@ -175,28 +175,26 @@ class CodeupAdapter(IGitAdapter):
     def list_pull_requests(self, repo_id: str) -> List[Dict[str, Any]]:
         """Return codeup merge requests for a repository in the unified pull_request schema.
 
-        Uses ListMergeRequest (if available) on the alibabacloud-devops SDK; degrades
-        to an empty list when the SDK lacks the call or returns nothing.
+        Uses ListMergeRequests (alibabacloud_devops20210625 >= 4.x); the API is
+        organization-level, so the repository filter goes through ``project_ids``.
         """
         pull_requests: List[Dict[str, Any]] = []
-        list_mr = getattr(self.client, "list_merge_request_with_options", None)
-        if not list_mr:
-            logger.debug("codeup SDK has no list_merge_request; skipping PR fetch for repo %s", repo_id)
-            return pull_requests
         page = 1
-        per_page = 100
+        page_size = 100
         while True:
-            request = devops_models.ListMergeRequest(
-                organization_id=self.organization_id,
-                page=page,
-                per_page=per_page,
-            )
+            req_kwargs = {
+                "organization_id": self.organization_id,
+                "project_ids": str(repo_id),
+                "page": page,
+                "page_size": page_size,
+            }
             if self.auth_mode == "pat" and self.access_token:
-                request.access_token = self.access_token
+                req_kwargs["access_token"] = self.access_token
+            request = devops_models.ListMergeRequestsRequest(**req_kwargs)
             try:
-                response = list_mr(repo_id, request, {}, util_models.RuntimeOptions())
+                response = self.client.list_merge_requests_with_options(request, {}, util_models.RuntimeOptions())
             except Exception as exc:  # noqa: BLE001
-                logger.warning("codeup ListMergeRequest failed for repo %s: %s", repo_id, exc)
+                logger.warning("codeup ListMergeRequests failed for repo %s: %s", repo_id, exc)
                 break
             if response.status_code != 200 or not response.body:
                 break
@@ -204,9 +202,17 @@ class CodeupAdapter(IGitAdapter):
             if not result:
                 break
             for mr in result:
-                pr_num = getattr(mr, "number", "") or getattr(mr, "id", "")
-                pr_id_raw = str(pr_num)
-                author_id = str(getattr(mr, "author_id", "") or "")
+                pr_num = getattr(mr, "local_id", None) or getattr(mr, "iid", None) or getattr(mr, "id", None)
+                pr_id_raw = str(pr_num or "")
+                author = getattr(mr, "author", None)
+                author_id = str(getattr(author, "id", "") or "") if author else ""
+                status = self._map_mr_state(getattr(mr, "state", ""))
+                updated_at = getattr(mr, "updated_at", "") or ""
+                reviewers = []
+                for reviewer in getattr(mr, "reviewers", None) or []:
+                    reviewer_id = str(getattr(reviewer, "id", "") or "")
+                    if reviewer_id:
+                        reviewers.append(f"{self.PROVIDER_NAME}:{reviewer_id}")
                 pull_requests.append(
                     {
                         "pr_id": f"{self.PROVIDER_NAME}:{repo_id}!{pr_id_raw}" if pr_id_raw else "",
@@ -216,19 +222,24 @@ class CodeupAdapter(IGitAdapter):
                         "title": getattr(mr, "title", "") or "",
                         "description": getattr(mr, "description", "") or "",
                         "author_id": f"{self.PROVIDER_NAME}:{author_id}" if author_id else "",
+                        "reviewers": reviewers,
                         "source_branch": getattr(mr, "source_branch", "") or "",
                         "target_branch": getattr(mr, "target_branch", "") or "",
-                        "status": self._map_mr_state(getattr(mr, "state", "")),
+                        "source_commit_sha": "",
+                        "merge_commit_sha": getattr(mr, "merged_revision", "") or "",
+                        "status": status,
                         "data_source": self.PROVIDER_NAME,
                         "platform_pr_id": pr_id_raw,
-                        "url": getattr(mr, "web_url", "") or "",
+                        "url": getattr(mr, "web_url", "") or getattr(mr, "detail_url", "") or "",
                         "created_at": getattr(mr, "created_at", "") or "",
-                        "updated_at": getattr(mr, "updated_at", "") or "",
-                        "merged_at": getattr(mr, "merge_commit_sha", "") and getattr(mr, "updated_at", "") or "",
+                        "updated_at": updated_at,
+                        # The API exposes no merged_at; updated_at is the merge time
+                        # for merged MRs because merging is their last mutation.
+                        "merged_at": updated_at if status == "merged" else "",
                         "closed_at": "",
                     }
                 )
-            if len(result) < per_page:
+            if len(result) < page_size:
                 break
             page += 1
         return pull_requests

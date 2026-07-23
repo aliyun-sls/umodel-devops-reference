@@ -12,4 +12,4 @@ kubernetes==29.0.0
 
 # Git provider SDKs (both installed in v0.1; v0.2 will split into extras_require)
 python-gitlab==4.8.0
-alibabacloud_devops20210625==3.0.0
+alibabacloud_devops20210625==5.0.3

@@ -168,6 +168,9 @@ class StaticTopoTask(BaseTask):
                 '__dest_domain__': relation.get('target_domain', ''),
                 '__dest_entity_type__': relation.get('target_entity_type', ''),
                 '__dest_entity_id__': relation.get('target_entity_id', ''),
+                # Required for the record to enter the CMS live window;
+                # matches the cross-reference record convention below.
+                '__keep_alive_seconds__': '600',
             }
             
             # 添加额外属性

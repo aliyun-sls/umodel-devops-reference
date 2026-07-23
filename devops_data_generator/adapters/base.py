@@ -60,7 +60,7 @@ class IGitAdapter(ABC):
         """Return releases for a single repository."""
 
     @abstractmethod
-    def get_release_by_tag(self, repo_id: str) -> Optional[Dict[str, Any]]:
+    def get_release_by_tag(self, repo_id: str, tag: str) -> Optional[Dict[str, Any]]:
         """Return a single release identified by tag, or None if missing."""
 
     @abstractmethod

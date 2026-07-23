@@ -144,11 +144,11 @@ class DockerImageTask(BaseTask):
                 break
             repos = response.body.repositories or []
             all_repos.extend(repos)
-            if len(repos) < page_size:
-                break
             if self.max_repositories and len(all_repos) >= self.max_repositories:
                 all_repos = all_repos[: self.max_repositories]
                 logger.info("Reached max_repositories=%s, stopping", self.max_repositories)
+                break
+            if len(repos) < page_size:
                 break
             page_no += 1
         return all_repos
@@ -182,11 +182,15 @@ class DockerImageTask(BaseTask):
                         artifacts.append(artifact)
                 if self.fetch_interval_ms:
                     time.sleep(self.fetch_interval_ms / 1000.0)
-                if len(tags) < page_size:
-                    break
                 if self.max_tags_per_repo and len(images) >= self.max_tags_per_repo:
                     images = images[: self.max_tags_per_repo]
                     artifacts = artifacts[: self.max_tags_per_repo]
+                    logger.info(
+                        "Reached max_tags_per_repo=%s for repo %s, stopping",
+                        self.max_tags_per_repo, repo_id,
+                    )
+                    break
+                if len(tags) < page_size:
                     break
                 page_no += 1
         except Exception as e:  # noqa: BLE001
