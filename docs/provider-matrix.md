@@ -72,14 +72,24 @@ Both providers produce the same entity field set. Only values differ:
 
 `release.release_type`: classified by `tasks/utils/release_classifier.py` using word-boundary regex — consistent across providers.
 
+## Repository Detail Fetch
+
+`codeup.fetch_details` / `gitlab.fetch_details` (boolean, default `true`) controls whether the adapter fetches per-repository detail (Codeup `GetRepository` / GitLab project detail) for richer fields. Set to `false` to speed up large orgs/instances at the cost of detail-level attributes.
+
 ## Pagination and Limits
 
-All list APIs use full pagination by default. Two config parameters under `acr:` control volume:
+All list APIs use full pagination by default. Config parameters under `acr:` control fetch scope, pacing, and volume:
 
-| Parameter | Default | Effect |
-|---|---|---|
-| `max_repositories` | `0` (unlimited) | Cap the number of ACR registries fetched |
-| `max_tags_per_repo` | `0` (unlimited) | Cap the number of image tags per registry |
+| Parameter | Type | Default | Effect |
+|---|---|---|---|
+| `acr.repo_filter` | list | `[]` (fetch all) | Optional whitelist of repo full-namespace names to fetch (e.g. `["library/nginx"]`); empty = fetch all repos in the instance |
+| `acr.fetch_interval_ms` | int | `200` | Pacing between ListRepoTag API calls (ms); prevention, not retry/backoff |
+| `acr.max_repositories` | int | `0` (unlimited) | Cap the number of ACR registries fetched |
+| `acr.max_tags_per_repo` | int | `0` (unlimited) | Cap the number of image tags per registry |
+
+## SLS Entity Mapping
+
+Each entity needs an explicit SLS logstore (entity name) configured under `sls.logstore_mapping.entities`. In particular, `sls.logstore_mapping.entities.kubernetes_pod` — the logstore used for the `kubernetes_pod` entity — must be present; without it the `kubernetes_pod` task falls back to a wrong name and pod data fails to write to SLS. See the `sls.logstore_mapping.entities` block in `app_config.*.yaml.sample`.
 
 ## Providers Not Yet Implemented
 

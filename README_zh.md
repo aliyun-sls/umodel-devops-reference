@@ -63,6 +63,17 @@ docker compose up --build
 producer 由 `app_config.yaml` 中的 `git_provider.type` 选择。同一次 Compose 启动还会运行一次性
 `umodel-schema-uploader`，幂等 upsert 17 个 EntitySet 和 36 条 EntitySetLink 后退出。
 
+### 入口
+
+本生成器提供两个入口，按运行方式选用：
+
+- **`main.py`**（CLI，`docker-compose.yml` 的默认入口）：运行单次周期（`--mode single`）或
+  持续调度循环（`--mode continuous --interval`）。无 HTTP 监听——`docker compose up` 运行的即是它。
+- **`app.py`**（Flask HTTP API，Dockerfile 的默认 `CMD`）：在 5000 端口暴露 `POST /invoke`、
+  `GET /status`、`GET /health`、`POST /stop`，适用于外部触发式运行。
+
+两者共用同一 orchestrator 与配置；按入口选用即可，无需另行实现调度。
+
 ## UModel 实体
 
 17 个 EntitySet 覆盖完整研发链路（组织→项目→代码→CI/CD→发布→部署）。有 producer 支撑的实体（git + ACR 派生）：`devops.user`、`devops.repository`、`devops.release`、`devops.pull_request`、`devops.artifact`、`devops.docker_image`。其余 11 个（organization、project、work_item、milestone、pipeline、pipeline_run、helm_chart、binary、npm_package、unit_testcase、deployment）为 schema-only，待对应数据源 adapter（Jira/CI/appstack/制品库/组织系统）落地，详见 `docs/umodel-entity-field-contract.md`。
@@ -136,3 +147,7 @@ umodel-devops-reference/
 - [实现指南](docs/aliyun/devops-process-enrichment-development-implementation-guide.md)
 - [场景总览](docs/aliyun/microservice-scenario-devops-process-enrichment-overview.md)
 - [验证 Skill 使用说明](docs/skills/verification-skills.md) | [English](docs/skills/verification-skills_en.md)
+
+## License
+
+Internal use.

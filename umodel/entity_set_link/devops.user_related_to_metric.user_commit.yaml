@@ -1,14 +1,14 @@
 kind: entity_set_link
 metadata:
     description:
-        en_us: User related_to User Project Participation.
-        zh_cn: User related_to User Project Participation。
+        en_us: User related_to User Commit.
+        zh_cn: User related_to User Commit。
     display_name:
-        en_us: User Related_To User Project Participation
-        zh_cn: User related_to User Project Participation
+        en_us: User Related_To User Commit
+        zh_cn: User related_to User Commit
     domain: devops
     kind: entity_set_link
-    name: devops.user_related_to_devops.metric.user_project_participation
+    name: devops.user_related_to_metric.user_commit
 schema:
     url: umodel.aliyun.com
     version: v0.1.0
@@ -16,7 +16,7 @@ spec:
     dest:
         domain: metric
         kind: entity_set
-        name: metric.user_project_participation
+        name: metric.user_commit
     entity_link_type: related_to
     priority: 5
     src:

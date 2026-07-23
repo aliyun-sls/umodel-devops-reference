@@ -54,3 +54,29 @@ python3 devops_data_generator/main.py --mode continuous --config devops_data_gen
 ```
 
 Expected: entities with `data_source=gitlab` or `data_source=codeup` depending on your config.
+
+### 5. Docker Compose (optional, self-hosted)
+
+For a long-running self-hosted deployment, create a `docker-compose.yml` inside `devops_data_generator/`:
+
+```yaml
+version: '3.8'
+services:
+  devops-data-generator:
+    build: .
+    container_name: devops-data-generator
+    restart: unless-stopped
+    environment:
+      PYTHONUNBUFFERED: "1"
+    command: ["python3", "main.py", "--mode", "continuous", "--config", "/app/config"]
+    volumes:
+      - ./config:/app/config:ro
+      - ./logs:/app/logs
+```
+
+```bash
+docker compose up -d      # start the long-running generator (continuous mode)
+docker compose logs -f    # follow logs
+```
+
+Pair `--mode continuous` with `restart: unless-stopped` for a long-running service. Do **not** combine `--mode single` with `unless-stopped`: `single` runs once then exits, and `unless-stopped` would restart it in an infinite loop. For a one-shot run, use `--mode single` with `restart: "no"` or `restart: on-failure` instead.

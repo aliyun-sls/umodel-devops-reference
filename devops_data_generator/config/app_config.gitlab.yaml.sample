@@ -17,6 +17,9 @@ gitlab:
   access_token: "<YOUR_GITLAB_TOKEN>"
   group_id: null
   project_id: null
+  # Fetch per-repo detail for richer fields. Set false to speed up large
+  # instances at the cost of detail-level attributes.
+  fetch_details: true
   release_tag: null
 
 acr:
@@ -29,6 +32,9 @@ acr:
   max_tags_per_repo: 0      # max image tags per registry
   # Pacing between ListRepoTag API calls (ms). Prevention, not retry/backoff.
   fetch_interval_ms: 200
+  # Optional whitelist of repo full-namespace names to fetch (e.g.
+  # ["library/nginx"]). Empty = fetch all repos in the instance.
+  repo_filter: []
 
 cms:
   endpoint: "metrics.<YOUR_REGION_ID>.aliyuncs.com"
@@ -62,6 +68,7 @@ sls:
       pull_request: "<YOUR_ENTITY_NAME>"
       artifact: "<YOUR_ENTITY_NAME>"
       docker_image: "<YOUR_ENTITY_NAME>"
+      kubernetes_pod: "<YOUR_ENTITY_NAME>"
     relationships:
       user_owns_repository: "<YOUR_TOPO_NAME>"
       repository_tags_release: "<YOUR_TOPO_NAME>"

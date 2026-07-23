@@ -2,7 +2,7 @@
 
 ## Purpose
 - `shared/verification/` is the repository-root shared truth layer for the first-wave verification skills.
-- It exists so `.codex` and future `.claude` skills can reuse one set of workflow rules instead of copying each other.
+- It exists so `.codex` and `.claude` skills can reuse one set of workflow rules instead of copying each other.
 
 ## Scope
 - workflow stages
@@ -26,5 +26,5 @@
 
 ## Consumers
 - `.codex/skills/verification-*`
-- future `.claude` verification skills
+- `.claude` verification skills
 - maintainers reading the repository workflow directly

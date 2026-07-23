@@ -4,7 +4,7 @@ git_provider:
 
 # --- Codeup (Alibaba Cloud DevOps) credentials -----------------------------
 # Verified against: Alibaba Cloud DevOps (Codeup) API 2021-06-25
-# SDK: alibabacloud-devops20210625 3.0.0
+# SDK: alibabacloud-devops20210625 5.0.3
 # Replace placeholders with real values; do NOT commit a populated copy.
 codeup:
   organization_id: "<YOUR_ORGANIZATION_ID>"
@@ -21,6 +21,9 @@ codeup:
   access_token: ""
   # Optional override; defaults to devops.cn-hangzhou.aliyuncs.com
   endpoint: ""
+  # Fetch per-repo detail (GetRepository) for richer fields. Set false to
+  # speed up large orgs at the cost of detail-level attributes.
+  fetch_details: true
   release_tag: null
 
 # --- ACR (container registry, shared across providers) ---------------------
@@ -34,6 +37,9 @@ acr:
   max_tags_per_repo: 0      # max image tags per registry
   # Pacing between ListRepoTag API calls (ms). Prevention, not retry/backoff.
   fetch_interval_ms: 200
+  # Optional whitelist of repo full-namespace names to fetch (e.g.
+  # ["library/nginx"]). Empty = fetch all repos in the instance.
+  repo_filter: []
 
 # --- CMS (Workspace for k8s.pod data) -------------------------------------
 cms:
@@ -71,6 +77,7 @@ sls:
       pull_request: "<YOUR_ENTITY_NAME>"
       artifact: "<YOUR_ENTITY_NAME>"
       docker_image: "<YOUR_ENTITY_NAME>"
+      kubernetes_pod: "<YOUR_ENTITY_NAME>"
     relationships:
       user_owns_repository: "<YOUR_TOPO_NAME>"
       repository_tags_release: "<YOUR_TOPO_NAME>"

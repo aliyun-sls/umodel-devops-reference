@@ -4,8 +4,9 @@ All notable changes to this repository. Dates are YYYY-MM-DD.
 
 ## [Unreleased] — UModel 全量实体对齐（破坏性重命名）
 
-> 权威源：`docs/DevOps UModel设计-new.md`（17 实体 + 29 关系）。
-> 对齐 spec：`docs/umodel-alignment-spec.md`（决策 A–G 已确认）。
+> 权威设计文档 `docs/DevOps UModel设计-new.md`（17 实体 + 29 关系）与对齐 spec
+> `docs/umodel-alignment-spec.md`（决策 A–G）均为本地工作产物，已列入 `.gitignore`，
+> 不随仓库分发；克隆者请以 `umodel/` 下生成物为准，或自行补齐设计文档。
 > 字段契约 SSOT：`docs/umodel-entity-field-contract.md`。
 > 本变更**破坏现有已入库数据**（见风险 R2），升级前需重建 workspace 或数据迁移。
 
@@ -76,6 +77,32 @@ All notable changes to this repository. Dates are YYYY-MM-DD.
 - `image_task` → `docker_image_task`：并入 ACR ListRepository（image_registry 移除），同生 artifact + D12 修复。
 - 关系 task 全量重做（`user_owns_repository` / `repository_tags_release` / `repository_contains_pull_request` / `user_participates_in_pull_request` / `release_contains_artifact` / `artifact_same_as_docker_image` / `pod_uses_docker_image`）。
 - `orchestrator.py`：注册名、`CRITICAL_GIT_TASKS`、依赖图、运行时就绪判定全部跟随。
+
+### 增量修复（2026-06 ~ 2026-07）
+
+- **codeup ListRepositoryTags 分页**（8a9b28b）：用 `page_size` 替代 `per_page`，修正 Codeup 标签分页参数。
+- **ACR repo_filter**（8a9b28b）：`docker_image_task` 新增 `acr.repo_filter` 白名单，按仓库全命名空间过滤 ACR 拉取范围。
+- **ACR fetch pacing 默认 200ms**（8f166ab 系列）：`ListRepoTag` 调用间默认 200ms 节流，防限流而非重试退避。
+- **CMS-verify 增强**（6b6886a）：pod→image 拓扑取证 + keep-alive/alias 归一化。
+
+### 代码缺陷修复（Phase 1，2026-07-23）
+
+审计发现的确定性 bug 与逻辑缺陷修复：
+- **Codeup PR 死代码**：`list_merge_request_with_options`/`ListMergeRequest` 在 pinned SDK 3.0.0 中不存在；升级 `alibabacloud_devops20210625` 至 5.0.3 并改用 `ListMergeRequestsRequest`/`list_merge_requests_with_options`，Codeup PR 抓取不再静默为空。
+- **GitLab MR 作者 id**：对 dict 用 `getattr(author,"id")` 恒空，改 `author.get("id")`。
+- **SLS sender 未定义名称 + 校验恒真**：`sls_20201230_models`/`util_models` 未 import，NameError 被 except 吞掉后 `return True`；改用 `LogClient.list_logstore`/`get_project`，异常时 `return False`。
+- **`base.py` `get_release_by_tag`**：抽象签名缺 `tag` 参数，补齐为 `(self, repo_id, tag)`。
+- **`app.py` logger 先用后定义**：`/invoke`、`/stop`、`main` 的 except 分支早于局部 `logger` 赋值触发 UnboundLocalError；改为模块级 logger。
+- **orchestrator 未知任务静默跳过**：对未注册的 enabled 任务名加 warning 并记入 skipped，暴露配置漂移。
+- **owns 语义**：`OWNS_ACCESS_LEVEL_THRESHOLD=40` 此前未生效（含 guest 全发 owns 边）；现 `access_level >= 40` 才发 owns 边。
+- **ACR 分页截断失效**：短末页 `break` 先于 `max_repositories`/`max_tags_per_repo` 截断；将截断判断移到 break 之前。
+- **static 关系缺入图字段**：`static_topo_task` 静态关系补 `__keep_alive_seconds__`。
+- **release↔artifact 全局 tag 交叉连边**：改读 `repo_image_mapping.yaml` 按 repo→registry 映射限定匹配，无映射时退回按 tag 匹配（不再跨仓同名 tag 错连）。
+- **GitLab release `committed_id`**：拼写错误，改 `commit.get("id")`。
+- **reviewers**：两个 adapter 补产出 `reviewers` 键（GitLab/Codeup MR）。
+- **MR 未知状态默认值**：两实现统一为 `open`（原 GitLab 为 `draft`）。
+- **sample 配置契约补全**：两份 sample 补 `acr.repo_filter`、`fetch_details`、`logstore_mapping.entities.kubernetes_pod`。
+- **umodel metric link**：`devops.user_related_to_devops.metric.user_commit` 链名前缀自相矛盾，修正为 `devops.user_related_to_metric.user_commit` 并重新生成 YAML。
 
 ### 待办（Phase 4，schema-only，待数据源）
 

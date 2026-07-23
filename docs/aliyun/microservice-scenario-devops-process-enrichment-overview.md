@@ -1,21 +1,23 @@
 ## **背景与目标**
 
-在可观测2.0 的 UModel 基础上，微服务场景 DevOps 流程富化旨在通过增加研发、发布相关的 UModel 实体，实现从代码开发到容器部署的全链路数据建模，并与现有的 APM 和 K8s 可观测体系深度打通。
+在可观测 2.0 的 UModel 基础上，微服务场景 DevOps 流程富化旨在通过新增研发、发布、制品、镜像等 UModel 实体，实现从代码开发到容器部署的全链路数据建模，并与现有的 APM 和 K8s 可观测体系深度打通。
+
+> 本场景当前由 `devops_data_generator` 编排生成：DevOps 域 6 个生产实体（user、repository、release、pull_request、artifact、docker_image）+ K8s 域 1 个生产实体（kubernetes_pod），共 7 个生产实体；编排器共 15 个任务，产出的实体与关系数据写入阿里云 SLS（Simple Log Service）LogStore，其中 k8s.pod 拓扑来自 CMS（Cloud Monitor Service）workspace 的 EntityStore。全量 UModel Schema（17 个 EntitySet + 36 个 EntitySetLink）由 `tools/gen_umodel_yaml.py` 生成到 `umodel/`；本场景实际生产子集见 `config/data_mapping.yaml`。
 
 ## **核心价值**
 
 ### **1. 全链路可追溯**
 
-* **代码到服务**：从代码仓库、代码发布到最终运行的APM服务的完整链路。
-* **镜像到部署**：从容器镜像构建到K8s部署的完整过程追踪。
-* **责任可归属**：明确每个环节的负责人，实现问题快速定位。
+* **代码到服务**：从 repository（代码仓库）、release（发布）到最终运行的 APM 服务的完整链路。
+* **镜像到部署**：从 artifact（制品）与 docker_image（容器镜像）构建到 K8s Pod 部署的完整过程追踪。
+* **责任可归属**：明确每个环节的负责人（user），实现问题快速定位。
 
 ### **2. 跨域数据融合**
 
-* **DevOps域**：专注于研发流程和制品管理。
+* **DevOps域**：专注于研发流程和制品/镜像管理。
 * **APM域**：应用性能监控和服务治理。
 * **K8s域**：容器编排和基础设施管理。
-* **统一视图**：通过EntitySetLink实现跨域数据关联。
+* **统一视图**：通过 EntitySetLink 实现跨域数据关联。
 
 ### **3. AI友好的数据结构**
 
@@ -31,39 +33,50 @@
 
 ### **DevOps域（devops）**
 
-|  |  |  |  |
-| --- | --- | --- | --- |
 | **实体类型** | **用途** | **核心字段** | **业务价值** |
-| **研发人员** | 开发人员信息管理（代指开发、测试、运维、产品等角色） | 工号、姓名、团队、角色 | 责任归属、团队协作分析 |
-| **代码仓库** | 代码库管理 | 仓库ID、名称、语言、框架 | 技术栈分析、代码质量跟踪 |
-| **代码发布** | 发布记录管理 | 发布ID、标签、提交SHA、发布时间 | 版本管理、发布质量跟踪 |
-| **镜像仓库** | 容器镜像仓库管理 | 仓库ID、名称、类型、提供商 | 镜像集中管理、安全合规 |
-| **容器镜像** | 容器镜像信息 | 镜像名、标签、摘要、构建时间 | 镜像版本管理、部署追踪 |
+| --- | --- | --- | --- |
+| **用户（user）** | 研发人员信息管理（代指开发、测试、运维、产品等角色） | user_id、full_name、email、display_name、avatar_url、data_source、platform_user_id、department、is_active | 责任归属、团队协作分析 |
+| **代码仓库（repository）** | 代码库管理 | repository_id、name、full_path、description、owner_id、language、data_source、platform_repo_id、default_branch、visibility | 技术栈分析、代码质量跟踪 |
+| **发布（release）** | 发布记录管理 | release_id、repository_id、version、tag_name、release_type、status、created_by、data_source、platform_release_id | 版本管理、发布质量跟踪 |
+| **合并请求（pull_request）** | PR/MR 流程管理 | pr_id、repository_id、number、title、author_id、source_branch、target_branch、status、data_source、platform_pr_id | 代码评审追踪、协作分析 |
+| **制品（artifact）** | 构建制品管理（与容器镜像同源派生，决策 B） | artifact_id、repository_id、commit_sha、tag_name、artifact_type、pipeline_run_id、storage_location、data_source | 制品溯源、构建链路追踪 |
+| **容器镜像（docker_image）** | 容器镜像信息（含原 image_registry 的 registry 属性，决策 A） | docker_image_id、artifact_id、registry、repository、tag、digest、full_image_name、base_image、architecture、os、data_source | 镜像版本管理、部署追踪 |
+
+> 重命名说明：旧的 `developer`/`code_repository`/`code_release`/`image` 已分别重命名为 `user`/`repository`/`release`/`docker_image`；`image_registry` 实体已移除（决策 A），其 registry 级属性折叠进 `docker_image.registry`。每条记录以 `data_source` 字段作为实体身份与来源判别（GitLab 记录为 `gitlab`，Codeup 记录为 `codeup`——注意不是 `aliyun`；ACR 记录为 `aliyun_acr`）。
+
+### **K8s域（k8s）**
+
+| **实体类型** | **用途** | **核心字段** | **业务价值** |
+| --- | --- | --- | --- |
+| **K8s Pod（kubernetes_pod）** | 容器编排实例管理 | pod_id、entity_id、images、container_names、namespace、image_count、container_count | 部署实例追踪、镜像使用关联 |
 
 ### **与现有域的集成**
 
 #### **APM域集成**
 
-* **服务溯源**：APM服务可追溯到具体的代码仓库和发布版本。
-* **责任归属**：明确服务的负责研发人员。
+* **服务溯源**：APM 服务可追溯到具体的 repository（代码仓库）和 release（发布版本）。
+* **责任归属**：明确服务的负责 user。
 * **版本关联**：服务性能问题可快速定位到具体的代码变更。
 
 #### **K8s域集成**
 
-* **镜像关联**：Pod、Deployment、StatefulSet等工作负载关联到具体镜像。
-* **部署追踪**：从代码发布到容器部署的完整链路。
+* **镜像关联**：Pod 关联到具体 docker_image。
+* **部署追踪**：从 release（发布）到容器部署的完整链路。
 * **运维可见性**：运维人员可快速了解部署的服务版本和负责人。
 
 ## **关系建模设计**
 
+> 关系名以 `devops_data_generator/tasks/` 中实际注册的任务为准（编排器共 15 个任务）。关系方向与 link_type 见 `config/data_mapping.yaml`。
+
 ### **DevOps域内部关系**
 
 ```
-研发人员 ──manages──► 代码仓库
-研发人员 ──manages──► 镜像仓库
-代码发布 ──sourced_from──► 代码仓库
-容器镜像 ──sourced_from──► 代码发布
-镜像仓库 ──contains──► 容器镜像
+user            ──owns──►             repository          （user_owns_repository）
+repository      ──tags──►             release              （repository_tags_release，方向 repo→release，与旧 sourced_from 相反）
+repository      ──contains──►          pull_request        （repository_contains_pull_request）
+user            ──participates_in──►  pull_request         （user_participates_in_pull_request，派生自 authors + reviewers）
+release         ──contains──►          artifact            （release_contains_artifact）
+artifact        ──same_as──►          docker_image         （artifact_same_as_docker_image，ACR 同生派生，决策 B）
 ```
 
 ### **跨域关联关系**
@@ -71,17 +84,17 @@
 #### **与K8s域的关联**
 
 ```
-K8s Pod ──uses──► 容器镜像
-K8s Deployment ──uses──► 容器镜像
-K8s StatefulSet ──uses──► 容器镜像
+k8s.pod  ──uses──►  docker_image        （pod_uses_docker_image）
 ```
 
 #### **与APM域的关联**
 
+> 以下关系由 `static_topo` 任务通过静态/混合拓扑模板产出（模板见 `config/static_topo.yaml`）。
+
 ```
-APM服务 ──sourced_from──► 代码仓库
-APM服务 ──sourced_from──► 代码发布
-研发人员 ──manages──► APM服务
+apm.service  ──sourced_from──►  repository      （apm.service_sourced_from_devops.repository）
+apm.service  ──sourced_from──►  release         （apm.service_sourced_from_devops.release）
+user         ──manages──►        apm.service   （devops.user_manages_apm.service，旧 developer_manages 重命名）
 ```
 
 ## **应用场景**
@@ -90,33 +103,33 @@ APM服务 ──sourced_from──► 代码发布
 
 当APM服务出现性能问题时，可以：
 
-* 快速定位到负责的研发人员。
-* 追溯到具体的代码变更和发布版本。
-* 分析是否与最近的镜像更新相关。
+* 快速定位到负责的 user。
+* 追溯到具体的代码变更和 release（发布版本）。
+* 分析是否与最近的 docker_image 更新相关。
 
 ### **2. 版本影响分析**
 
-在进行代码发布前，可以：
+在进行 release（发布）前，可以：
 
 * 分析本次发布将影响哪些APM服务。
-* 预测可能影响的K8s工作负载。
+* 预测可能影响的K8s工作负载（Pod）。
 * 制定回滚策略和风险预案。
-* 通知相关的研发和运维人员。
+* 通知相关的研发和运维人员（user）。
 
 ### **3. 安全合规管理**
 
 通过完整的数据链路，可以：
 
 * 审计代码变更的完整流程。
-* 跟踪镜像的构建和分发过程。
-* 确保部署的镜像来源可信。
+* 跟踪 artifact（制品）与 docker_image 的构建和分发过程。
+* 确保部署的镜像来源可信（data_source 可追溯）。
 * 实现端到端的安全治理。
 
 ### **4. 效能分析优化**
 
 基于丰富的关联数据，可以：
 
-* 分析研发团队的交付效能。
+* 分析研发团队的交付效能（user/repository/pull_request 维度）。
 * 识别代码到部署的瓶颈环节。
 * 优化CI/CD流程配置。
 * 提升整体交付质量。
@@ -125,14 +138,15 @@ APM服务 ──sourced_from──► 代码发布
 
 ### **数据采集**
 
-* **代码仓库数据**：通过GitLab API或Webhook获取仓库信息和发布记录。
-* **镜像数据**：通过Container Registry API获取镜像构建和存储信息。
-* **研发人员数据**：通过HR系统或LDAP集成获取人员信息。
-* **关联关系**：通过CI/CD系统的配置文件和部署记录建立关联。
+* **代码仓库/发布/用户/PR 数据**：通过统一适配器接口 `IGitAdapter`（`adapters/base.py`）获取，内置两个实现——GitLab（`adapters/gitlab/adapter.py`，python-gitlab 4.8.0）与 Codeup（`adapters/codeup/adapter.py`，alibabacloud-devops20210625 5.0.3）；`get_provider_name()` 返回值写入每条记录的 `data_source` 字段（`gitlab` 或 `codeup`）。
+* **制品与镜像数据**：通过 ACR（Alibaba Cloud Container Registry）producer 在 `docker_image_task` 中一次拉取，同时产出 artifact + docker_image + artifact_same_as_docker_image 关系（决策 B），其 `data_source` 为 `aliyun_acr`。
+* **用户数据**：由 Git adapter 的 `list_repository_members()` 输出归一化用户记录；组织域可由 LDAP/钉钉/飞书补充（非本场景主链路）。
+* **关联关系**：Git 派生（owns/tags/contains/participates_in）+ ACR 同生派生（same_as）+ static_topo 静态/混合模板（sourced_from/manages）。
 
 ### **数据存储**
 
-* **EntityStore**：存储实体数据和关系数据。
+* **产出落库**：实体与关系数据写入阿里云 SLS（Simple Log Service）LogStore；k8s.pod 实体来自 CMS（Cloud Monitor Service）workspace 的 EntityStore（或本地 kubeconfig）。
+* **UModel Schema**：全量定义由 `tools/gen_umodel_yaml.py` 生成到 `umodel/`，共 17 个 EntitySet + 36 个 EntitySetLink；本场景生产上述 7 个实体与 8 类关系（producer 子集见 `config/data_mapping.yaml`）。
 * **实时/准实时更新**：通过事件驱动/定时全量机制保持数据实时性和准确性。
 
 ## **价值收益**
