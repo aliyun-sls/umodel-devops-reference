@@ -16,8 +16,8 @@
 - config comes from `app_config.yaml` and mapping files
 - refresh happens before visibility and diagnosis
 - missing workspace means `blocked`
-- shared docs are repository-root assets, not Python runtime package assets
-- `.codex` and future `.claude` should both depend on shared instead of copying it
+- reference docs are skill assets under `.agents/skills/devops-verification/references/`, not Python runtime package assets
+- the `devops-verification` skill depends on `references/` instead of copying it
 
 ## Environment-Specific But Expected Inputs
 These values are legitimate inputs, but they remain environment-specific:

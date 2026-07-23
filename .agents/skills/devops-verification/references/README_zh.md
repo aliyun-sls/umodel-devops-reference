@@ -1,4 +1,4 @@
-# 验证共享层
+# 验证参考层
 
 本目录包含所有验证 Skill 共享的规则和契约。
 
@@ -10,4 +10,4 @@
 - `non-portable-values.md` — 不可硬编码的环境值清单
 - `script-map.md` — 脚本入口映射
 
-Skill 入口在 `.claude/skills/` 和 `.codex/skills/`，不在本目录。本目录是 Skill 读取的真相源，不包含运行时数据或密钥。
+Skill 入口在 `../SKILL.md`，不在本目录。本目录是 `devops-verification` skill 读取的契约真相源，不包含运行时数据或密钥。
