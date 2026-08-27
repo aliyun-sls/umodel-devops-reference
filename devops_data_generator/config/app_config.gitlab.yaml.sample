@@ -93,6 +93,7 @@ sls:
       release_relates_to_deployment: "<YOUR_TOPO_NAME>"
       repository_contains_pipeline: "<YOUR_TOPO_NAME>"
       pull_request_triggers_pipeline_run: "<YOUR_TOPO_NAME>"
+      apm_service_sourced_from_repository: "<YOUR_TOPO_NAME>"
       static_topo: "<YOUR_TOPO_NAME>"
 
 tasks:
@@ -120,6 +121,8 @@ tasks:
     # 可选：配置 argocd 段后取消注释
     # - deployment
     # - release_relates_to_deployment
+    # 可选：配置 apm_service_link 段后取消注释（RCA 入口：APM 服务→代码仓库）
+    # - apm_service_sourced_from_repository
   interval: 300
   shared_data_ttl: 86400
   skip_sls_upload:
@@ -149,3 +152,10 @@ logging:
   level: INFO
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
   file: "logs/gitlab_data_generator.log"
+
+# APM 服务 → 代码仓库（RCA 入口边，可选）。配置后启用同名任务。
+# service 精确匹配 apm.service 实体的 service 字段；repository_id 填仓库原始主键。
+# apm_service_link:
+#   links:
+#     - service: "<APM_SERVICE_NAME>"
+#       repository_id: "<REPOSITORY_ID>"

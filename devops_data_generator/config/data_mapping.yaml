@@ -198,6 +198,19 @@ entity:
     __domain__: k8s
     __entity_type__: k8s.pod
 
+  apm_service:
+    # 注意：本仓库不生产 apm.service 实体（CMS/ARMS 原生摄入）。
+    # 此条目存在的唯一目的：让 enrich_relationship_data 在为 sourced_from 边
+    # 解析 apm 侧端点时，按 entity_id 字段原样透传 CMS 的实体 id（其 md5 算法
+    # 不可复算，双写会偏离 —— 同 k8s.pod 的教训）。
+    fields:
+      - entity_id
+    primaryKeys:
+      - entity_id
+    use_field_as_entity_id: entity_id
+    __domain__: apm
+    __entity_type__: apm.service
+
   deployment:
     # CD 系统（argocd 等）写入的部署实体；字段对齐 umodel/entity_set/devops_devops.deployment.yaml
     fields:
@@ -359,4 +372,18 @@ topo:
       - run_id
     fixed_fields:
       __link_type__: "triggers"
+      priority: 5
+
+  # --- APM ↔ DevOps（RCA 入口：服务→代码仓库）---
+  apm_service_sourced_from_repository:
+    __src_domain__: apm
+    __src_entity_type__: apm.service
+    __dest_domain__: devops
+    __dest_entity_type__: devops.repository
+    src_entity_primarykeys:
+      - entity_id
+    dest_entity_primarykeys:
+      - repository_id
+    fixed_fields:
+      __link_type__: "sourced_from"
       priority: 5
