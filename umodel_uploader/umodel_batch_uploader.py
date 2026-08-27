@@ -21,12 +21,10 @@ except ImportError:
     import sys
     sys.exit(1)
 
-from alibabacloud_cms20240330.client import Client as Cms20240330Client
-from alibabacloud_credentials.client import Client as CredentialClient
-from alibabacloud_tea_openapi import models as open_api_models
-from alibabacloud_cms20240330 import models as cms_20240330_models
-from alibabacloud_tea_util import models as util_models
-from alibabacloud_tea_util.client import Client as UtilClient
+# 阿里云 SDK 采用惰性导入（见 _create_client / upload 方法）：
+# verify 门禁等离线场景需要 import 本模块做扫描校验，此时环境里没有 SDK，
+# 顶层 import 会让纯静态检查也失败。SDK 只有真正上传时才需要。
+Cms20240330Client = None  # type: ignore  # 仅用于类型注解占位
 
 
 class UModelBatchUploader:
@@ -45,13 +43,17 @@ class UModelBatchUploader:
         self.last_invalid_files = []
         self.client = self._create_client()
         
-    def _create_client(self) -> Cms20240330Client:
+    def _create_client(self):
         """
         使用凭据初始化账号Client
-        
+
         Returns:
             Client: 云监控API客户端
         """
+        from alibabacloud_cms20240330.client import Client as Cms20240330Client
+        from alibabacloud_credentials.client import Client as CredentialClient
+        from alibabacloud_tea_openapi import models as open_api_models
+
         try:
             credential = CredentialClient()
             config = open_api_models.Config(credential=credential)
@@ -103,6 +105,9 @@ class UModelBatchUploader:
         """
         上传单个umodel数据文件
         """
+        from alibabacloud_cms20240330 import models as cms_20240330_models
+        from alibabacloud_tea_util import models as util_models
+
         try:
             # 构建请求参数
             upsert_request = cms_20240330_models.UpsertUmodelDataRequest()
