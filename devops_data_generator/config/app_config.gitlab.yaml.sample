@@ -80,6 +80,8 @@ sls:
       docker_image: "<YOUR_ENTITY_NAME>"
       kubernetes_pod: "<YOUR_ENTITY_NAME>"
       deployment: "<YOUR_ENTITY_NAME>"
+      pipeline: "<YOUR_ENTITY_NAME>"
+      pipeline_run: "<YOUR_ENTITY_NAME>"
     relationships:
       user_owns_repository: "<YOUR_TOPO_NAME>"
       repository_tags_release: "<YOUR_TOPO_NAME>"
@@ -89,6 +91,8 @@ sls:
       artifact_same_as_docker_image: "<YOUR_TOPO_NAME>"
       pod_uses_docker_image: "<YOUR_TOPO_NAME>"
       release_relates_to_deployment: "<YOUR_TOPO_NAME>"
+      repository_contains_pipeline: "<YOUR_TOPO_NAME>"
+      pull_request_triggers_pipeline_run: "<YOUR_TOPO_NAME>"
       static_topo: "<YOUR_TOPO_NAME>"
 
 tasks:
@@ -107,6 +111,11 @@ tasks:
     - artifact_same_as_docker_image
     - kubernetes_pod
     - pod_uses_docker_image
+    # GitLab CI（GitLab 一等能力；无流水线的仓库自动为空）
+    - pipeline
+    - pipeline_run
+    - repository_contains_pipeline
+    - pull_request_triggers_pipeline_run
     - static_topo
     # 可选：配置 argocd 段后取消注释
     # - deployment
@@ -128,6 +137,10 @@ tasks:
     release_contains_artifact: ["release", "docker_image"]
     artifact_same_as_docker_image: ["docker_image"]
     pod_uses_docker_image: ["kubernetes_pod", "docker_image"]
+    pipeline: ["repository"]
+    pipeline_run: ["repository", "pipeline"]
+    repository_contains_pipeline: ["repository", "pipeline"]
+    pull_request_triggers_pipeline_run: ["pull_request", "pipeline_run"]
     static_topo: ["repository", "release", "user"]
     # deployment: ["release"]
     # release_relates_to_deployment: ["release", "deployment"]

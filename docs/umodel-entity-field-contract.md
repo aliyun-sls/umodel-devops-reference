@@ -205,7 +205,7 @@
 
 | 字段 | 类型 | 必填 | 主键 | 说明 |
 |---|---|---|---|---|
-| `pipeline_id` | string | ✓ | ✓ | 格式 `<data_source>:<platform_pipeline_id>` |
+| `pipeline_id` | string | ✓ | ✓ | 格式 `<data_source>:<platform_pipeline_id>`（GitLab 无流水线定义对象——定义即 CI 配置文件，platform_pipeline_id 合成 `{repo_id}:{ci_config_path}`，如 `gitlab:1:.gitlab-ci.yml`） |
 | `repository_id` | string | ✓ | | 关联 repository.repository_id |
 | `name` | string | ✓ | | 流水线名称 |
 | `file_path` | string | | | 如 .github/workflows/ci.yml |

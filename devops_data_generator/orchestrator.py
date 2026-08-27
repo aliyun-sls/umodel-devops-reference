@@ -14,11 +14,15 @@ from tasks.artifact_task import ArtifactTask
 from tasks.deployment_task import DeploymentTask
 from tasks.docker_image_task import DockerImageTask
 from tasks.kubernetes_pod_task import KubernetesPodTask
+from tasks.pipeline_run_task import PipelineRunTask
+from tasks.pipeline_task import PipelineTask
 from tasks.pod_uses_docker_image_task import PodUsesDockerImageTask
 from tasks.pull_request_task import PullRequestTask
+from tasks.pull_request_triggers_pipeline_run_task import PullRequestTriggersPipelineRunTask
 from tasks.release_contains_artifact_task import ReleaseContainsArtifactTask
 from tasks.release_relates_to_deployment_task import ReleaseRelatesToDeploymentTask
 from tasks.release_task import ReleaseTask
+from tasks.repository_contains_pipeline_task import RepositoryContainsPipelineTask
 from tasks.repository_contains_pull_request_task import RepositoryContainsPullRequestTask
 from tasks.repository_task import RepositoryTask
 from tasks.repository_tags_release_task import RepositoryTagsReleaseTask
@@ -117,11 +121,16 @@ class DevOpsDataOrchestrator:
             "user": UserTask(provider_config, self.git_adapter),
             "release": ReleaseTask(provider_config, self.git_adapter),
             "pull_request": PullRequestTask(provider_config, self.git_adapter),
+            # CI pipeline tasks (adapter optional capability; empty for no-CI providers)
+            "pipeline": PipelineTask(provider_config, self.git_adapter),
+            "pipeline_run": PipelineRunTask(provider_config, self.git_adapter),
             # Provider-agnostic relationship tasks (git-derived)
             "user_owns_repository": UserOwnsRepositoryTask(provider_config),
             "repository_tags_release": RepositoryTagsReleaseTask(provider_config),
             "repository_contains_pull_request": RepositoryContainsPullRequestTask(provider_config),
             "user_participates_in_pull_request": UserParticipatesInPullRequestTask(provider_config),
+            "repository_contains_pipeline": RepositoryContainsPipelineTask(provider_config),
+            "pull_request_triggers_pipeline_run": PullRequestTriggersPipelineRunTask(provider_config),
             # ACR tasks (provider-agnostic); image_registry entity removed (decision A)
             "docker_image": DockerImageTask(acr_config),
             "artifact": ArtifactTask(acr_config),

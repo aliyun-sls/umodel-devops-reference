@@ -19,3 +19,5 @@ jobs:
       - run: python3 -m unittest devops_data_generator.tests.test_phase1_regressions -v
       # Argo CD adapter 契约测试（mock REST，无网络依赖）
       - run: python3 -m unittest devops_data_generator.tests.test_argocd_adapter -v
+      # GitLab CI pipeline 契约测试（mock python-gitlab 对象，无 SDK 依赖）
+      - run: python3 -m unittest devops_data_generator.tests.test_gitlab_pipeline -v

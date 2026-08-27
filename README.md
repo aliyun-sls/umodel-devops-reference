@@ -19,7 +19,7 @@ Ingest developer, repository, release, image, and topology data from your git pr
                 ▼                              ▼
       ┌──────────────────────────────────────────┐
       │  devops_data_generator                   │
-      │  ├─ 17 tasks                             │
+      │  ├─ 21 tasks                             │
       │  ├─ SLS sender                           │
       │  └─ orchestrator                         │
       └──────────┬───────────────────────────────┘
@@ -103,10 +103,10 @@ run. Without an `argocd` section the producer behaves exactly as before.
 ## UModel Schema
 
 17 EntitySets span the full DevOps lifecycle (org → project → code → CI/CD → release → deployment).
-Producer-backed entities (git + ACR + Argo CD derived): `devops.user`, `devops.repository`,
+Producer-backed entities (git + GitLab CI + ACR + Argo CD derived): `devops.user`, `devops.repository`,
 `devops.release`, `devops.pull_request`, `devops.artifact`, `devops.docker_image`,
-`devops.deployment`. The remaining 10
-(organization, project, work_item, milestone, pipeline, pipeline_run, helm_chart, binary,
+`devops.deployment`, `devops.pipeline`, `devops.pipeline_run`, `devops.pipeline`, `devops.pipeline_run`. The remaining 8
+(organization, project, work_item, milestone, helm_chart, binary,
 npm_package, unit_testcase) are schema-only pending their data-source adapters
 (Jira/CI/appstack/artifact-registry/org) — see `docs/umodel-entity-field-contract.md`.
 
@@ -119,7 +119,9 @@ npm_package, unit_testcase) are schema-only pending their data-source adapters
 | devops | `devops.artifact` | ✓ (derived, ACR) |
 | devops | `devops.docker_image` | ✓ (ACR) |
 | devops | `devops.deployment` | ✓ (Argo CD) |
-| devops | + 10 schema-only | pending adapters |
+| devops | `devops.pipeline` | ✓ (GitLab CI) |
+| devops | `devops.pipeline_run` | ✓ (GitLab CI) |
+| devops | + 8 schema-only | pending adapters |
 
 36 EntitySetLinks connect these entities (29 design-doc relations + cross-domain links to
 `apm.service` and `k8s.{pod,deployment,daemonset,statefulset}`).

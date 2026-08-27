@@ -13,6 +13,7 @@
 | API 端点 | 用户自配 | 默认 `devops.cn-hangzhou.aliyuncs.com`（可覆盖）|
 | 默认分支回退 | `main` | `master` |
 | `data_source` 字段值（写入 SLS）| `"gitlab"` | `"codeup"` |
+| CI 流水线（`pipeline` / `pipeline_run`） | ✓（GitLab CI，内建） | 未实现（adapter 默认返回 `[]`） |
 | Docker Compose | `docker compose up --build` | `docker compose up --build` |
 | 配置样例 | `app_config.gitlab.yaml.sample` | `app_config.codeup.yaml.sample` |
 

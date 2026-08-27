@@ -31,6 +31,29 @@ across providers.
      merge_commit_sha, status, data_source, platform_pr_id, url,
      created_at, updated_at, merged_at, closed_at}
 
+``list_pipelines(repo_id)`` items (CI pipeline *definitions*):
+    {pipeline_id, repository_id, name, file_path, description,
+     data_source, platform_pipeline_id, url, is_active,
+     created_at, updated_at}
+    GitLab has no first-class pipeline-definition API object: the pipeline
+    definition IS the CI config file, so ``platform_pipeline_id`` is
+    ``{repo_id}:{ci_config_path}`` and ``pipeline_id`` =
+    ``gitlab:{repo_id}:{ci_config_path}``.
+
+``list_pipeline_runs(repo_id)`` items (CI pipeline *executions*):
+    {run_id, pipeline_id, repository_id, number, pr_id, commit_sha,
+     branch, trigger_type, status, conclusion, data_source,
+     platform_run_id, url, triggered_by, stages, created_at, started_at,
+     completed_at, duration_seconds, queue_duration_seconds}
+    ``run_id`` = ``<data_source>:<platform_run_id>``;
+    ``trigger_type`` ∈ push/pull_request/schedule/manual/tag;
+    ``status`` ∈ queued/in_progress/success/failure/cancelled/skipped;
+    ``conclusion`` ∈ success/failure/cancelled/timeout (or "").
+
+Both pipeline methods are NON-abstract with default implementations
+returning ``[]``: providers without CI stay valid. GitLab implements
+them (GitLab CI lives inside GitLab).
+
 ``get_provider_name()`` returns the literal value written into the
 ``data_source`` field of every record (``"gitlab"`` or ``"codeup"``).
 """
@@ -66,6 +89,23 @@ class IGitAdapter(ABC):
     @abstractmethod
     def list_pull_requests(self, repo_id: str) -> List[Dict[str, Any]]:
         """Return pull requests / merge requests for a single repository."""
+
+    # -- CI pipeline (optional capability; see module docstring) ----------
+
+    def list_pipelines(self, repo_id: str) -> List[Dict[str, Any]]:
+        """Return CI pipeline definitions for a repository.
+
+        Default: provider has no CI support → empty list. Providers with
+        CI (GitLab CI, …) override this.
+        """
+        return []
+
+    def list_pipeline_runs(self, repo_id: str) -> List[Dict[str, Any]]:
+        """Return CI pipeline executions for a repository.
+
+        Default: provider has no CI support → empty list.
+        """
+        return []
 
     @abstractmethod
     def get_provider_name(self) -> str:
