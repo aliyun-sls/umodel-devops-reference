@@ -170,7 +170,10 @@ class GitLabAdapter(IGitAdapter):
         # (Otherwise every repo would claim a phantom pipeline entity.)
         default_branch = getattr(project, "default_branch", "") or self.DEFAULT_BRANCH_FALLBACK
         try:
-            project.files.head(file_path=ci_path, ref=default_branch)
+            # NOTE: python-gitlab's files.head takes the file path as the
+            # POSITIONAL `id` arg — `head(file_path=...)` silently HEADs the
+            # collection URL and 404s even when the file exists.
+            project.files.head(ci_path, ref=default_branch)
         except Exception as exc:  # noqa: BLE001 — 404 means no CI config
             logger.info("repo %s: no CI config at %s (%s); no pipeline entity",
                         repo_id, ci_path, exc)
