@@ -1,25 +1,25 @@
 kind: entity_set_link
 metadata:
-    description:
-        en_us: User manages Service.
-        zh_cn: User manages Service。
-    display_name:
-        en_us: User Manages Service
-        zh_cn: User manages Service
-    domain: devops
-    kind: entity_set_link
-    name: devops.user_manages_apm.service
+  description:
+    en_us: User manages Service.
+    zh_cn: User manages Service。
+  display_name:
+    en_us: User Manages Service
+    zh_cn: User manages Service
+  domain: devops
+  kind: entity_set_link
+  name: devops.user_manages_apm.service
 schema:
-    url: umodel.aliyun.com
-    version: v0.1.0
+  url: umodel.aliyun.com
+  version: v0.1.0
 spec:
-    dest:
-        domain: apm
-        kind: entity_set
-        name: apm.service
-    entity_link_type: manages
-    priority: 5
-    src:
-        domain: devops
-        kind: entity_set
-        name: devops.user
+  dest:
+    domain: apm
+    kind: entity_set
+    name: apm.service
+  entity_link_type: manages
+  priority: 5
+  src:
+    domain: devops
+    kind: entity_set
+    name: devops.user

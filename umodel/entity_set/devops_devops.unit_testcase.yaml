@@ -1,195 +1,196 @@
 kind: entity_set
 metadata:
-    description:
-        en_us: Repository unit test artifact. Excluded from artifact same_as system (decision E).
-        zh_cn: 单元测试产物。排除在artifact same_as体系外（决策E）。
-    display_name:
-        en_us: Unit TestCase
-        zh_cn: 单元测试
-    domain: devops
-    kind: entity_set
-    name: devops.unit_testcase
+  description:
+    en_us: Repository unit test artifact. Excluded from artifact same_as system (decision
+      E).
+    zh_cn: 单元测试产物。排除在artifact same_as体系外（决策E）。
+  display_name:
+    en_us: Unit TestCase
+    zh_cn: 单元测试
+  domain: devops
+  kind: entity_set
+  name: devops.unit_testcase
 schema:
-    url: umodel.aliyun.com
-    version: v0.1.0
+  url: umodel.aliyun.com
+  version: v0.1.0
 spec:
-    dynamic: false
-    fields:
-        - description:
-            en_us: Test case unique identifier
-            zh_cn: 测试用例唯一标识
-          display_name:
-            en_us: Test Id
-            zh_cn: 测试用例唯一标识
-          filterable: true
-          name: test_id
-          orderable: true
-          short_description:
-            en_us: Test Id
-            zh_cn: 测试用例唯一标识
-          type: string
-        - description:
-            en_us: Owning repository ID
-            zh_cn: 所属仓库
-          display_name:
-            en_us: Repository Id
-            zh_cn: 所属仓库
-          filterable: true
-          name: repository_id
-          orderable: true
-          short_description:
-            en_us: Repository Id
-            zh_cn: 所属仓库
-          type: string
-        - description:
-            en_us: Commit that triggered the test
-            zh_cn: 触发测试的提交
-          display_name:
-            en_us: Commit Sha
-            zh_cn: 触发测试的提交
-          filterable: true
-          name: commit_sha
-          orderable: true
-          short_description:
-            en_us: Commit Sha
-            zh_cn: 触发测试的提交
-          type: string
-        - description:
-            en_us: Linked pipeline run ID
-            zh_cn: 关联流水线运行
-          display_name:
-            en_us: Pipeline Run Id
-            zh_cn: 关联流水线运行
-          filterable: true
-          name: pipeline_run_id
-          orderable: true
-          short_description:
-            en_us: Pipeline Run Id
-            zh_cn: 关联流水线运行
-          type: string
-        - description:
-            en_us: Name
-            zh_cn: 名称
-          display_name:
-            en_us: Name
-            zh_cn: 名称
-          filterable: true
-          name: name
-          orderable: true
-          short_description:
-            en_us: Name
-            zh_cn: 名称
-          type: string
-        - description:
-            en_us: Test result, e.g. PASS/FAIL
-            zh_cn: 单测执行结果 如PASS/FAIL
-          display_name:
-            en_us: Result
-            zh_cn: 单测执行结果 如PASS/FAIL
-          filterable: true
-          name: result
-          orderable: true
-          short_description:
-            en_us: Result
-            zh_cn: 单测执行结果 如PASS/FAIL
-          type: string
-        - description:
-            en_us: Trigger info
-            zh_cn: 触发者信息
-          display_name:
-            en_us: Trigger By
-            zh_cn: 触发者信息
-          filterable: false
-          name: trigger_by
-          orderable: false
-          short_description:
-            en_us: Trigger By
-            zh_cn: 触发者信息
-          type: json
-        - description:
-            en_us: Test job URL
-            zh_cn: 单测任务URL
-          display_name:
-            en_us: Url
-            zh_cn: 单测任务URL
-          filterable: true
-          name: url
-          orderable: true
-          short_description:
-            en_us: Url
-            zh_cn: 单测任务URL
-          type: string
-        - description:
-            en_us: Data source, e.g. aone
-            zh_cn: 数据来源 如aone
-          display_name:
-            en_us: Data Source
-            zh_cn: 数据来源 如aone
-          filterable: true
-          name: data_source
-          orderable: true
-          short_description:
-            en_us: Data Source
-            zh_cn: 数据来源 如aone
-          type: string
-        - description:
-            en_us: Platform test ID
-            zh_cn: 平台测试ID
-          display_name:
-            en_us: Platform Test Id
-            zh_cn: 平台测试ID
-          filterable: true
-          name: platform_test_id
-          orderable: true
-          short_description:
-            en_us: Platform Test Id
-            zh_cn: 平台测试ID
-          type: string
-        - description:
-            en_us: Creation time
-            zh_cn: 创建时间
-          display_name:
-            en_us: Created At
-            zh_cn: 创建时间
-          filterable: true
-          name: created_at
-          orderable: true
-          short_description:
-            en_us: Created At
-            zh_cn: 创建时间
-          type: datetime
-        - description:
-            en_us: Start time
-            zh_cn: 开始时间
-          display_name:
-            en_us: Started At
-            zh_cn: 开始时间
-          filterable: true
-          name: started_at
-          orderable: true
-          short_description:
-            en_us: Started At
-            zh_cn: 开始时间
-          type: datetime
-        - description:
-            en_us: Completion time
-            zh_cn: 完成时间
-          display_name:
-            en_us: Completed At
-            zh_cn: 完成时间
-          filterable: true
-          name: completed_at
-          orderable: true
-          short_description:
-            en_us: Completed At
-            zh_cn: 完成时间
-          type: datetime
-    keep_alive_seconds: 86400
-    name_fields:
-        - name
-        - test_id
-        - result
-    primary_key_fields:
-        - test_id
-    time_field: __time__
-    type: entity_set
+  dynamic: false
+  fields:
+  - description:
+      en_us: Test case unique identifier
+      zh_cn: 测试用例唯一标识
+    display_name:
+      en_us: Test Id
+      zh_cn: 测试用例唯一标识
+    filterable: true
+    name: test_id
+    orderable: true
+    short_description:
+      en_us: Test Id
+      zh_cn: 测试用例唯一标识
+    type: string
+  - description:
+      en_us: Owning repository ID
+      zh_cn: 所属仓库
+    display_name:
+      en_us: Repository Id
+      zh_cn: 所属仓库
+    filterable: true
+    name: repository_id
+    orderable: true
+    short_description:
+      en_us: Repository Id
+      zh_cn: 所属仓库
+    type: string
+  - description:
+      en_us: Commit that triggered the test
+      zh_cn: 触发测试的提交
+    display_name:
+      en_us: Commit Sha
+      zh_cn: 触发测试的提交
+    filterable: true
+    name: commit_sha
+    orderable: true
+    short_description:
+      en_us: Commit Sha
+      zh_cn: 触发测试的提交
+    type: string
+  - description:
+      en_us: Linked pipeline run ID
+      zh_cn: 关联流水线运行
+    display_name:
+      en_us: Pipeline Run Id
+      zh_cn: 关联流水线运行
+    filterable: true
+    name: pipeline_run_id
+    orderable: true
+    short_description:
+      en_us: Pipeline Run Id
+      zh_cn: 关联流水线运行
+    type: string
+  - description:
+      en_us: Name
+      zh_cn: 名称
+    display_name:
+      en_us: Name
+      zh_cn: 名称
+    filterable: true
+    name: name
+    orderable: true
+    short_description:
+      en_us: Name
+      zh_cn: 名称
+    type: string
+  - description:
+      en_us: Test result, e.g. PASS/FAIL
+      zh_cn: 单测执行结果 如PASS/FAIL
+    display_name:
+      en_us: Result
+      zh_cn: 单测执行结果 如PASS/FAIL
+    filterable: true
+    name: result
+    orderable: true
+    short_description:
+      en_us: Result
+      zh_cn: 单测执行结果 如PASS/FAIL
+    type: string
+  - description:
+      en_us: Trigger info
+      zh_cn: 触发者信息
+    display_name:
+      en_us: Trigger By
+      zh_cn: 触发者信息
+    filterable: false
+    name: trigger_by
+    orderable: false
+    short_description:
+      en_us: Trigger By
+      zh_cn: 触发者信息
+    type: json
+  - description:
+      en_us: Test job URL
+      zh_cn: 单测任务URL
+    display_name:
+      en_us: Url
+      zh_cn: 单测任务URL
+    filterable: true
+    name: url
+    orderable: true
+    short_description:
+      en_us: Url
+      zh_cn: 单测任务URL
+    type: string
+  - description:
+      en_us: Data source, e.g. aone
+      zh_cn: 数据来源 如aone
+    display_name:
+      en_us: Data Source
+      zh_cn: 数据来源 如aone
+    filterable: true
+    name: data_source
+    orderable: true
+    short_description:
+      en_us: Data Source
+      zh_cn: 数据来源 如aone
+    type: string
+  - description:
+      en_us: Platform test ID
+      zh_cn: 平台测试ID
+    display_name:
+      en_us: Platform Test Id
+      zh_cn: 平台测试ID
+    filterable: true
+    name: platform_test_id
+    orderable: true
+    short_description:
+      en_us: Platform Test Id
+      zh_cn: 平台测试ID
+    type: string
+  - description:
+      en_us: Creation time
+      zh_cn: 创建时间
+    display_name:
+      en_us: Created At
+      zh_cn: 创建时间
+    filterable: true
+    name: created_at
+    orderable: true
+    short_description:
+      en_us: Created At
+      zh_cn: 创建时间
+    type: datetime
+  - description:
+      en_us: Start time
+      zh_cn: 开始时间
+    display_name:
+      en_us: Started At
+      zh_cn: 开始时间
+    filterable: true
+    name: started_at
+    orderable: true
+    short_description:
+      en_us: Started At
+      zh_cn: 开始时间
+    type: datetime
+  - description:
+      en_us: Completion time
+      zh_cn: 完成时间
+    display_name:
+      en_us: Completed At
+      zh_cn: 完成时间
+    filterable: true
+    name: completed_at
+    orderable: true
+    short_description:
+      en_us: Completed At
+      zh_cn: 完成时间
+    type: datetime
+  keep_alive_seconds: 86400
+  name_fields:
+  - name
+  - test_id
+  - result
+  primary_key_fields:
+  - test_id
+  time_field: __time__
+  type: entity_set

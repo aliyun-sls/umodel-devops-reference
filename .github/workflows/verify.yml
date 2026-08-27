@@ -1,0 +1,21 @@
+name: verify
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  umodel-schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pyyaml
+        # schema 全量可解析 + 数量与生成器契约一致 + uploader 无静默跳过
+      - run: python3 tools/verify_umodel.py
+      # 既有逻辑回归（unittest，无额外依赖）
+      - run: python3 -m unittest devops_data_generator.tests.test_phase1_regressions -v
+      # Argo CD adapter 契约测试（mock REST，无网络依赖）
+      - run: python3 -m unittest devops_data_generator.tests.test_argocd_adapter -v

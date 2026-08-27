@@ -1,195 +1,195 @@
 kind: entity_set
 metadata:
-    description:
-        en_us: Git repository — core container of code assets (renamed from code_repository).
-        zh_cn: 代码仓库实体代表Git仓库，是代码资产的核心容器（旧 code_repository 重命名）。
-    display_name:
-        en_us: Repository
-        zh_cn: 代码仓库
-    domain: devops
-    kind: entity_set
-    name: devops.repository
+  description:
+    en_us: Git repository — core container of code assets (renamed from code_repository).
+    zh_cn: 代码仓库实体代表Git仓库，是代码资产的核心容器（旧 code_repository 重命名）。
+  display_name:
+    en_us: Repository
+    zh_cn: 代码仓库
+  domain: devops
+  kind: entity_set
+  name: devops.repository
 schema:
-    url: umodel.aliyun.com
-    version: v0.1.0
+  url: umodel.aliyun.com
+  version: v0.1.0
 spec:
-    dynamic: false
-    fields:
-        - description:
-            en_us: Repository unique identifier
-            zh_cn: 仓库唯一标识
-          display_name:
-            en_us: Repository Id
-            zh_cn: 仓库唯一标识
-          filterable: true
-          name: repository_id
-          orderable: true
-          short_description:
-            en_us: Repository Id
-            zh_cn: 仓库唯一标识
-          type: string
-        - description:
-            en_us: Repository name
-            zh_cn: 仓库名称
-          display_name:
-            en_us: Name
-            zh_cn: 仓库名称
-          filterable: true
-          name: name
-          orderable: true
-          short_description:
-            en_us: Name
-            zh_cn: 仓库名称
-          type: string
-        - description:
-            en_us: Full path
-            zh_cn: 完整路径
-          display_name:
-            en_us: Full Path
-            zh_cn: 完整路径
-          filterable: true
-          name: full_path
-          orderable: true
-          short_description:
-            en_us: Full Path
-            zh_cn: 完整路径
-          type: string
-        - description:
-            en_us: Repository description
-            zh_cn: 仓库描述
-          display_name:
-            en_us: Description
-            zh_cn: 仓库描述
-          filterable: true
-          name: description
-          orderable: true
-          short_description:
-            en_us: Description
-            zh_cn: 仓库描述
-          type: string
-        - description:
-            en_us: Owner ID
-            zh_cn: 所有者
-          display_name:
-            en_us: Owner Id
-            zh_cn: 所有者
-          filterable: true
-          name: owner_id
-          orderable: true
-          short_description:
-            en_us: Owner Id
-            zh_cn: 所有者
-          type: string
-        - description:
-            en_us: Data source: github/gitlab/codeup
-            zh_cn: 数据来源 github/gitlab/codeup
-          display_name:
-            en_us: Data Source
-            zh_cn: 数据来源 github/gitlab/codeup
-          filterable: true
-          name: data_source
-          orderable: true
-          short_description:
-            en_us: Data Source
-            zh_cn: 数据来源 github/gitlab/codeup
-          type: string
-        - description:
-            en_us: Platform repository ID
-            zh_cn: 平台仓库ID
-          display_name:
-            en_us: Platform Repo Id
-            zh_cn: 平台仓库ID
-          filterable: true
-          name: platform_repo_id
-          orderable: true
-          short_description:
-            en_us: Platform Repo Id
-            zh_cn: 平台仓库ID
-          type: string
-        - description:
-            en_us: Repository URL
-            zh_cn: 仓库URL
-          display_name:
-            en_us: Url
-            zh_cn: 仓库URL
-          filterable: true
-          name: url
-          orderable: true
-          short_description:
-            en_us: Url
-            zh_cn: 仓库URL
-          type: string
-        - description:
-            en_us: Default branch
-            zh_cn: 默认分支
-          display_name:
-            en_us: Default Branch
-            zh_cn: 默认分支
-          filterable: true
-          name: default_branch
-          orderable: true
-          short_description:
-            en_us: Default Branch
-            zh_cn: 默认分支
-          type: string
-        - description:
-            en_us: Visibility: public/private/internal
-            zh_cn: 可见性 public/private/internal
-          display_name:
-            en_us: Visibility
-            zh_cn: 可见性 public/private/internal
-          filterable: true
-          name: visibility
-          orderable: true
-          short_description:
-            en_us: Visibility
-            zh_cn: 可见性 public/private/internal
-          type: enum
-        - description:
-            en_us: Primary language
-            zh_cn: 主要语言
-          display_name:
-            en_us: Language
-            zh_cn: 主要语言
-          filterable: true
-          name: language
-          orderable: true
-          short_description:
-            en_us: Language
-            zh_cn: 主要语言
-          type: string
-        - description:
-            en_us: Creation time
-            zh_cn: 创建时间
-          display_name:
-            en_us: Created At
-            zh_cn: 创建时间
-          filterable: true
-          name: created_at
-          orderable: true
-          short_description:
-            en_us: Created At
-            zh_cn: 创建时间
-          type: datetime
-        - description:
-            en_us: Update time
-            zh_cn: 更新时间
-          display_name:
-            en_us: Updated At
-            zh_cn: 更新时间
-          filterable: true
-          name: updated_at
-          orderable: true
-          short_description:
-            en_us: Updated At
-            zh_cn: 更新时间
-          type: datetime
-    keep_alive_seconds: 86400
-    name_fields:
-        - name
-        - repository_id
-        - url
-    primary_key_fields:
-        - repository_id
-    time_field: __time__
-    type: entity_set
+  dynamic: false
+  fields:
+  - description:
+      en_us: Repository unique identifier
+      zh_cn: 仓库唯一标识
+    display_name:
+      en_us: Repository Id
+      zh_cn: 仓库唯一标识
+    filterable: true
+    name: repository_id
+    orderable: true
+    short_description:
+      en_us: Repository Id
+      zh_cn: 仓库唯一标识
+    type: string
+  - description:
+      en_us: Repository name
+      zh_cn: 仓库名称
+    display_name:
+      en_us: Name
+      zh_cn: 仓库名称
+    filterable: true
+    name: name
+    orderable: true
+    short_description:
+      en_us: Name
+      zh_cn: 仓库名称
+    type: string
+  - description:
+      en_us: Full path
+      zh_cn: 完整路径
+    display_name:
+      en_us: Full Path
+      zh_cn: 完整路径
+    filterable: true
+    name: full_path
+    orderable: true
+    short_description:
+      en_us: Full Path
+      zh_cn: 完整路径
+    type: string
+  - description:
+      en_us: Repository description
+      zh_cn: 仓库描述
+    display_name:
+      en_us: Description
+      zh_cn: 仓库描述
+    filterable: true
+    name: description
+    orderable: true
+    short_description:
+      en_us: Description
+      zh_cn: 仓库描述
+    type: string
+  - description:
+      en_us: Owner ID
+      zh_cn: 所有者
+    display_name:
+      en_us: Owner Id
+      zh_cn: 所有者
+    filterable: true
+    name: owner_id
+    orderable: true
+    short_description:
+      en_us: Owner Id
+      zh_cn: 所有者
+    type: string
+  - description:
+      en_us: 'Data source: github/gitlab/codeup'
+      zh_cn: 数据来源 github/gitlab/codeup
+    display_name:
+      en_us: Data Source
+      zh_cn: 数据来源 github/gitlab/codeup
+    filterable: true
+    name: data_source
+    orderable: true
+    short_description:
+      en_us: Data Source
+      zh_cn: 数据来源 github/gitlab/codeup
+    type: string
+  - description:
+      en_us: Platform repository ID
+      zh_cn: 平台仓库ID
+    display_name:
+      en_us: Platform Repo Id
+      zh_cn: 平台仓库ID
+    filterable: true
+    name: platform_repo_id
+    orderable: true
+    short_description:
+      en_us: Platform Repo Id
+      zh_cn: 平台仓库ID
+    type: string
+  - description:
+      en_us: Repository URL
+      zh_cn: 仓库URL
+    display_name:
+      en_us: Url
+      zh_cn: 仓库URL
+    filterable: true
+    name: url
+    orderable: true
+    short_description:
+      en_us: Url
+      zh_cn: 仓库URL
+    type: string
+  - description:
+      en_us: Default branch
+      zh_cn: 默认分支
+    display_name:
+      en_us: Default Branch
+      zh_cn: 默认分支
+    filterable: true
+    name: default_branch
+    orderable: true
+    short_description:
+      en_us: Default Branch
+      zh_cn: 默认分支
+    type: string
+  - description:
+      en_us: 'Visibility: public/private/internal'
+      zh_cn: 可见性 public/private/internal
+    display_name:
+      en_us: Visibility
+      zh_cn: 可见性 public/private/internal
+    filterable: true
+    name: visibility
+    orderable: true
+    short_description:
+      en_us: Visibility
+      zh_cn: 可见性 public/private/internal
+    type: enum
+  - description:
+      en_us: Primary language
+      zh_cn: 主要语言
+    display_name:
+      en_us: Language
+      zh_cn: 主要语言
+    filterable: true
+    name: language
+    orderable: true
+    short_description:
+      en_us: Language
+      zh_cn: 主要语言
+    type: string
+  - description:
+      en_us: Creation time
+      zh_cn: 创建时间
+    display_name:
+      en_us: Created At
+      zh_cn: 创建时间
+    filterable: true
+    name: created_at
+    orderable: true
+    short_description:
+      en_us: Created At
+      zh_cn: 创建时间
+    type: datetime
+  - description:
+      en_us: Update time
+      zh_cn: 更新时间
+    display_name:
+      en_us: Updated At
+      zh_cn: 更新时间
+    filterable: true
+    name: updated_at
+    orderable: true
+    short_description:
+      en_us: Updated At
+      zh_cn: 更新时间
+    type: datetime
+  keep_alive_seconds: 86400
+  name_fields:
+  - name
+  - repository_id
+  - url
+  primary_key_fields:
+  - repository_id
+  time_field: __time__
+  type: entity_set

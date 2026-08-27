@@ -6,6 +6,8 @@ Writes into umodel/entity_set/ and umodel/entity_set_link/
 """
 import os
 
+import yaml
+
 DOMAIN = "devops"
 SCHEMA_URL = "umodel.aliyun.com"
 SCHEMA_VERSION = "v0.1.0"
@@ -484,7 +486,7 @@ ENTITIES = {
             f("version", "string", "应用版本号", "Application version", required=False),
             f("status", "enum", "部署状态 queued/in_progress/success/failure/cancelled", "Deployment status: queued/in_progress/success/failure/cancelled"),
             f("conclusion", "enum", "部署结论 success/failure/rolled_back", "Deployment conclusion: success/failure/rolled_back", required=False),
-            f("data_source", "string", "数据来源 yunxiao_appstack/aone/github", "Data source: yunxiao_appstack/aone/github"),
+            f("data_source", "string", "数据来源 yunxiao_appstack/aone/github/argocd", "Data source: yunxiao_appstack/aone/github/argocd"),
             f("platform_deployment_id", "string", "平台部署ID", "Platform deployment ID"),
             f("url", "string", "部署URL", "Deployment URL", required=False),
             f("deployed_by", "string", "部署人", "Deployed by", required=False),
@@ -545,54 +547,47 @@ LINKS = [
 ]
 
 
+def dump_doc(doc: dict) -> str:
+    # safe_dump 保证输出永远可解析：描述文本含冒号等特殊字符时会自动加引号。
+    # allow_unicode 保留中文原文；sort_keys=False 保持字段书写顺序。
+    return yaml.safe_dump(doc, allow_unicode=True, sort_keys=False, default_flow_style=False)
+
+
 def gen_entity(name, meta):
-    en, zh = meta["en"], meta["zh"]
-    lines = []
-    a = lines.append
-    a("kind: entity_set")
-    a("metadata:")
-    a(f"    description:")
-    a(f"        en_us: {meta['desc_en']}")
-    a(f"        zh_cn: {meta['desc_zh']}")
-    a(f"    display_name:")
-    a(f"        en_us: {en}")
-    a(f"        zh_cn: {zh}")
-    a(f"    domain: {DOMAIN}")
-    a(f"    kind: entity_set")
-    a(f"    name: {DOMAIN}.{name}")
-    a("schema:")
-    a(f"    url: {SCHEMA_URL}")
-    a(f"    version: {SCHEMA_VERSION}")
-    a("spec:")
-    a("    dynamic: false")
-    a("    fields:")
+    fields = []
     for fld in meta["fields"]:
         t = fld["type"]
         blob = t in ("json", "array")
         disp = title(fld["name"])
-        a("        - description:")
-        a(f"            en_us: {fld.get('en') or fld['zh']}")
-        a(f"            zh_cn: {fld['zh']}")
-        a("          display_name:")
-        a(f"            en_us: {disp}")
-        a(f"            zh_cn: {fld['zh']}")
-        a(f"          filterable: {'false' if blob else 'true'}")
-        a(f"          name: {fld['name']}")
-        a(f"          orderable: {'false' if blob else 'true'}")
-        a("          short_description:")
-        a(f"            en_us: {disp}")
-        a(f"            zh_cn: {fld['zh']}")
-        a(f"          type: {t}")
-    a("    keep_alive_seconds: 86400")
-    a("    name_fields:")
-    for nf in meta["names"]:
-        a(f"        - {nf}")
-    a("    primary_key_fields:")
-    for pk in meta["pk"]:
-        a(f"        - {pk}")
-    a("    time_field: __time__")
-    a("    type: entity_set")
-    return "\n".join(lines) + "\n"
+        fields.append({
+            "description": {"en_us": fld.get("en") or fld["zh"], "zh_cn": fld["zh"]},
+            "display_name": {"en_us": disp, "zh_cn": fld["zh"]},
+            "filterable": not blob,
+            "name": fld["name"],
+            "orderable": not blob,
+            "short_description": {"en_us": disp, "zh_cn": fld["zh"]},
+            "type": t,
+        })
+    return dump_doc({
+        "kind": "entity_set",
+        "metadata": {
+            "description": {"en_us": meta["desc_en"], "zh_cn": meta["desc_zh"]},
+            "display_name": {"en_us": meta["en"], "zh_cn": meta["zh"]},
+            "domain": DOMAIN,
+            "kind": "entity_set",
+            "name": f"{DOMAIN}.{name}",
+        },
+        "schema": {"url": SCHEMA_URL, "version": SCHEMA_VERSION},
+        "spec": {
+            "dynamic": False,
+            "fields": fields,
+            "keep_alive_seconds": 86400,
+            "name_fields": list(meta["names"]),
+            "primary_key_fields": list(meta["pk"]),
+            "time_field": "__time__",
+            "type": "entity_set",
+        },
+    })
 
 
 def parse_ref(ref):
@@ -613,34 +608,29 @@ def gen_link(key, link_name, src, dest, ltype, priority):
     dest_d, _, dest_full = parse_ref(dest)
     src_cap = src.split(".")[-1].replace("_", " ").title()
     dest_cap = dest.split(".")[-1].replace("_", " ").title()
-    lines = []
-    a = lines.append
-    a("kind: entity_set_link")
-    a("metadata:")
-    a("    description:")
-    a(f"        en_us: {src_cap} {ltype} {dest_cap}.")
-    a(f"        zh_cn: {src_cap} {ltype} {dest_cap}。")
-    a("    display_name:")
-    a(f"        en_us: {src_cap} {ltype.title()} {dest_cap}")
-    a(f"        zh_cn: {src_cap} {ltype} {dest_cap}")
-    a(f"    domain: {DOMAIN}")
-    a(f"    kind: entity_set_link")
-    a(f"    name: {link_name}")
-    a("schema:")
-    a(f"    url: {SCHEMA_URL}")
-    a(f"    version: {SCHEMA_VERSION}")
-    a("spec:")
-    a("    dest:")
-    a(f"        domain: {dest_d}")
-    a(f"        kind: entity_set")
-    a(f"        name: {dest_full}")
-    a(f"    entity_link_type: {ltype}")
-    a(f"    priority: {priority}")
-    a("    src:")
-    a(f"        domain: {src_d}")
-    a(f"        kind: entity_set")
-    a(f"        name: {src_full}")
-    return "\n".join(lines) + "\n"
+    return dump_doc({
+        "kind": "entity_set_link",
+        "metadata": {
+            "description": {
+                "en_us": f"{src_cap} {ltype} {dest_cap}.",
+                "zh_cn": f"{src_cap} {ltype} {dest_cap}。",
+            },
+            "display_name": {
+                "en_us": f"{src_cap} {ltype.title()} {dest_cap}",
+                "zh_cn": f"{src_cap} {ltype} {dest_cap}",
+            },
+            "domain": DOMAIN,
+            "kind": "entity_set_link",
+            "name": link_name,
+        },
+        "schema": {"url": SCHEMA_URL, "version": SCHEMA_VERSION},
+        "spec": {
+            "dest": {"domain": dest_d, "kind": "entity_set", "name": dest_full},
+            "entity_link_type": ltype,
+            "priority": priority,
+            "src": {"domain": src_d, "kind": "entity_set", "name": src_full},
+        },
+    })
 
 
 def main():

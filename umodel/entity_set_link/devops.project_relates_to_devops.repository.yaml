@@ -1,25 +1,25 @@
 kind: entity_set_link
 metadata:
-    description:
-        en_us: Project relates_to Repository.
-        zh_cn: Project relates_to Repository。
-    display_name:
-        en_us: Project Relates_To Repository
-        zh_cn: Project relates_to Repository
-    domain: devops
-    kind: entity_set_link
-    name: devops.project_relates_to_devops.repository
+  description:
+    en_us: Project relates_to Repository.
+    zh_cn: Project relates_to Repository。
+  display_name:
+    en_us: Project Relates_To Repository
+    zh_cn: Project relates_to Repository
+  domain: devops
+  kind: entity_set_link
+  name: devops.project_relates_to_devops.repository
 schema:
-    url: umodel.aliyun.com
-    version: v0.1.0
+  url: umodel.aliyun.com
+  version: v0.1.0
 spec:
-    dest:
-        domain: devops
-        kind: entity_set
-        name: devops.repository
-    entity_link_type: relates_to
-    priority: 5
-    src:
-        domain: devops
-        kind: entity_set
-        name: devops.project
+  dest:
+    domain: devops
+    kind: entity_set
+    name: devops.repository
+  entity_link_type: relates_to
+  priority: 5
+  src:
+    domain: devops
+    kind: entity_set
+    name: devops.project

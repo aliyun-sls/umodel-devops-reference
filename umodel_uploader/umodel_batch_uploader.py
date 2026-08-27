@@ -42,6 +42,7 @@ class UModelBatchUploader:
         """
         self.endpoint = endpoint
         self.workspace = workspace
+        self.last_invalid_files = []
         self.client = self._create_client()
         
     def _create_client(self) -> Cms20240330Client:
@@ -148,14 +149,24 @@ class UModelBatchUploader:
             raise NotADirectoryError(f"路径不是目录: {directory}")
         
         print(f"🔍 正在扫描目录: {directory}")
-        
-        # 递归遍历目录
+
+        # 递归遍历目录；扩展名是 yaml 但解析/校验失败的文件不静默丢弃，计入 last_invalid_files
+        self.last_invalid_files = []
         for root, dirs, files in os.walk(directory):
             for file in files:
+                if not (file.endswith('.yaml') or file.endswith('.yml')):
+                    continue
                 file_path = os.path.join(root, file)
                 if self._is_umodel_file(file_path):
                     umodel_files.append(file_path)
-                    
+                else:
+                    self.last_invalid_files.append(file_path)
+
+        if self.last_invalid_files:
+            print(f"⚠️  发现 {len(self.last_invalid_files)} 个无效 yaml 文件（将计入失败统计）:")
+            for p in self.last_invalid_files:
+                print(f"     - {os.path.basename(p)}")
+
         print(f"📁 找到 {len(umodel_files)} 个umodel文件")
         return umodel_files
     
@@ -164,13 +175,15 @@ class UModelBatchUploader:
         批量上传目录下的所有umodel文件
         """
         umodel_files = self.scan_directory(directory)
-        
-        if not umodel_files:
+        invalid_count = len(self.last_invalid_files)
+
+        if not umodel_files and not invalid_count:
             print("⚠️  未找到任何umodel文件")
             return {'success': 0, 'failed': 0, 'total': 0}
-        
+
         success_count = 0
-        failed_count = 0
+        # 无效文件直接计入失败：不静默跳过，否则坏 schema 会被成功率掩盖
+        failed_count = invalid_count
         
         print(f"\n{'=' * 50}")
         if dry_run:
@@ -204,12 +217,12 @@ class UModelBatchUploader:
                 failed_count += 1
         
         # 输出统计结果
-        total_count = len(umodel_files)
+        total_count = len(umodel_files) + invalid_count
         print(f"\n{'=' * 50}")
         print("📊 统计结果:")
         print(f"   总计文件: {total_count}")
         print(f"   成功: {success_count}")
-        print(f"   失败: {failed_count}")
+        print(f"   失败: {failed_count}" + (f"（含 {invalid_count} 个无效文件）" if invalid_count else ""))
         if total_count > 0:
             print(f"   成功率: {(success_count/total_count*100):.1f}%")
         print(f"{'=' * 50}")
