@@ -14,7 +14,10 @@ from orchestrator import DevOpsDataOrchestrator
 
 
 def setup_logging(log_config: dict):
-    log_file = log_config.get("file", "logs/devops_data_generator.log")
+    # `or` (not .get's default): an explicit empty `file: ""` in an existing
+    # config must also fall back — FileHandler("") resolves to the cwd and
+    # crashes with IsADirectoryError.
+    log_file = log_config.get("file") or "logs/devops_data_generator.log"
     log_dir = os.path.dirname(log_file)
     if log_dir and not os.path.exists(log_dir):
         os.makedirs(log_dir)
