@@ -14,6 +14,11 @@ The `git_provider.type` field in `app_config.yaml` selects which git adapter to 
 | Default branch fallback | `main` | `master` |
 | `data_source` field value in SLS | `"gitlab"` | `"codeup"` |
 | CI pipelines (`pipeline` / `pipeline_run`) | ✓ (GitLab CI, built-in) | not yet (adapter default `[]`) |
+
+Standalone CI systems (not git providers) implement `ICIAdapter` and merge into the same
+pipeline tasks: **Jenkins** is supported via a `jenkins:` config section (`url`/`user`/`token`,
+optional `job_filter` and `repo_mapping` for repository_contains_pipeline edges). GitLab CI
+records use `data_source="gitlab_ci"` (CI vs git-hosting sources are distinct per the enum spec).
 | Docker Compose | `docker compose up --build` | `docker compose up --build` |
 | Config sample | `app_config.gitlab.yaml.sample` | `app_config.codeup.yaml.sample` |
 
@@ -110,10 +115,15 @@ any git provider's run. They are wired only when their config section is present
 
 Git providers:
 
-- Jenkins
-- GitHub Actions / Argo Workflows / Tekton
+- GitHub
+- Bitbucket
 
 Deploy providers (implement `IDeployAdapter`):
 
 - Yunxiao AppStack
 - Aone
+
+CI providers (implement `ICIAdapter`; GitLab CI 寄生在 IGitAdapter):
+
+- Yunxiao Flow
+- GitHub Actions / Argo Workflows / Tekton

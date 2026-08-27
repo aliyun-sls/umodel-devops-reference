@@ -76,10 +76,10 @@ class GitLabPipelineMappingTests(unittest.TestCase):
         pipes = _make_adapter().list_pipelines("1")
         self.assertEqual(len(pipes), 1)
         p = pipes[0]
-        self.assertEqual(p["pipeline_id"], "gitlab:1:.gitlab-ci.yml")
+        self.assertEqual(p["pipeline_id"], "gitlab_ci:1:.gitlab-ci.yml")
         self.assertEqual(p["platform_pipeline_id"], "1:.gitlab-ci.yml")
         self.assertEqual(p["repository_id"], "1")
-        self.assertEqual(p["data_source"], "gitlab")
+        self.assertEqual(p["data_source"], "gitlab_ci")
         self.assertTrue(p["is_active"])
         self.assertTrue(p["url"].endswith("/-/pipelines"))
 
@@ -98,8 +98,8 @@ class GitLabPipelineMappingTests(unittest.TestCase):
         runs = _make_adapter().list_pipeline_runs("1")
         self.assertEqual(len(runs), 2)
         ok, bad = runs
-        self.assertEqual(ok["run_id"], "gitlab:1:101")
-        self.assertEqual(ok["pipeline_id"], "gitlab:1:.gitlab-ci.yml")
+        self.assertEqual(ok["run_id"], "gitlab_ci:1:101")
+        self.assertEqual(ok["pipeline_id"], "gitlab_ci:1:.gitlab-ci.yml")
         self.assertEqual(ok["commit_sha"], "aaaabbbbccccdddd00001111222233334444")
         self.assertEqual((ok["status"], ok["conclusion"]), ("success", "success"))
         self.assertEqual(ok["trigger_type"], "push")
@@ -178,8 +178,8 @@ class _FakeGitAdapter:
 
 
 REPO = {"repository_id": "1", "name": "demo-app"}
-PIPE = {"pipeline_id": "gitlab:1:.gitlab-ci.yml", "repository_id": "1"}
-RUN = {"run_id": "gitlab:1:101", "pipeline_id": "gitlab:1:.gitlab-ci.yml",
+PIPE = {"pipeline_id": "gitlab_ci:1:.gitlab-ci.yml", "repository_id": "1"}
+RUN = {"run_id": "gitlab_ci:1:101", "pipeline_id": "gitlab_ci:1:.gitlab-ci.yml",
        "repository_id": "1", "commit_sha": "abc123", "status": "success"}
 
 
@@ -216,7 +216,7 @@ class PipelineTaskTests(unittest.TestCase):
         self.assertEqual(len(rels), 1)
         self.assertEqual(rels[0]["__link_type__"], "contains")
         self.assertEqual(rels[0]["__src_entity_id__"], "1")
-        self.assertEqual(rels[0]["__dest_entity_id__"], "gitlab:1:.gitlab-ci.yml")
+        self.assertEqual(rels[0]["__dest_entity_id__"], "gitlab_ci:1:.gitlab-ci.yml")
 
 
 class PullRequestTriggersPipelineRunTests(unittest.TestCase):
@@ -235,7 +235,7 @@ class PullRequestTriggersPipelineRunTests(unittest.TestCase):
         self.assertEqual(len(rels), 1)
         self.assertEqual(rels[0]["__link_type__"], "triggers")
         self.assertEqual(rels[0]["__src_entity_id__"], "gitlab:1!3")
-        self.assertEqual(rels[0]["__dest_entity_id__"], "gitlab:1:101")
+        self.assertEqual(rels[0]["__dest_entity_id__"], "gitlab_ci:1:101")
 
     def test_commit_sha_fallback_match(self):
         prs = [{"pr_id": "gitlab:1!3", "repository_id": "1",

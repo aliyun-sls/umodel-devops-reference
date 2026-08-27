@@ -23,3 +23,5 @@ jobs:
       - run: python3 -m unittest devops_data_generator.tests.test_gitlab_pipeline -v
       # APM→repo sourced_from 边测试（含真实 data_mapping 的 enrich 集成）
       - run: python3 -m unittest devops_data_generator.tests.test_apm_service_link -v
+      # Jenkins CI adapter 契约测试（mock REST）+ 多源任务合并
+      - run: python3 -m unittest devops_data_generator.tests.test_jenkins_adapter -v

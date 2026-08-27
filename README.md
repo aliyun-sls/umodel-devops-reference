@@ -119,8 +119,8 @@ npm_package, unit_testcase) are schema-only pending their data-source adapters
 | devops | `devops.artifact` | ✓ (derived, ACR) |
 | devops | `devops.docker_image` | ✓ (ACR) |
 | devops | `devops.deployment` | ✓ (Argo CD) |
-| devops | `devops.pipeline` | ✓ (GitLab CI) |
-| devops | `devops.pipeline_run` | ✓ (GitLab CI) |
+| devops | `devops.pipeline` | ✓ (GitLab CI / Jenkins) |
+| devops | `devops.pipeline_run` | ✓ (GitLab CI / Jenkins) |
 | devops | + 8 schema-only | pending adapters |
 
 36 EntitySetLinks connect these entities (29 design-doc relations + cross-domain links to

@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 from typing import Any, Dict, Optional
 
-from adapters import create_git_adapter, create_deploy_adapter
+from adapters import create_git_adapter, create_deploy_adapter, create_ci_adapter
 from config.config_loader import ConfigLoader
 from generator.sls_data_generator import SlsDataGenerator
 from sender.sls_data_sender import SlsDataSender
@@ -115,6 +115,13 @@ class DevOpsDataOrchestrator:
         self.data_sender = SlsDataSender(sls_config)
         self.skip_sls_upload = set(self.config_loader.get_tasks_config().get("skip_sls_upload", []))
 
+        # Optional standalone CI adapters (Jenkins, ...): wired when their
+        # config section has a real url. GitLab CI stays on the git adapter.
+        ci_adapters = []
+        jenkins_config = self.config_loader.app_config.get("jenkins", {}) or {}
+        if _has_real_value(jenkins_config.get("url")):
+            ci_adapters.append(create_ci_adapter("jenkins", jenkins_config))
+
         self.tasks = {
             # Git-provider-aware tasks: inject adapter + carry provider_config
             # for niche options (release_tag, fetch_details).
@@ -122,9 +129,9 @@ class DevOpsDataOrchestrator:
             "user": UserTask(provider_config, self.git_adapter),
             "release": ReleaseTask(provider_config, self.git_adapter),
             "pull_request": PullRequestTask(provider_config, self.git_adapter),
-            # CI pipeline tasks (adapter optional capability; empty for no-CI providers)
-            "pipeline": PipelineTask(provider_config, self.git_adapter),
-            "pipeline_run": PipelineRunTask(provider_config, self.git_adapter),
+            # CI pipeline tasks (git-embedded CI + optional standalone CI adapters)
+            "pipeline": PipelineTask(provider_config, self.git_adapter, ci_adapters),
+            "pipeline_run": PipelineRunTask(provider_config, self.git_adapter, ci_adapters),
             # Provider-agnostic relationship tasks (git-derived)
             "user_owns_repository": UserOwnsRepositoryTask(provider_config),
             "repository_tags_release": RepositoryTagsReleaseTask(provider_config),

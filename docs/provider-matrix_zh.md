@@ -14,6 +14,8 @@
 | 默认分支回退 | `main` | `master` |
 | `data_source` 字段值（写入 SLS）| `"gitlab"` | `"codeup"` |
 | CI 流水线（`pipeline` / `pipeline_run`） | ✓（GitLab CI，内建） | 未实现（adapter 默认返回 `[]`） |
+
+独立 CI 系统（非 git provider）实现 `ICIAdapter` 并汇入同一对 pipeline 任务：**Jenkins** 已支持（`jenkins:` 配置段，`url`/`user`/`token`，可选 `job_filter` 与 `repo_mapping`）。GitLab CI 记录用 `data_source="gitlab_ci"`（CI 与代码托管源按枚举规范分开）。
 | Docker Compose | `docker compose up --build` | `docker compose up --build` |
 | 配置样例 | `app_config.gitlab.yaml.sample` | `app_config.codeup.yaml.sample` |
 
@@ -110,10 +112,15 @@ CD/部署系统**不是** git provider——它们实现 `IDeployAdapter`，叠�
 
 Git provider：
 
-- Jenkins
-- GitHub Actions / Argo Workflows / Tekton
+- GitHub
+- Bitbucket
 
 部署 provider（实现 `IDeployAdapter`）：
 
 - 云效 AppStack
 - Aone
+
+CI provider（实现 `ICIAdapter`；GitLab CI 寄生在 IGitAdapter）：
+
+- 云效 Flow
+- GitHub Actions / Argo Workflows / Tekton
