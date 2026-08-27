@@ -1,4 +1,5 @@
 from .base import IGitAdapter
-from .factory import create_git_adapter
+from .deploy_base import IDeployAdapter
+from .factory import create_git_adapter, create_deploy_adapter
 
-__all__ = ["IGitAdapter", "create_git_adapter"]
+__all__ = ["IGitAdapter", "IDeployAdapter", "create_git_adapter", "create_deploy_adapter"]

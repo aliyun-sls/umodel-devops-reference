@@ -91,7 +91,28 @@ All list APIs use full pagination by default. Config parameters under `acr:` con
 
 Each entity needs an explicit SLS logstore (entity name) configured under `sls.logstore_mapping.entities`. In particular, `sls.logstore_mapping.entities.kubernetes_pod` — the logstore used for the `kubernetes_pod` entity — must be present; without it the `kubernetes_pod` task falls back to a wrong name and pod data fails to write to SLS. See the `sls.logstore_mapping.entities` block in `app_config.*.yaml.sample`.
 
+## Deploy Providers (separate axis)
+
+CD/deploy systems are **not** git providers — they implement `IDeployAdapter` and layer on top of
+any git provider's run. They are wired only when their config section is present.
+
+| | Argo CD |
+|---|---|
+| Config section | `argocd:` in `app_config.yaml` |
+| SDK | none (stdlib `urllib`, REST API) |
+| Authentication | Bearer token (session token or account API key) |
+| Tasks enabled | `deployment`, `release_relates_to_deployment` |
+| `data_source` field value in SLS | `"argocd"` |
+| Notes | v3.5.x verified. Do **not** pass `fields` projections to list APIs — the gRPC field mask silently drops `metadata.name` |
+
 ## Providers Not Yet Implemented
 
+Git providers:
+
 - Jenkins
-- GitHub Actions / Argo / Tekton
+- GitHub Actions / Argo Workflows / Tekton
+
+Deploy providers (implement `IDeployAdapter`):
+
+- Yunxiao AppStack
+- Aone

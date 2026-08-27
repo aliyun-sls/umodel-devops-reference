@@ -447,7 +447,7 @@
 
 | 字段 | 类型 | 必填 | 主键 | 说明 |
 |---|---|---|---|---|
-| `deployment_id` | string | ✓ | ✓ | 部署唯一标识，格式 `<data_source>:<platform_deployment_id>` |
+| `deployment_id` | string | ✓ | ✓ | 部署唯一标识，格式 `<data_source>:<platform_deployment_id>`（argocd 实现为 `argocd:{application}:{history_id}`——history id 是应用内单调序号，跨应用会重复，故中间带应用名保证全局唯一） |
 | `title` | string | | | 部署标题（**修 D5**：设计文档说明为空，本契约补「部署标题」） |
 | `description` | string | | | 部署描述（**修 D5**：设计文档说明为空，本契约补「部署描述」） |
 | `repository_id` | string | ✓ | | 关联 repository.repository_id |
@@ -457,7 +457,7 @@
 | `version` | string | | | 应用版本号 |
 | `status` | enum | ✓ | | queued/in_progress/success/failure/cancelled |
 | `conclusion` | enum | | | success/failure/rolled_back |
-| `data_source` | string | ✓ | | yunxiao_appstack/aone/github |
+| `data_source` | string | ✓ | | yunxiao_appstack/aone/github/argocd |
 | `platform_deployment_id` | string | ✓ | | 平台部署 ID |
 | `url` | string | | | 部署 URL |
 | `deployed_by` | string | | | 部署人，关联 user.user_id |

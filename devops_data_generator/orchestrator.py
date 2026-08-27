@@ -4,18 +4,20 @@ import time
 from datetime import datetime
 from typing import Any, Dict, Optional
 
-from adapters import create_git_adapter
+from adapters import create_git_adapter, create_deploy_adapter
 from config.config_loader import ConfigLoader
 from generator.sls_data_generator import SlsDataGenerator
 from sender.sls_data_sender import SlsDataSender
 from shared.data_context import SharedDataContext
 from tasks.artifact_same_as_docker_image_task import ArtifactSameAsDockerImageTask
 from tasks.artifact_task import ArtifactTask
+from tasks.deployment_task import DeploymentTask
 from tasks.docker_image_task import DockerImageTask
 from tasks.kubernetes_pod_task import KubernetesPodTask
 from tasks.pod_uses_docker_image_task import PodUsesDockerImageTask
 from tasks.pull_request_task import PullRequestTask
 from tasks.release_contains_artifact_task import ReleaseContainsArtifactTask
+from tasks.release_relates_to_deployment_task import ReleaseRelatesToDeploymentTask
 from tasks.release_task import ReleaseTask
 from tasks.repository_contains_pull_request_task import RepositoryContainsPullRequestTask
 from tasks.repository_task import RepositoryTask
@@ -130,6 +132,14 @@ class DevOpsDataOrchestrator:
             "pod_uses_docker_image": PodUsesDockerImageTask(cms_config),
             "static_topo": StaticTopoTask(static_topo_config),
         }
+
+        # Optional CD/deploy task: only wired when the argocd config section
+        # has a real server value (keeps the producer inert otherwise).
+        argocd_config = self.config_loader.app_config.get("argocd", {}) or {}
+        if _has_real_value(argocd_config.get("server")):
+            deploy_adapter = create_deploy_adapter("argocd", argocd_config)
+            self.tasks["deployment"] = DeploymentTask(argocd_config, deploy_adapter)
+            self.tasks["release_relates_to_deployment"] = ReleaseRelatesToDeploymentTask(argocd_config)
 
         if self.shared_context:
             for task_name, task in self.tasks.items():
