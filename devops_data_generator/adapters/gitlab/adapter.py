@@ -165,6 +165,16 @@ class GitLabAdapter(IGitAdapter):
         ci_path = getattr(project, "ci_config_path", "") or ".gitlab-ci.yml"
         if not getattr(project, "jobs_enabled", True):
             return []
+        # jobs_enabled is the GitLab default even for repos with NO CI config;
+        # the definition only exists if the config file is actually there.
+        # (Otherwise every repo would claim a phantom pipeline entity.)
+        default_branch = getattr(project, "default_branch", "") or self.DEFAULT_BRANCH_FALLBACK
+        try:
+            project.files.head(file_path=ci_path, ref=default_branch)
+        except Exception as exc:  # noqa: BLE001 — 404 means no CI config
+            logger.info("repo %s: no CI config at %s (%s); no pipeline entity",
+                        repo_id, ci_path, exc)
+            return []
         platform_id = f"{repo_id}:{ci_path}"
         web_url = getattr(project, "web_url", "") or ""
         return [{

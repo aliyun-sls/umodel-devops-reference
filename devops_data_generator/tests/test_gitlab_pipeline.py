@@ -29,7 +29,7 @@ from tasks.pull_request_triggers_pipeline_run_task import (  # noqa: E402
 
 # --- fake python-gitlab object graph -----------------------------------------
 
-def _fake_project(jobs_enabled=True):
+def _fake_project(jobs_enabled=True, ci_file_exists=True):
     pipelines = [
         SimpleNamespace(id=101, iid=5, sha="aaaabbbbccccdddd00001111222233334444",
                         ref="main", status="success", source="push",
@@ -46,19 +46,26 @@ def _fake_project(jobs_enabled=True):
                         started_at=None, finished_at=None,
                         duration=None, queued_duration=None),
     ]
+
+    def _head(file_path, ref):
+        if not ci_file_exists:
+            raise Exception("404 Not Found")
+        return True
+
     return SimpleNamespace(
         id=1, path_with_namespace="starops-demo/demo-app",
-        jobs_enabled=jobs_enabled, ci_config_path="",
+        jobs_enabled=jobs_enabled, ci_config_path="", default_branch="main",
         web_url="http://gl/starops-demo/demo-app",
         created_at="2026-01-01T00:00:00Z", last_activity_at="2026-08-27T02:00:00Z",
         pipelines=SimpleNamespace(list=lambda **kw: pipelines),
+        files=SimpleNamespace(head=_head),
     )
 
 
-def _make_adapter(jobs_enabled=True):
+def _make_adapter(jobs_enabled=True, ci_file_exists=True):
     """GitLabAdapter without __init__ (avoids SDK/client construction)."""
     adapter = GitLabAdapter.__new__(GitLabAdapter)
-    project = _fake_project(jobs_enabled)
+    project = _fake_project(jobs_enabled, ci_file_exists)
     adapter.client = SimpleNamespace(
         projects=SimpleNamespace(get=lambda _id: project))
     return adapter
@@ -78,6 +85,14 @@ class GitLabPipelineMappingTests(unittest.TestCase):
 
     def test_list_pipelines_skips_ci_disabled_project(self):
         self.assertEqual(_make_adapter(jobs_enabled=False).list_pipelines("1"), [])
+
+    def test_list_pipelines_skips_repo_without_ci_config_file(self):
+        # jobs_enabled defaults to true even when no .gitlab-ci.yml exists —
+        # without the file-existence probe every repo claims a phantom pipeline.
+        self.assertEqual(
+            _make_adapter(jobs_enabled=True, ci_file_exists=False).list_pipelines("1"),
+            [],
+        )
 
     def test_list_pipeline_runs_mapping(self):
         runs = _make_adapter().list_pipeline_runs("1")
