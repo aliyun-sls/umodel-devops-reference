@@ -1,390 +1,390 @@
 kind: entity_set
 metadata:
-    description:
-        en_us: Node.js package artifact.
-        zh_cn: NPM包实体代表Node.js包产物。
-    display_name:
-        en_us: NPM Package
-        zh_cn: NPM包
-    domain: devops
-    kind: entity_set
-    name: devops.npm_package
+  description:
+    en_us: Node.js package artifact.
+    zh_cn: NPM包实体代表Node.js包产物。
+  display_name:
+    en_us: NPM Package
+    zh_cn: NPM包
+  domain: devops
+  kind: entity_set
+  name: devops.npm_package
 schema:
-    url: umodel.aliyun.com
-    version: v0.1.0
+  url: umodel.aliyun.com
+  version: v0.1.0
 spec:
-    dynamic: false
-    fields:
-        - description:
-            en_us: NPM package unique identifier
-            zh_cn: NPM包唯一标识
-          display_name:
-            en_us: Npm Package Id
-            zh_cn: NPM包唯一标识
-          filterable: true
-          name: npm_package_id
-          orderable: true
-          short_description:
-            en_us: Npm Package Id
-            zh_cn: NPM包唯一标识
-          type: string
-        - description:
-            en_us: Linked artifact ID
-            zh_cn: 关联的Artifact ID
-          display_name:
-            en_us: Artifact Id
-            zh_cn: 关联的Artifact ID
-          filterable: true
-          name: artifact_id
-          orderable: true
-          short_description:
-            en_us: Artifact Id
-            zh_cn: 关联的Artifact ID
-          type: string
-        - description:
-            en_us: Package name
-            zh_cn: 包名称
-          display_name:
-            en_us: Package Name
-            zh_cn: 包名称
-          filterable: true
-          name: package_name
-          orderable: true
-          short_description:
-            en_us: Package Name
-            zh_cn: 包名称
-          type: string
-        - description:
-            en_us: Scope
-            zh_cn: 作用域
-          display_name:
-            en_us: Scope
-            zh_cn: 作用域
-          filterable: true
-          name: scope
-          orderable: true
-          short_description:
-            en_us: Scope
-            zh_cn: 作用域
-          type: string
-        - description:
-            en_us: Version
-            zh_cn: 版本号
-          display_name:
-            en_us: Version
-            zh_cn: 版本号
-          filterable: true
-          name: version
-          orderable: true
-          short_description:
-            en_us: Version
-            zh_cn: 版本号
-          type: string
-        - description:
-            en_us: NPM registry
-            zh_cn: NPM仓库
-          display_name:
-            en_us: Registry
-            zh_cn: NPM仓库
-          filterable: true
-          name: registry
-          orderable: true
-          short_description:
-            en_us: Registry
-            zh_cn: NPM仓库
-          type: string
-        - description:
-            en_us: Package description
-            zh_cn: 包描述
-          display_name:
-            en_us: Description
-            zh_cn: 包描述
-          filterable: true
-          name: description
-          orderable: true
-          short_description:
-            en_us: Description
-            zh_cn: 包描述
-          type: string
-        - description:
-            en_us: Main entry file
-            zh_cn: 主入口文件
-          display_name:
-            en_us: Main Entry
-            zh_cn: 主入口文件
-          filterable: true
-          name: main_entry
-          orderable: true
-          short_description:
-            en_us: Main Entry
-            zh_cn: 主入口文件
-          type: string
-        - description:
-            en_us: Type definition entry
-            zh_cn: 类型定义入口
-          display_name:
-            en_us: Types Entry
-            zh_cn: 类型定义入口
-          filterable: true
-          name: types_entry
-          orderable: true
-          short_description:
-            en_us: Types Entry
-            zh_cn: 类型定义入口
-          type: string
-        - description:
-            en_us: License
-            zh_cn: 许可证
-          display_name:
-            en_us: License
-            zh_cn: 许可证
-          filterable: true
-          name: license
-          orderable: true
-          short_description:
-            en_us: License
-            zh_cn: 许可证
-          type: string
-        - description:
-            en_us: Keywords
-            zh_cn: 关键词
-          display_name:
-            en_us: Keywords
-            zh_cn: 关键词
-          filterable: false
-          name: keywords
-          orderable: false
-          short_description:
-            en_us: Keywords
-            zh_cn: 关键词
-          type: array
-        - description:
-            en_us: Production dependencies
-            zh_cn: 生产依赖
-          display_name:
-            en_us: Dependencies
-            zh_cn: 生产依赖
-          filterable: false
-          name: dependencies
-          orderable: false
-          short_description:
-            en_us: Dependencies
-            zh_cn: 生产依赖
-          type: json
-        - description:
-            en_us: Development dependencies
-            zh_cn: 开发依赖
-          display_name:
-            en_us: Dev Dependencies
-            zh_cn: 开发依赖
-          filterable: false
-          name: dev_dependencies
-          orderable: false
-          short_description:
-            en_us: Dev Dependencies
-            zh_cn: 开发依赖
-          type: json
-        - description:
-            en_us: Peer dependencies
-            zh_cn: 对等依赖
-          display_name:
-            en_us: Peer Dependencies
-            zh_cn: 对等依赖
-          filterable: false
-          name: peer_dependencies
-          orderable: false
-          short_description:
-            en_us: Peer Dependencies
-            zh_cn: 对等依赖
-          type: json
-        - description:
-            en_us: Optional dependencies
-            zh_cn: 可选依赖
-          display_name:
-            en_us: Optional Dependencies
-            zh_cn: 可选依赖
-          filterable: false
-          name: optional_dependencies
-          orderable: false
-          short_description:
-            en_us: Optional Dependencies
-            zh_cn: 可选依赖
-          type: json
-        - description:
-            en_us: Author info
-            zh_cn: 作者信息
-          display_name:
-            en_us: Author
-            zh_cn: 作者信息
-          filterable: false
-          name: author
-          orderable: false
-          short_description:
-            en_us: Author
-            zh_cn: 作者信息
-          type: json
-        - description:
-            en_us: Contributor list
-            zh_cn: 贡献者列表
-          display_name:
-            en_us: Contributors
-            zh_cn: 贡献者列表
-          filterable: false
-          name: contributors
-          orderable: false
-          short_description:
-            en_us: Contributors
-            zh_cn: 贡献者列表
-          type: array
-        - description:
-            en_us: Homepage
-            zh_cn: 主页
-          display_name:
-            en_us: Homepage
-            zh_cn: 主页
-          filterable: true
-          name: homepage
-          orderable: true
-          short_description:
-            en_us: Homepage
-            zh_cn: 主页
-          type: string
-        - description:
-            en_us: Repository info
-            zh_cn: 仓库信息
-          display_name:
-            en_us: Repository
-            zh_cn: 仓库信息
-          filterable: false
-          name: repository
-          orderable: false
-          short_description:
-            en_us: Repository
-            zh_cn: 仓库信息
-          type: json
-        - description:
-            en_us: Issue tracker URL
-            zh_cn: Issue Tracker
-          display_name:
-            en_us: Bugs
-            zh_cn: Issue Tracker
-          filterable: true
-          name: bugs
-          orderable: true
-          short_description:
-            en_us: Bugs
-            zh_cn: Issue Tracker
-          type: string
-        - description:
-            en_us: NPM scripts
-            zh_cn: NPM脚本
-          display_name:
-            en_us: Scripts
-            zh_cn: NPM脚本
-          filterable: false
-          name: scripts
-          orderable: false
-          short_description:
-            en_us: Scripts
-            zh_cn: NPM脚本
-          type: json
-        - description:
-            en_us: Engine requirements
-            zh_cn: 引擎要求
-          display_name:
-            en_us: Engines
-            zh_cn: 引擎要求
-          filterable: false
-          name: engines
-          orderable: false
-          short_description:
-            en_us: Engines
-            zh_cn: 引擎要求
-          type: json
-        - description:
-            en_us: Included files
-            zh_cn: 包含的文件
-          display_name:
-            en_us: Files
-            zh_cn: 包含的文件
-          filterable: false
-          name: files
-          orderable: false
-          short_description:
-            en_us: Files
-            zh_cn: 包含的文件
-          type: array
-        - description:
-            en_us: Tarball URL
-            zh_cn: Tarball URL
-          display_name:
-            en_us: Dist Tarball
-            zh_cn: Tarball URL
-          filterable: true
-          name: dist_tarball
-          orderable: true
-          short_description:
-            en_us: Dist Tarball
-            zh_cn: Tarball URL
-          type: string
-        - description:
-            en_us: SHA1 checksum
-            zh_cn: SHA1校验和
-          display_name:
-            en_us: Shasum
-            zh_cn: SHA1校验和
-          filterable: true
-          name: shasum
-          orderable: true
-          short_description:
-            en_us: Shasum
-            zh_cn: SHA1校验和
-          type: string
-        - description:
-            en_us: Data source: npm_registry/verdaccio
-            zh_cn: 数据来源 npm_registry/verdaccio
-          display_name:
-            en_us: Data Source
-            zh_cn: 数据来源 npm_registry/verdaccio
-          filterable: true
-          name: data_source
-          orderable: true
-          short_description:
-            en_us: Data Source
-            zh_cn: 数据来源 npm_registry/verdaccio
-          type: string
-        - description:
-            en_us: Platform package ID
-            zh_cn: 平台包ID
-          display_name:
-            en_us: Platform Package Id
-            zh_cn: 平台包ID
-          filterable: true
-          name: platform_package_id
-          orderable: true
-          short_description:
-            en_us: Platform Package Id
-            zh_cn: 平台包ID
-          type: string
-        - description:
-            en_us: Creation time
-            zh_cn: 创建时间
-          display_name:
-            en_us: Created At
-            zh_cn: 创建时间
-          filterable: true
-          name: created_at
-          orderable: true
-          short_description:
-            en_us: Created At
-            zh_cn: 创建时间
-          type: datetime
-    keep_alive_seconds: 86400
-    name_fields:
-        - package_name
-        - npm_package_id
-        - version
-    primary_key_fields:
-        - npm_package_id
-    time_field: __time__
-    type: entity_set
+  dynamic: false
+  fields:
+  - description:
+      en_us: NPM package unique identifier
+      zh_cn: NPM包唯一标识
+    display_name:
+      en_us: Npm Package Id
+      zh_cn: NPM包唯一标识
+    filterable: true
+    name: npm_package_id
+    orderable: true
+    short_description:
+      en_us: Npm Package Id
+      zh_cn: NPM包唯一标识
+    type: string
+  - description:
+      en_us: Linked artifact ID
+      zh_cn: 关联的Artifact ID
+    display_name:
+      en_us: Artifact Id
+      zh_cn: 关联的Artifact ID
+    filterable: true
+    name: artifact_id
+    orderable: true
+    short_description:
+      en_us: Artifact Id
+      zh_cn: 关联的Artifact ID
+    type: string
+  - description:
+      en_us: Package name
+      zh_cn: 包名称
+    display_name:
+      en_us: Package Name
+      zh_cn: 包名称
+    filterable: true
+    name: package_name
+    orderable: true
+    short_description:
+      en_us: Package Name
+      zh_cn: 包名称
+    type: string
+  - description:
+      en_us: Scope
+      zh_cn: 作用域
+    display_name:
+      en_us: Scope
+      zh_cn: 作用域
+    filterable: true
+    name: scope
+    orderable: true
+    short_description:
+      en_us: Scope
+      zh_cn: 作用域
+    type: string
+  - description:
+      en_us: Version
+      zh_cn: 版本号
+    display_name:
+      en_us: Version
+      zh_cn: 版本号
+    filterable: true
+    name: version
+    orderable: true
+    short_description:
+      en_us: Version
+      zh_cn: 版本号
+    type: string
+  - description:
+      en_us: NPM registry
+      zh_cn: NPM仓库
+    display_name:
+      en_us: Registry
+      zh_cn: NPM仓库
+    filterable: true
+    name: registry
+    orderable: true
+    short_description:
+      en_us: Registry
+      zh_cn: NPM仓库
+    type: string
+  - description:
+      en_us: Package description
+      zh_cn: 包描述
+    display_name:
+      en_us: Description
+      zh_cn: 包描述
+    filterable: true
+    name: description
+    orderable: true
+    short_description:
+      en_us: Description
+      zh_cn: 包描述
+    type: string
+  - description:
+      en_us: Main entry file
+      zh_cn: 主入口文件
+    display_name:
+      en_us: Main Entry
+      zh_cn: 主入口文件
+    filterable: true
+    name: main_entry
+    orderable: true
+    short_description:
+      en_us: Main Entry
+      zh_cn: 主入口文件
+    type: string
+  - description:
+      en_us: Type definition entry
+      zh_cn: 类型定义入口
+    display_name:
+      en_us: Types Entry
+      zh_cn: 类型定义入口
+    filterable: true
+    name: types_entry
+    orderable: true
+    short_description:
+      en_us: Types Entry
+      zh_cn: 类型定义入口
+    type: string
+  - description:
+      en_us: License
+      zh_cn: 许可证
+    display_name:
+      en_us: License
+      zh_cn: 许可证
+    filterable: true
+    name: license
+    orderable: true
+    short_description:
+      en_us: License
+      zh_cn: 许可证
+    type: string
+  - description:
+      en_us: Keywords
+      zh_cn: 关键词
+    display_name:
+      en_us: Keywords
+      zh_cn: 关键词
+    filterable: false
+    name: keywords
+    orderable: false
+    short_description:
+      en_us: Keywords
+      zh_cn: 关键词
+    type: array
+  - description:
+      en_us: Production dependencies
+      zh_cn: 生产依赖
+    display_name:
+      en_us: Dependencies
+      zh_cn: 生产依赖
+    filterable: false
+    name: dependencies
+    orderable: false
+    short_description:
+      en_us: Dependencies
+      zh_cn: 生产依赖
+    type: json
+  - description:
+      en_us: Development dependencies
+      zh_cn: 开发依赖
+    display_name:
+      en_us: Dev Dependencies
+      zh_cn: 开发依赖
+    filterable: false
+    name: dev_dependencies
+    orderable: false
+    short_description:
+      en_us: Dev Dependencies
+      zh_cn: 开发依赖
+    type: json
+  - description:
+      en_us: Peer dependencies
+      zh_cn: 对等依赖
+    display_name:
+      en_us: Peer Dependencies
+      zh_cn: 对等依赖
+    filterable: false
+    name: peer_dependencies
+    orderable: false
+    short_description:
+      en_us: Peer Dependencies
+      zh_cn: 对等依赖
+    type: json
+  - description:
+      en_us: Optional dependencies
+      zh_cn: 可选依赖
+    display_name:
+      en_us: Optional Dependencies
+      zh_cn: 可选依赖
+    filterable: false
+    name: optional_dependencies
+    orderable: false
+    short_description:
+      en_us: Optional Dependencies
+      zh_cn: 可选依赖
+    type: json
+  - description:
+      en_us: Author info
+      zh_cn: 作者信息
+    display_name:
+      en_us: Author
+      zh_cn: 作者信息
+    filterable: false
+    name: author
+    orderable: false
+    short_description:
+      en_us: Author
+      zh_cn: 作者信息
+    type: json
+  - description:
+      en_us: Contributor list
+      zh_cn: 贡献者列表
+    display_name:
+      en_us: Contributors
+      zh_cn: 贡献者列表
+    filterable: false
+    name: contributors
+    orderable: false
+    short_description:
+      en_us: Contributors
+      zh_cn: 贡献者列表
+    type: array
+  - description:
+      en_us: Homepage
+      zh_cn: 主页
+    display_name:
+      en_us: Homepage
+      zh_cn: 主页
+    filterable: true
+    name: homepage
+    orderable: true
+    short_description:
+      en_us: Homepage
+      zh_cn: 主页
+    type: string
+  - description:
+      en_us: Repository info
+      zh_cn: 仓库信息
+    display_name:
+      en_us: Repository
+      zh_cn: 仓库信息
+    filterable: false
+    name: repository
+    orderable: false
+    short_description:
+      en_us: Repository
+      zh_cn: 仓库信息
+    type: json
+  - description:
+      en_us: Issue tracker URL
+      zh_cn: Issue Tracker
+    display_name:
+      en_us: Bugs
+      zh_cn: Issue Tracker
+    filterable: true
+    name: bugs
+    orderable: true
+    short_description:
+      en_us: Bugs
+      zh_cn: Issue Tracker
+    type: string
+  - description:
+      en_us: NPM scripts
+      zh_cn: NPM脚本
+    display_name:
+      en_us: Scripts
+      zh_cn: NPM脚本
+    filterable: false
+    name: scripts
+    orderable: false
+    short_description:
+      en_us: Scripts
+      zh_cn: NPM脚本
+    type: json
+  - description:
+      en_us: Engine requirements
+      zh_cn: 引擎要求
+    display_name:
+      en_us: Engines
+      zh_cn: 引擎要求
+    filterable: false
+    name: engines
+    orderable: false
+    short_description:
+      en_us: Engines
+      zh_cn: 引擎要求
+    type: json
+  - description:
+      en_us: Included files
+      zh_cn: 包含的文件
+    display_name:
+      en_us: Files
+      zh_cn: 包含的文件
+    filterable: false
+    name: files
+    orderable: false
+    short_description:
+      en_us: Files
+      zh_cn: 包含的文件
+    type: array
+  - description:
+      en_us: Tarball URL
+      zh_cn: Tarball URL
+    display_name:
+      en_us: Dist Tarball
+      zh_cn: Tarball URL
+    filterable: true
+    name: dist_tarball
+    orderable: true
+    short_description:
+      en_us: Dist Tarball
+      zh_cn: Tarball URL
+    type: string
+  - description:
+      en_us: SHA1 checksum
+      zh_cn: SHA1校验和
+    display_name:
+      en_us: Shasum
+      zh_cn: SHA1校验和
+    filterable: true
+    name: shasum
+    orderable: true
+    short_description:
+      en_us: Shasum
+      zh_cn: SHA1校验和
+    type: string
+  - description:
+      en_us: 'Data source: npm_registry/verdaccio'
+      zh_cn: 数据来源 npm_registry/verdaccio
+    display_name:
+      en_us: Data Source
+      zh_cn: 数据来源 npm_registry/verdaccio
+    filterable: true
+    name: data_source
+    orderable: true
+    short_description:
+      en_us: Data Source
+      zh_cn: 数据来源 npm_registry/verdaccio
+    type: string
+  - description:
+      en_us: Platform package ID
+      zh_cn: 平台包ID
+    display_name:
+      en_us: Platform Package Id
+      zh_cn: 平台包ID
+    filterable: true
+    name: platform_package_id
+    orderable: true
+    short_description:
+      en_us: Platform Package Id
+      zh_cn: 平台包ID
+    type: string
+  - description:
+      en_us: Creation time
+      zh_cn: 创建时间
+    display_name:
+      en_us: Created At
+      zh_cn: 创建时间
+    filterable: true
+    name: created_at
+    orderable: true
+    short_description:
+      en_us: Created At
+      zh_cn: 创建时间
+    type: datetime
+  keep_alive_seconds: 86400
+  name_fields:
+  - package_name
+  - npm_package_id
+  - version
+  primary_key_fields:
+  - npm_package_id
+  time_field: __time__
+  type: entity_set

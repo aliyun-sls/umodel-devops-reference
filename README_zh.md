@@ -9,20 +9,20 @@
 ## 架构
 
 ```
-┌─────────────┐     ┌─────────────┐
-│   GitLab    │     │   Codeup    │
-│（自建/SaaS） │     │（阿里云 SaaS）│
-└──────┬──────┘     └──────┬──────┘
-       │ python-gitlab      │ alibabacloud SDK
-       └────────┬───────────┘
-                │ IGitAdapter
-                ▼
-     ┌──────────────────────┐
-     │  devops_data_generator│
-      │  ├─ 15 个采集任务      │
-      │  ├─ SLS 数据发送       │
-      │  └─ 编排调度器         │
-      └──────────┬───────────┘
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   GitLab    │     │   Codeup    │     │   Argo CD   │
+│（自建/SaaS） │     │（阿里云 SaaS）│     │(GitOps CD)  │
+└──────┬──────┘     └──────┬──────┘     └──────┬──────┘
+       │ python-gitlab      │ alibabacloud SDK │ REST API
+       └────────┬───────────┘                  │
+                │ IGitAdapter                  │ IDeployAdapter
+                ▼                              ▼
+     ┌───────────────────────────────────────────┐
+     │  devops_data_generator                    │
+      │  ├─ 17 个采集任务                          │
+      │  ├─ SLS 数据发送                           │
+      │  └─ 编排调度器                              │
+      └──────────┬────────────────────────────────┘
                  │ SLS / CMS 写入
                  ▼
       ┌──────────────────────┐
@@ -74,9 +74,31 @@ producer 由 `app_config.yaml` 中的 `git_provider.type` 选择。同一次 Com
 
 两者共用同一 orchestrator 与配置；按入口选用即可，无需另行实现调度。
 
+### Argo CD（可选 CD 数据源）
+
+在 `app_config.yaml` 里加 `argocd` 段（`app_config.gitlab.yaml.sample` 里有注释好的样例），
+然后启用两个 CD 任务：
+
+```yaml
+argocd:
+  server: "https://<argocd-server>"     # API 地址，结尾不带斜杠
+  token: "<bearer token>"               # session/账号 token
+  insecure: true                        # 跳过 TLS 校验（自签证书场景）
+  app_filter: []                        # 可选：Application 白名单
+  repo_mapping:                         # repoURL → git 仓库 repository_id
+    "https://<git-host>/group/app.git": "1"
+
+tasks:
+  enabled:
+    - deployment                        # devops.deployment 实体
+    - release_relates_to_deployment     # release → deployment 边
+```
+
+CD 任务与 git provider 无关，可叠加在任一 provider 之上；不配 `argocd` 段时行为与之前完全一致。
+
 ## UModel 实体
 
-17 个 EntitySet 覆盖完整研发链路（组织→项目→代码→CI/CD→发布→部署）。有 producer 支撑的实体（git + ACR 派生）：`devops.user`、`devops.repository`、`devops.release`、`devops.pull_request`、`devops.artifact`、`devops.docker_image`。其余 11 个（organization、project、work_item、milestone、pipeline、pipeline_run、helm_chart、binary、npm_package、unit_testcase、deployment）为 schema-only，待对应数据源 adapter（Jira/CI/appstack/制品库/组织系统）落地，详见 `docs/umodel-entity-field-contract.md`。
+17 个 EntitySet 覆盖完整研发链路（组织→项目→代码→CI/CD→发布→部署）。有 producer 支撑的实体（git + ACR + Argo CD 派生）：`devops.user`、`devops.repository`、`devops.release`、`devops.pull_request`、`devops.artifact`、`devops.docker_image`、`devops.deployment`。其余 10 个（organization、project、work_item、milestone、pipeline、pipeline_run、helm_chart、binary、npm_package、unit_testcase）为 schema-only，待对应数据源 adapter（Jira/CI/appstack/制品库/组织系统）落地，详见 `docs/umodel-entity-field-contract.md`。
 
 | 域 | 实体 | 有 producer |
 |---|---|---|
@@ -86,7 +108,8 @@ producer 由 `app_config.yaml` 中的 `git_provider.type` 选择。同一次 Com
 | devops | `devops.pull_request` | ✓（git） |
 | devops | `devops.artifact` | ✓（派生，ACR） |
 | devops | `devops.docker_image` | ✓（ACR） |
-| devops | + 11 个 schema-only | 待 adapter |
+| devops | `devops.deployment` | ✓（Argo CD） |
+| devops | + 10 个 schema-only | 待 adapter |
 
 36 条 EntitySetLink 连接上述实体（29 条设计文档关系 + 跨域链接到 `apm.service` 和 `k8s.{pod,deployment,daemonset,statefulset}`）。
 
@@ -126,8 +149,8 @@ umodel-devops-reference/
 ├── umodel/                          # 17 EntitySet + 36 EntitySetLink 定义
 ├── umodel_uploader/                 # 批量上传工具
 ├── devops_data_generator/
-│   ├── adapters/{gitlab,codeup}/    # IGitAdapter 实现
-│   ├── tasks/                       # 15 个数据采集任务
+│   ├── adapters/{gitlab,codeup,argocd}/ # IGitAdapter + IDeployAdapter 实现
+│   ├── tasks/                       # 17 个数据采集任务
 │   ├── config/                      # 各平台配置样例
 │   ├── orchestrator.py              # 任务调度 + 结构化结果
 │   └── scripts/                     # 验证 + 部署脚本

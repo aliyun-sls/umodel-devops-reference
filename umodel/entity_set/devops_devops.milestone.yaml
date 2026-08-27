@@ -1,195 +1,195 @@
 kind: entity_set
 metadata:
-    description:
-        en_us: Team iteration cycle time window (replaces Sprint/Milestone concepts).
-        zh_cn: 里程碑实体统一替代Sprint、Milestone等概念，用于度量团队迭代周期。
-    display_name:
-        en_us: Milestone
-        zh_cn: 里程碑
-    domain: devops
-    kind: entity_set
-    name: devops.milestone
+  description:
+    en_us: Team iteration cycle time window (replaces Sprint/Milestone concepts).
+    zh_cn: 里程碑实体统一替代Sprint、Milestone等概念，用于度量团队迭代周期。
+  display_name:
+    en_us: Milestone
+    zh_cn: 里程碑
+  domain: devops
+  kind: entity_set
+  name: devops.milestone
 schema:
-    url: umodel.aliyun.com
-    version: v0.1.0
+  url: umodel.aliyun.com
+  version: v0.1.0
 spec:
-    dynamic: false
-    fields:
-        - description:
-            en_us: Milestone unique identifier
-            zh_cn: 里程碑唯一标识
-          display_name:
-            en_us: Milestone Id
-            zh_cn: 里程碑唯一标识
-          filterable: true
-          name: milestone_id
-          orderable: true
-          short_description:
-            en_us: Milestone Id
-            zh_cn: 里程碑唯一标识
-          type: string
-        - description:
-            en_us: Owning project ID
-            zh_cn: 所属项目
-          display_name:
-            en_us: Project Id
-            zh_cn: 所属项目
-          filterable: true
-          name: project_id
-          orderable: true
-          short_description:
-            en_us: Project Id
-            zh_cn: 所属项目
-          type: string
-        - description:
-            en_us: Milestone name
-            zh_cn: 里程碑名称
-          display_name:
-            en_us: Name
-            zh_cn: 里程碑名称
-          filterable: true
-          name: name
-          orderable: true
-          short_description:
-            en_us: Name
-            zh_cn: 里程碑名称
-          type: string
-        - description:
-            en_us: Milestone goal
-            zh_cn: 里程碑目标
-          display_name:
-            en_us: Description
-            zh_cn: 里程碑目标
-          filterable: true
-          name: description
-          orderable: true
-          short_description:
-            en_us: Description
-            zh_cn: 里程碑目标
-          type: string
-        - description:
-            en_us: Start time
-            zh_cn: 开始时间
-          display_name:
-            en_us: Start Time
-            zh_cn: 开始时间
-          filterable: true
-          name: start_time
-          orderable: true
-          short_description:
-            en_us: Start Time
-            zh_cn: 开始时间
-          type: datetime
-        - description:
-            en_us: Planned end time
-            zh_cn: 计划结束时间
-          display_name:
-            en_us: End Time
-            zh_cn: 计划结束时间
-          filterable: true
-          name: end_time
-          orderable: true
-          short_description:
-            en_us: End Time
-            zh_cn: 计划结束时间
-          type: datetime
-        - description:
-            en_us: Status: planned/active/completed/cancelled
-            zh_cn: 状态 planned/active/completed/cancelled
-          display_name:
-            en_us: Status
-            zh_cn: 状态 planned/active/completed/cancelled
-          filterable: true
-          name: status
-          orderable: true
-          short_description:
-            en_us: Status
-            zh_cn: 状态 planned/active/completed/cancelled
-          type: enum
-        - description:
-            en_us: Data source
-            zh_cn: 数据来源
-          display_name:
-            en_us: Data Source
-            zh_cn: 数据来源
-          filterable: true
-          name: data_source
-          orderable: true
-          short_description:
-            en_us: Data Source
-            zh_cn: 数据来源
-          type: string
-        - description:
-            en_us: Platform milestone ID
-            zh_cn: 平台里程碑ID
-          display_name:
-            en_us: Platform Milestone Id
-            zh_cn: 平台里程碑ID
-          filterable: true
-          name: platform_milestone_id
-          orderable: true
-          short_description:
-            en_us: Platform Milestone Id
-            zh_cn: 平台里程碑ID
-          type: string
-        - description:
-            en_us: Milestone URL
-            zh_cn: 里程碑URL
-          display_name:
-            en_us: Url
-            zh_cn: 里程碑URL
-          filterable: true
-          name: url
-          orderable: true
-          short_description:
-            en_us: Url
-            zh_cn: 里程碑URL
-          type: string
-        - description:
-            en_us: Planned capacity
-            zh_cn: 计划容量
-          display_name:
-            en_us: Planned Capacity
-            zh_cn: 计划容量
-          filterable: true
-          name: planned_capacity
-          orderable: true
-          short_description:
-            en_us: Planned Capacity
-            zh_cn: 计划容量
-          type: integer
-        - description:
-            en_us: Completed count
-            zh_cn: 已完成数
-          display_name:
-            en_us: Completed Count
-            zh_cn: 已完成数
-          filterable: true
-          name: completed_count
-          orderable: true
-          short_description:
-            en_us: Completed Count
-            zh_cn: 已完成数
-          type: integer
-        - description:
-            en_us: Total count
-            zh_cn: 总数
-          display_name:
-            en_us: Total Count
-            zh_cn: 总数
-          filterable: true
-          name: total_count
-          orderable: true
-          short_description:
-            en_us: Total Count
-            zh_cn: 总数
-          type: integer
-    keep_alive_seconds: 86400
-    name_fields:
-        - name
-        - milestone_id
-        - status
-    primary_key_fields:
-        - milestone_id
-    time_field: __time__
-    type: entity_set
+  dynamic: false
+  fields:
+  - description:
+      en_us: Milestone unique identifier
+      zh_cn: 里程碑唯一标识
+    display_name:
+      en_us: Milestone Id
+      zh_cn: 里程碑唯一标识
+    filterable: true
+    name: milestone_id
+    orderable: true
+    short_description:
+      en_us: Milestone Id
+      zh_cn: 里程碑唯一标识
+    type: string
+  - description:
+      en_us: Owning project ID
+      zh_cn: 所属项目
+    display_name:
+      en_us: Project Id
+      zh_cn: 所属项目
+    filterable: true
+    name: project_id
+    orderable: true
+    short_description:
+      en_us: Project Id
+      zh_cn: 所属项目
+    type: string
+  - description:
+      en_us: Milestone name
+      zh_cn: 里程碑名称
+    display_name:
+      en_us: Name
+      zh_cn: 里程碑名称
+    filterable: true
+    name: name
+    orderable: true
+    short_description:
+      en_us: Name
+      zh_cn: 里程碑名称
+    type: string
+  - description:
+      en_us: Milestone goal
+      zh_cn: 里程碑目标
+    display_name:
+      en_us: Description
+      zh_cn: 里程碑目标
+    filterable: true
+    name: description
+    orderable: true
+    short_description:
+      en_us: Description
+      zh_cn: 里程碑目标
+    type: string
+  - description:
+      en_us: Start time
+      zh_cn: 开始时间
+    display_name:
+      en_us: Start Time
+      zh_cn: 开始时间
+    filterable: true
+    name: start_time
+    orderable: true
+    short_description:
+      en_us: Start Time
+      zh_cn: 开始时间
+    type: datetime
+  - description:
+      en_us: Planned end time
+      zh_cn: 计划结束时间
+    display_name:
+      en_us: End Time
+      zh_cn: 计划结束时间
+    filterable: true
+    name: end_time
+    orderable: true
+    short_description:
+      en_us: End Time
+      zh_cn: 计划结束时间
+    type: datetime
+  - description:
+      en_us: 'Status: planned/active/completed/cancelled'
+      zh_cn: 状态 planned/active/completed/cancelled
+    display_name:
+      en_us: Status
+      zh_cn: 状态 planned/active/completed/cancelled
+    filterable: true
+    name: status
+    orderable: true
+    short_description:
+      en_us: Status
+      zh_cn: 状态 planned/active/completed/cancelled
+    type: enum
+  - description:
+      en_us: Data source
+      zh_cn: 数据来源
+    display_name:
+      en_us: Data Source
+      zh_cn: 数据来源
+    filterable: true
+    name: data_source
+    orderable: true
+    short_description:
+      en_us: Data Source
+      zh_cn: 数据来源
+    type: string
+  - description:
+      en_us: Platform milestone ID
+      zh_cn: 平台里程碑ID
+    display_name:
+      en_us: Platform Milestone Id
+      zh_cn: 平台里程碑ID
+    filterable: true
+    name: platform_milestone_id
+    orderable: true
+    short_description:
+      en_us: Platform Milestone Id
+      zh_cn: 平台里程碑ID
+    type: string
+  - description:
+      en_us: Milestone URL
+      zh_cn: 里程碑URL
+    display_name:
+      en_us: Url
+      zh_cn: 里程碑URL
+    filterable: true
+    name: url
+    orderable: true
+    short_description:
+      en_us: Url
+      zh_cn: 里程碑URL
+    type: string
+  - description:
+      en_us: Planned capacity
+      zh_cn: 计划容量
+    display_name:
+      en_us: Planned Capacity
+      zh_cn: 计划容量
+    filterable: true
+    name: planned_capacity
+    orderable: true
+    short_description:
+      en_us: Planned Capacity
+      zh_cn: 计划容量
+    type: integer
+  - description:
+      en_us: Completed count
+      zh_cn: 已完成数
+    display_name:
+      en_us: Completed Count
+      zh_cn: 已完成数
+    filterable: true
+    name: completed_count
+    orderable: true
+    short_description:
+      en_us: Completed Count
+      zh_cn: 已完成数
+    type: integer
+  - description:
+      en_us: Total count
+      zh_cn: 总数
+    display_name:
+      en_us: Total Count
+      zh_cn: 总数
+    filterable: true
+    name: total_count
+    orderable: true
+    short_description:
+      en_us: Total Count
+      zh_cn: 总数
+    type: integer
+  keep_alive_seconds: 86400
+  name_fields:
+  - name
+  - milestone_id
+  - status
+  primary_key_fields:
+  - milestone_id
+  time_field: __time__
+  type: entity_set

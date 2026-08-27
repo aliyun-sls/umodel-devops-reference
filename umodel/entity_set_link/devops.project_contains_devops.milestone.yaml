@@ -1,25 +1,25 @@
 kind: entity_set_link
 metadata:
-    description:
-        en_us: Project contains Milestone.
-        zh_cn: Project contains Milestone。
-    display_name:
-        en_us: Project Contains Milestone
-        zh_cn: Project contains Milestone
-    domain: devops
-    kind: entity_set_link
-    name: devops.project_contains_devops.milestone
+  description:
+    en_us: Project contains Milestone.
+    zh_cn: Project contains Milestone。
+  display_name:
+    en_us: Project Contains Milestone
+    zh_cn: Project contains Milestone
+  domain: devops
+  kind: entity_set_link
+  name: devops.project_contains_devops.milestone
 schema:
-    url: umodel.aliyun.com
-    version: v0.1.0
+  url: umodel.aliyun.com
+  version: v0.1.0
 spec:
-    dest:
-        domain: devops
-        kind: entity_set
-        name: devops.milestone
-    entity_link_type: contains
-    priority: 5
-    src:
-        domain: devops
-        kind: entity_set
-        name: devops.project
+  dest:
+    domain: devops
+    kind: entity_set
+    name: devops.milestone
+  entity_link_type: contains
+  priority: 5
+  src:
+    domain: devops
+    kind: entity_set
+    name: devops.project

@@ -91,7 +91,28 @@ AK/SK 始终需要（用于 API 请求签名）。`auth_mode` 仅控制是否发
 
 每个实体需在 `sls.logstore_mapping.entities` 下显式配置对应的 SLS logstore（实体名）。其中 `sls.logstore_mapping.entities.kubernetes_pod`（`kubernetes_pod` 实体所用的 logstore）必须存在——缺失时 `kubernetes_pod` 任务会回退到错误的名称，导致 pod 数据写入 SLS 失败。样例见 `app_config.*.yaml.sample` 的 `sls.logstore_mapping.entities` 块。
 
+## 部署平台（独立的轴）
+
+CD/部署系统**不是** git provider——它们实现 `IDeployAdapter`，叠加在任一 git provider 的运行之上，
+且仅在配置段存在时才启用。
+
+| | Argo CD |
+|---|---|
+| 配置段 | `app_config.yaml` 的 `argocd:` |
+| SDK | 无（标准库 `urllib`，REST API） |
+| 认证 | Bearer token（session token 或账号 API key） |
+| 启用任务 | `deployment`、`release_relates_to_deployment` |
+| SLS 中 `data_source` 值 | `"argocd"` |
+| 备注 | 已在 v3.5.x 验证。**不要**给列表 API 传 `fields` 投影——gRPC field mask 会静默丢掉 `metadata.name` |
+
 ## 尚未实现的平台
 
+Git provider：
+
 - Jenkins
-- GitHub Actions / Argo / Tekton
+- GitHub Actions / Argo Workflows / Tekton
+
+部署 provider（实现 `IDeployAdapter`）：
+
+- 云效 AppStack
+- Aone

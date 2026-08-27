@@ -1,286 +1,286 @@
 kind: entity_set
 metadata:
-    description:
-        en_us: Unified carrier of requirements, defects, and tasks (Issue/Ticket/Task).
-        zh_cn: 工作项实体统一抽象各平台Issue、Ticket、Task，是需求、缺陷、任务的统一载体。
-    display_name:
-        en_us: Work Item
-        zh_cn: 工作项
-    domain: devops
-    kind: entity_set
-    name: devops.work_item
+  description:
+    en_us: Unified carrier of requirements, defects, and tasks (Issue/Ticket/Task).
+    zh_cn: 工作项实体统一抽象各平台Issue、Ticket、Task，是需求、缺陷、任务的统一载体。
+  display_name:
+    en_us: Work Item
+    zh_cn: 工作项
+  domain: devops
+  kind: entity_set
+  name: devops.work_item
 schema:
-    url: umodel.aliyun.com
-    version: v0.1.0
+  url: umodel.aliyun.com
+  version: v0.1.0
 spec:
-    dynamic: false
-    fields:
-        - description:
-            en_us: Work item unique identifier
-            zh_cn: 工作项唯一标识
-          display_name:
-            en_us: Work Item Id
-            zh_cn: 工作项唯一标识
-          filterable: true
-          name: work_item_id
-          orderable: true
-          short_description:
-            en_us: Work Item Id
-            zh_cn: 工作项唯一标识
-          type: string
-        - description:
-            en_us: Owning project ID
-            zh_cn: 所属项目
-          display_name:
-            en_us: Project Id
-            zh_cn: 所属项目
-          filterable: true
-          name: project_id
-          orderable: true
-          short_description:
-            en_us: Project Id
-            zh_cn: 所属项目
-          type: string
-        - description:
-            en_us: Title
-            zh_cn: 标题
-          display_name:
-            en_us: Title
-            zh_cn: 标题
-          filterable: true
-          name: title
-          orderable: true
-          short_description:
-            en_us: Title
-            zh_cn: 标题
-          type: string
-        - description:
-            en_us: Detailed description
-            zh_cn: 详细描述
-          display_name:
-            en_us: Description
-            zh_cn: 详细描述
-          filterable: true
-          name: description
-          orderable: true
-          short_description:
-            en_us: Description
-            zh_cn: 详细描述
-          type: string
-        - description:
-            en_us: Work item type: feature/bug/task/epic
-            zh_cn: 工作项类型 feature/bug/task/epic
-          display_name:
-            en_us: Item Type
-            zh_cn: 工作项类型 feature/bug/task/epic
-          filterable: true
-          name: item_type
-          orderable: true
-          short_description:
-            en_us: Item Type
-            zh_cn: 工作项类型 feature/bug/task/epic
-          type: enum
-        - description:
-            en_us: Status: new/in_progress/testing/done/closed
-            zh_cn: 状态 new/in_progress/testing/done/closed
-          display_name:
-            en_us: Status
-            zh_cn: 状态 new/in_progress/testing/done/closed
-          filterable: true
-          name: status
-          orderable: true
-          short_description:
-            en_us: Status
-            zh_cn: 状态 new/in_progress/testing/done/closed
-          type: enum
-        - description:
-            en_us: Priority: critical/high/medium/low
-            zh_cn: 优先级 critical/high/medium/low
-          display_name:
-            en_us: Priority
-            zh_cn: 优先级 critical/high/medium/low
-          filterable: true
-          name: priority
-          orderable: true
-          short_description:
-            en_us: Priority
-            zh_cn: 优先级 critical/high/medium/low
-          type: enum
-        - description:
-            en_us: Creator ID
-            zh_cn: 创建者
-          display_name:
-            en_us: Creator Id
-            zh_cn: 创建者
-          filterable: true
-          name: creator_id
-          orderable: true
-          short_description:
-            en_us: Creator Id
-            zh_cn: 创建者
-          type: string
-        - description:
-            en_us: Assignee ID
-            zh_cn: 负责人
-          display_name:
-            en_us: Assignee Id
-            zh_cn: 负责人
-          filterable: true
-          name: assignee_id
-          orderable: true
-          short_description:
-            en_us: Assignee Id
-            zh_cn: 负责人
-          type: string
-        - description:
-            en_us: Parent work item ID
-            zh_cn: 父工作项ID
-          display_name:
-            en_us: Parent Id
-            zh_cn: 父工作项ID
-          filterable: true
-          name: parent_id
-          orderable: true
-          short_description:
-            en_us: Parent Id
-            zh_cn: 父工作项ID
-          type: string
-        - description:
-            en_us: Owning milestone ID
-            zh_cn: 所属里程碑
-          display_name:
-            en_us: Milestone Id
-            zh_cn: 所属里程碑
-          filterable: true
-          name: milestone_id
-          orderable: true
-          short_description:
-            en_us: Milestone Id
-            zh_cn: 所属里程碑
-          type: string
-        - description:
-            en_us: Data source
-            zh_cn: 数据来源
-          display_name:
-            en_us: Data Source
-            zh_cn: 数据来源
-          filterable: true
-          name: data_source
-          orderable: true
-          short_description:
-            en_us: Data Source
-            zh_cn: 数据来源
-          type: string
-        - description:
-            en_us: Platform work item ID
-            zh_cn: 平台工作项ID
-          display_name:
-            en_us: Platform Item Id
-            zh_cn: 平台工作项ID
-          filterable: true
-          name: platform_item_id
-          orderable: true
-          short_description:
-            en_us: Platform Item Id
-            zh_cn: 平台工作项ID
-          type: string
-        - description:
-            en_us: Work item URL
-            zh_cn: 工作项URL
-          display_name:
-            en_us: Url
-            zh_cn: 工作项URL
-          filterable: true
-          name: url
-          orderable: true
-          short_description:
-            en_us: Url
-            zh_cn: 工作项URL
-          type: string
-        - description:
-            en_us: Label list
-            zh_cn: 标签列表
-          display_name:
-            en_us: Labels
-            zh_cn: 标签列表
-          filterable: false
-          name: labels
-          orderable: false
-          short_description:
-            en_us: Labels
-            zh_cn: 标签列表
-          type: json
-        - description:
-            en_us: Estimated hours
-            zh_cn: 估算工时
-          display_name:
-            en_us: Estimated Hours
-            zh_cn: 估算工时
-          filterable: true
-          name: estimated_hours
-          orderable: true
-          short_description:
-            en_us: Estimated Hours
-            zh_cn: 估算工时
-          type: double
-        - description:
-            en_us: Spent hours
-            zh_cn: 实际工时
-          display_name:
-            en_us: Spent Hours
-            zh_cn: 实际工时
-          filterable: true
-          name: spent_hours
-          orderable: true
-          short_description:
-            en_us: Spent Hours
-            zh_cn: 实际工时
-          type: double
-        - description:
-            en_us: Creation time
-            zh_cn: 创建时间
-          display_name:
-            en_us: Created At
-            zh_cn: 创建时间
-          filterable: true
-          name: created_at
-          orderable: true
-          short_description:
-            en_us: Created At
-            zh_cn: 创建时间
-          type: datetime
-        - description:
-            en_us: Update time
-            zh_cn: 更新时间
-          display_name:
-            en_us: Updated At
-            zh_cn: 更新时间
-          filterable: true
-          name: updated_at
-          orderable: true
-          short_description:
-            en_us: Updated At
-            zh_cn: 更新时间
-          type: datetime
-        - description:
-            en_us: Closed time
-            zh_cn: 关闭时间
-          display_name:
-            en_us: Closed At
-            zh_cn: 关闭时间
-          filterable: true
-          name: closed_at
-          orderable: true
-          short_description:
-            en_us: Closed At
-            zh_cn: 关闭时间
-          type: datetime
-    keep_alive_seconds: 86400
-    name_fields:
-        - title
-        - work_item_id
-        - item_type
-    primary_key_fields:
-        - work_item_id
-    time_field: __time__
-    type: entity_set
+  dynamic: false
+  fields:
+  - description:
+      en_us: Work item unique identifier
+      zh_cn: 工作项唯一标识
+    display_name:
+      en_us: Work Item Id
+      zh_cn: 工作项唯一标识
+    filterable: true
+    name: work_item_id
+    orderable: true
+    short_description:
+      en_us: Work Item Id
+      zh_cn: 工作项唯一标识
+    type: string
+  - description:
+      en_us: Owning project ID
+      zh_cn: 所属项目
+    display_name:
+      en_us: Project Id
+      zh_cn: 所属项目
+    filterable: true
+    name: project_id
+    orderable: true
+    short_description:
+      en_us: Project Id
+      zh_cn: 所属项目
+    type: string
+  - description:
+      en_us: Title
+      zh_cn: 标题
+    display_name:
+      en_us: Title
+      zh_cn: 标题
+    filterable: true
+    name: title
+    orderable: true
+    short_description:
+      en_us: Title
+      zh_cn: 标题
+    type: string
+  - description:
+      en_us: Detailed description
+      zh_cn: 详细描述
+    display_name:
+      en_us: Description
+      zh_cn: 详细描述
+    filterable: true
+    name: description
+    orderable: true
+    short_description:
+      en_us: Description
+      zh_cn: 详细描述
+    type: string
+  - description:
+      en_us: 'Work item type: feature/bug/task/epic'
+      zh_cn: 工作项类型 feature/bug/task/epic
+    display_name:
+      en_us: Item Type
+      zh_cn: 工作项类型 feature/bug/task/epic
+    filterable: true
+    name: item_type
+    orderable: true
+    short_description:
+      en_us: Item Type
+      zh_cn: 工作项类型 feature/bug/task/epic
+    type: enum
+  - description:
+      en_us: 'Status: new/in_progress/testing/done/closed'
+      zh_cn: 状态 new/in_progress/testing/done/closed
+    display_name:
+      en_us: Status
+      zh_cn: 状态 new/in_progress/testing/done/closed
+    filterable: true
+    name: status
+    orderable: true
+    short_description:
+      en_us: Status
+      zh_cn: 状态 new/in_progress/testing/done/closed
+    type: enum
+  - description:
+      en_us: 'Priority: critical/high/medium/low'
+      zh_cn: 优先级 critical/high/medium/low
+    display_name:
+      en_us: Priority
+      zh_cn: 优先级 critical/high/medium/low
+    filterable: true
+    name: priority
+    orderable: true
+    short_description:
+      en_us: Priority
+      zh_cn: 优先级 critical/high/medium/low
+    type: enum
+  - description:
+      en_us: Creator ID
+      zh_cn: 创建者
+    display_name:
+      en_us: Creator Id
+      zh_cn: 创建者
+    filterable: true
+    name: creator_id
+    orderable: true
+    short_description:
+      en_us: Creator Id
+      zh_cn: 创建者
+    type: string
+  - description:
+      en_us: Assignee ID
+      zh_cn: 负责人
+    display_name:
+      en_us: Assignee Id
+      zh_cn: 负责人
+    filterable: true
+    name: assignee_id
+    orderable: true
+    short_description:
+      en_us: Assignee Id
+      zh_cn: 负责人
+    type: string
+  - description:
+      en_us: Parent work item ID
+      zh_cn: 父工作项ID
+    display_name:
+      en_us: Parent Id
+      zh_cn: 父工作项ID
+    filterable: true
+    name: parent_id
+    orderable: true
+    short_description:
+      en_us: Parent Id
+      zh_cn: 父工作项ID
+    type: string
+  - description:
+      en_us: Owning milestone ID
+      zh_cn: 所属里程碑
+    display_name:
+      en_us: Milestone Id
+      zh_cn: 所属里程碑
+    filterable: true
+    name: milestone_id
+    orderable: true
+    short_description:
+      en_us: Milestone Id
+      zh_cn: 所属里程碑
+    type: string
+  - description:
+      en_us: Data source
+      zh_cn: 数据来源
+    display_name:
+      en_us: Data Source
+      zh_cn: 数据来源
+    filterable: true
+    name: data_source
+    orderable: true
+    short_description:
+      en_us: Data Source
+      zh_cn: 数据来源
+    type: string
+  - description:
+      en_us: Platform work item ID
+      zh_cn: 平台工作项ID
+    display_name:
+      en_us: Platform Item Id
+      zh_cn: 平台工作项ID
+    filterable: true
+    name: platform_item_id
+    orderable: true
+    short_description:
+      en_us: Platform Item Id
+      zh_cn: 平台工作项ID
+    type: string
+  - description:
+      en_us: Work item URL
+      zh_cn: 工作项URL
+    display_name:
+      en_us: Url
+      zh_cn: 工作项URL
+    filterable: true
+    name: url
+    orderable: true
+    short_description:
+      en_us: Url
+      zh_cn: 工作项URL
+    type: string
+  - description:
+      en_us: Label list
+      zh_cn: 标签列表
+    display_name:
+      en_us: Labels
+      zh_cn: 标签列表
+    filterable: false
+    name: labels
+    orderable: false
+    short_description:
+      en_us: Labels
+      zh_cn: 标签列表
+    type: json
+  - description:
+      en_us: Estimated hours
+      zh_cn: 估算工时
+    display_name:
+      en_us: Estimated Hours
+      zh_cn: 估算工时
+    filterable: true
+    name: estimated_hours
+    orderable: true
+    short_description:
+      en_us: Estimated Hours
+      zh_cn: 估算工时
+    type: double
+  - description:
+      en_us: Spent hours
+      zh_cn: 实际工时
+    display_name:
+      en_us: Spent Hours
+      zh_cn: 实际工时
+    filterable: true
+    name: spent_hours
+    orderable: true
+    short_description:
+      en_us: Spent Hours
+      zh_cn: 实际工时
+    type: double
+  - description:
+      en_us: Creation time
+      zh_cn: 创建时间
+    display_name:
+      en_us: Created At
+      zh_cn: 创建时间
+    filterable: true
+    name: created_at
+    orderable: true
+    short_description:
+      en_us: Created At
+      zh_cn: 创建时间
+    type: datetime
+  - description:
+      en_us: Update time
+      zh_cn: 更新时间
+    display_name:
+      en_us: Updated At
+      zh_cn: 更新时间
+    filterable: true
+    name: updated_at
+    orderable: true
+    short_description:
+      en_us: Updated At
+      zh_cn: 更新时间
+    type: datetime
+  - description:
+      en_us: Closed time
+      zh_cn: 关闭时间
+    display_name:
+      en_us: Closed At
+      zh_cn: 关闭时间
+    filterable: true
+    name: closed_at
+    orderable: true
+    short_description:
+      en_us: Closed At
+      zh_cn: 关闭时间
+    type: datetime
+  keep_alive_seconds: 86400
+  name_fields:
+  - title
+  - work_item_id
+  - item_type
+  primary_key_fields:
+  - work_item_id
+  time_field: __time__
+  type: entity_set

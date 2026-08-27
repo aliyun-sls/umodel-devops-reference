@@ -1,312 +1,313 @@
 kind: entity_set
 metadata:
-    description:
-        en_us: Abstract/unified entity representing pipeline build artifacts, linked via same_as to concrete types.
-        zh_cn: 构建产物实体是抽象/通用实体，统一表示流水线构建产生的各类产物（派生实体，决策B）。
-    display_name:
-        en_us: Artifact
-        zh_cn: 构建产物
-    domain: devops
-    kind: entity_set
-    name: devops.artifact
+  description:
+    en_us: Abstract/unified entity representing pipeline build artifacts, linked via
+      same_as to concrete types.
+    zh_cn: 构建产物实体是抽象/通用实体，统一表示流水线构建产生的各类产物（派生实体，决策B）。
+  display_name:
+    en_us: Artifact
+    zh_cn: 构建产物
+  domain: devops
+  kind: entity_set
+  name: devops.artifact
 schema:
-    url: umodel.aliyun.com
-    version: v0.1.0
+  url: umodel.aliyun.com
+  version: v0.1.0
 spec:
-    dynamic: false
-    fields:
-        - description:
-            en_us: Artifact unique identifier
-            zh_cn: 产物唯一标识
-          display_name:
-            en_us: Artifact Id
-            zh_cn: 产物唯一标识
-          filterable: true
-          name: artifact_id
-          orderable: true
-          short_description:
-            en_us: Artifact Id
-            zh_cn: 产物唯一标识
-          type: string
-        - description:
-            en_us: Artifact name
-            zh_cn: 产物名称
-          display_name:
-            en_us: Name
-            zh_cn: 产物名称
-          filterable: true
-          name: name
-          orderable: true
-          short_description:
-            en_us: Name
-            zh_cn: 产物名称
-          type: string
-        - description:
-            en_us: Version
-            zh_cn: 版本号
-          display_name:
-            en_us: Version
-            zh_cn: 版本号
-          filterable: true
-          name: version
-          orderable: true
-          short_description:
-            en_us: Version
-            zh_cn: 版本号
-          type: string
-        - description:
-            en_us: Artifact type: docker_image/helm_chart/binary/npm_package/maven_artifact
-            zh_cn: 产物类型 docker_image/helm_chart/binary/npm_package/maven_artifact
-          display_name:
-            en_us: Artifact Type
-            zh_cn: 产物类型 docker_image/helm_chart/binary/npm_package/maven_artifact
-          filterable: true
-          name: artifact_type
-          orderable: true
-          short_description:
-            en_us: Artifact Type
-            zh_cn: 产物类型 docker_image/helm_chart/binary/npm_package/maven_artifact
-          type: enum
-        - description:
-            en_us: Source repository ID
-            zh_cn: 源代码仓库
-          display_name:
-            en_us: Repository Id
-            zh_cn: 源代码仓库
-          filterable: true
-          name: repository_id
-          orderable: true
-          short_description:
-            en_us: Repository Id
-            zh_cn: 源代码仓库
-          type: string
-        - description:
-            en_us: Source commit SHA
-            zh_cn: 源码提交
-          display_name:
-            en_us: Commit Sha
-            zh_cn: 源码提交
-          filterable: true
-          name: commit_sha
-          orderable: true
-          short_description:
-            en_us: Commit Sha
-            zh_cn: 源码提交
-          type: string
-        - description:
-            en_us: Git tag name
-            zh_cn: Git标签
-          display_name:
-            en_us: Tag Name
-            zh_cn: Git标签
-          filterable: true
-          name: tag_name
-          orderable: true
-          short_description:
-            en_us: Tag Name
-            zh_cn: Git标签
-          type: string
-        - description:
-            en_us: Build pipeline run ID
-            zh_cn: 构建流水线
-          display_name:
-            en_us: Pipeline Run Id
-            zh_cn: 构建流水线
-          filterable: true
-          name: pipeline_run_id
-          orderable: true
-          short_description:
-            en_us: Pipeline Run Id
-            zh_cn: 构建流水线
-          type: string
-        - description:
-            en_us: Storage location
-            zh_cn: 存储位置
-          display_name:
-            en_us: Storage Location
-            zh_cn: 存储位置
-          filterable: true
-          name: storage_location
-          orderable: true
-          short_description:
-            en_us: Storage Location
-            zh_cn: 存储位置
-          type: string
-        - description:
-            en_us: Artifact size (bytes)
-            zh_cn: 产物大小(字节)
-          display_name:
-            en_us: Size Bytes
-            zh_cn: 产物大小(字节)
-          filterable: true
-          name: size_bytes
-          orderable: true
-          short_description:
-            en_us: Size Bytes
-            zh_cn: 产物大小(字节)
-          type: integer
-        - description:
-            en_us: Checksum
-            zh_cn: 校验和
-          display_name:
-            en_us: Checksum
-            zh_cn: 校验和
-          filterable: true
-          name: checksum
-          orderable: true
-          short_description:
-            en_us: Checksum
-            zh_cn: 校验和
-          type: string
-        - description:
-            en_us: Checksum algorithm: sha256/md5
-            zh_cn: 校验算法 sha256/md5
-          display_name:
-            en_us: Checksum Algorithm
-            zh_cn: 校验算法 sha256/md5
-          filterable: true
-          name: checksum_algorithm
-          orderable: true
-          short_description:
-            en_us: Checksum Algorithm
-            zh_cn: 校验算法 sha256/md5
-          type: enum
-        - description:
-            en_us: Security scan status: passed/failed/skipped/in_progress
-            zh_cn: 安全扫描状态 passed/failed/skipped/in_progress
-          display_name:
-            en_us: Security Scan Status
-            zh_cn: 安全扫描状态 passed/failed/skipped/in_progress
-          filterable: true
-          name: security_scan_status
-          orderable: true
-          short_description:
-            en_us: Security Scan Status
-            zh_cn: 安全扫描状态 passed/failed/skipped/in_progress
-          type: enum
-        - description:
-            en_us: Vulnerability count
-            zh_cn: 漏洞数量
-          display_name:
-            en_us: Vulnerability Count
-            zh_cn: 漏洞数量
-          filterable: true
-          name: vulnerability_count
-          orderable: true
-          short_description:
-            en_us: Vulnerability Count
-            zh_cn: 漏洞数量
-          type: integer
-        - description:
-            en_us: Vulnerability severity stats
-            zh_cn: 漏洞严重级别统计
-          display_name:
-            en_us: Vulnerability Severity
-            zh_cn: 漏洞严重级别统计
-          filterable: false
-          name: vulnerability_severity
-          orderable: false
-          short_description:
-            en_us: Vulnerability Severity
-            zh_cn: 漏洞严重级别统计
-          type: json
-        - description:
-            en_us: Artifact status: active/deprecated/deleted
-            zh_cn: 产物状态 active/deprecated/deleted
-          display_name:
-            en_us: Status
-            zh_cn: 产物状态 active/deprecated/deleted
-          filterable: true
-          name: status
-          orderable: true
-          short_description:
-            en_us: Status
-            zh_cn: 产物状态 active/deprecated/deleted
-          type: enum
-        - description:
-            en_us: Data source: harbor/artifactory/npm_registry
-            zh_cn: 数据来源 harbor/artifactory/npm_registry
-          display_name:
-            en_us: Data Source
-            zh_cn: 数据来源 harbor/artifactory/npm_registry
-          filterable: true
-          name: data_source
-          orderable: true
-          short_description:
-            en_us: Data Source
-            zh_cn: 数据来源 harbor/artifactory/npm_registry
-          type: string
-        - description:
-            en_us: Platform artifact ID
-            zh_cn: 平台产物ID
-          display_name:
-            en_us: Platform Artifact Id
-            zh_cn: 平台产物ID
-          filterable: true
-          name: platform_artifact_id
-          orderable: true
-          short_description:
-            en_us: Platform Artifact Id
-            zh_cn: 平台产物ID
-          type: string
-        - description:
-            en_us: Artifact URL
-            zh_cn: 产物URL
-          display_name:
-            en_us: Url
-            zh_cn: 产物URL
-          filterable: true
-          name: url
-          orderable: true
-          short_description:
-            en_us: Url
-            zh_cn: 产物URL
-          type: string
-        - description:
-            en_us: Extension metadata
-            zh_cn: 扩展元数据
-          display_name:
-            en_us: Metadata
-            zh_cn: 扩展元数据
-          filterable: false
-          name: metadata
-          orderable: false
-          short_description:
-            en_us: Metadata
-            zh_cn: 扩展元数据
-          type: json
-        - description:
-            en_us: Creation time
-            zh_cn: 创建时间
-          display_name:
-            en_us: Created At
-            zh_cn: 创建时间
-          filterable: true
-          name: created_at
-          orderable: true
-          short_description:
-            en_us: Created At
-            zh_cn: 创建时间
-          type: datetime
-        - description:
-            en_us: Created by
-            zh_cn: 创建者
-          display_name:
-            en_us: Created By
-            zh_cn: 创建者
-          filterable: true
-          name: created_by
-          orderable: true
-          short_description:
-            en_us: Created By
-            zh_cn: 创建者
-          type: string
-    keep_alive_seconds: 86400
-    name_fields:
-        - name
-        - artifact_id
-        - version
-    primary_key_fields:
-        - artifact_id
-    time_field: __time__
-    type: entity_set
+  dynamic: false
+  fields:
+  - description:
+      en_us: Artifact unique identifier
+      zh_cn: 产物唯一标识
+    display_name:
+      en_us: Artifact Id
+      zh_cn: 产物唯一标识
+    filterable: true
+    name: artifact_id
+    orderable: true
+    short_description:
+      en_us: Artifact Id
+      zh_cn: 产物唯一标识
+    type: string
+  - description:
+      en_us: Artifact name
+      zh_cn: 产物名称
+    display_name:
+      en_us: Name
+      zh_cn: 产物名称
+    filterable: true
+    name: name
+    orderable: true
+    short_description:
+      en_us: Name
+      zh_cn: 产物名称
+    type: string
+  - description:
+      en_us: Version
+      zh_cn: 版本号
+    display_name:
+      en_us: Version
+      zh_cn: 版本号
+    filterable: true
+    name: version
+    orderable: true
+    short_description:
+      en_us: Version
+      zh_cn: 版本号
+    type: string
+  - description:
+      en_us: 'Artifact type: docker_image/helm_chart/binary/npm_package/maven_artifact'
+      zh_cn: 产物类型 docker_image/helm_chart/binary/npm_package/maven_artifact
+    display_name:
+      en_us: Artifact Type
+      zh_cn: 产物类型 docker_image/helm_chart/binary/npm_package/maven_artifact
+    filterable: true
+    name: artifact_type
+    orderable: true
+    short_description:
+      en_us: Artifact Type
+      zh_cn: 产物类型 docker_image/helm_chart/binary/npm_package/maven_artifact
+    type: enum
+  - description:
+      en_us: Source repository ID
+      zh_cn: 源代码仓库
+    display_name:
+      en_us: Repository Id
+      zh_cn: 源代码仓库
+    filterable: true
+    name: repository_id
+    orderable: true
+    short_description:
+      en_us: Repository Id
+      zh_cn: 源代码仓库
+    type: string
+  - description:
+      en_us: Source commit SHA
+      zh_cn: 源码提交
+    display_name:
+      en_us: Commit Sha
+      zh_cn: 源码提交
+    filterable: true
+    name: commit_sha
+    orderable: true
+    short_description:
+      en_us: Commit Sha
+      zh_cn: 源码提交
+    type: string
+  - description:
+      en_us: Git tag name
+      zh_cn: Git标签
+    display_name:
+      en_us: Tag Name
+      zh_cn: Git标签
+    filterable: true
+    name: tag_name
+    orderable: true
+    short_description:
+      en_us: Tag Name
+      zh_cn: Git标签
+    type: string
+  - description:
+      en_us: Build pipeline run ID
+      zh_cn: 构建流水线
+    display_name:
+      en_us: Pipeline Run Id
+      zh_cn: 构建流水线
+    filterable: true
+    name: pipeline_run_id
+    orderable: true
+    short_description:
+      en_us: Pipeline Run Id
+      zh_cn: 构建流水线
+    type: string
+  - description:
+      en_us: Storage location
+      zh_cn: 存储位置
+    display_name:
+      en_us: Storage Location
+      zh_cn: 存储位置
+    filterable: true
+    name: storage_location
+    orderable: true
+    short_description:
+      en_us: Storage Location
+      zh_cn: 存储位置
+    type: string
+  - description:
+      en_us: Artifact size (bytes)
+      zh_cn: 产物大小(字节)
+    display_name:
+      en_us: Size Bytes
+      zh_cn: 产物大小(字节)
+    filterable: true
+    name: size_bytes
+    orderable: true
+    short_description:
+      en_us: Size Bytes
+      zh_cn: 产物大小(字节)
+    type: integer
+  - description:
+      en_us: Checksum
+      zh_cn: 校验和
+    display_name:
+      en_us: Checksum
+      zh_cn: 校验和
+    filterable: true
+    name: checksum
+    orderable: true
+    short_description:
+      en_us: Checksum
+      zh_cn: 校验和
+    type: string
+  - description:
+      en_us: 'Checksum algorithm: sha256/md5'
+      zh_cn: 校验算法 sha256/md5
+    display_name:
+      en_us: Checksum Algorithm
+      zh_cn: 校验算法 sha256/md5
+    filterable: true
+    name: checksum_algorithm
+    orderable: true
+    short_description:
+      en_us: Checksum Algorithm
+      zh_cn: 校验算法 sha256/md5
+    type: enum
+  - description:
+      en_us: 'Security scan status: passed/failed/skipped/in_progress'
+      zh_cn: 安全扫描状态 passed/failed/skipped/in_progress
+    display_name:
+      en_us: Security Scan Status
+      zh_cn: 安全扫描状态 passed/failed/skipped/in_progress
+    filterable: true
+    name: security_scan_status
+    orderable: true
+    short_description:
+      en_us: Security Scan Status
+      zh_cn: 安全扫描状态 passed/failed/skipped/in_progress
+    type: enum
+  - description:
+      en_us: Vulnerability count
+      zh_cn: 漏洞数量
+    display_name:
+      en_us: Vulnerability Count
+      zh_cn: 漏洞数量
+    filterable: true
+    name: vulnerability_count
+    orderable: true
+    short_description:
+      en_us: Vulnerability Count
+      zh_cn: 漏洞数量
+    type: integer
+  - description:
+      en_us: Vulnerability severity stats
+      zh_cn: 漏洞严重级别统计
+    display_name:
+      en_us: Vulnerability Severity
+      zh_cn: 漏洞严重级别统计
+    filterable: false
+    name: vulnerability_severity
+    orderable: false
+    short_description:
+      en_us: Vulnerability Severity
+      zh_cn: 漏洞严重级别统计
+    type: json
+  - description:
+      en_us: 'Artifact status: active/deprecated/deleted'
+      zh_cn: 产物状态 active/deprecated/deleted
+    display_name:
+      en_us: Status
+      zh_cn: 产物状态 active/deprecated/deleted
+    filterable: true
+    name: status
+    orderable: true
+    short_description:
+      en_us: Status
+      zh_cn: 产物状态 active/deprecated/deleted
+    type: enum
+  - description:
+      en_us: 'Data source: harbor/artifactory/npm_registry'
+      zh_cn: 数据来源 harbor/artifactory/npm_registry
+    display_name:
+      en_us: Data Source
+      zh_cn: 数据来源 harbor/artifactory/npm_registry
+    filterable: true
+    name: data_source
+    orderable: true
+    short_description:
+      en_us: Data Source
+      zh_cn: 数据来源 harbor/artifactory/npm_registry
+    type: string
+  - description:
+      en_us: Platform artifact ID
+      zh_cn: 平台产物ID
+    display_name:
+      en_us: Platform Artifact Id
+      zh_cn: 平台产物ID
+    filterable: true
+    name: platform_artifact_id
+    orderable: true
+    short_description:
+      en_us: Platform Artifact Id
+      zh_cn: 平台产物ID
+    type: string
+  - description:
+      en_us: Artifact URL
+      zh_cn: 产物URL
+    display_name:
+      en_us: Url
+      zh_cn: 产物URL
+    filterable: true
+    name: url
+    orderable: true
+    short_description:
+      en_us: Url
+      zh_cn: 产物URL
+    type: string
+  - description:
+      en_us: Extension metadata
+      zh_cn: 扩展元数据
+    display_name:
+      en_us: Metadata
+      zh_cn: 扩展元数据
+    filterable: false
+    name: metadata
+    orderable: false
+    short_description:
+      en_us: Metadata
+      zh_cn: 扩展元数据
+    type: json
+  - description:
+      en_us: Creation time
+      zh_cn: 创建时间
+    display_name:
+      en_us: Created At
+      zh_cn: 创建时间
+    filterable: true
+    name: created_at
+    orderable: true
+    short_description:
+      en_us: Created At
+      zh_cn: 创建时间
+    type: datetime
+  - description:
+      en_us: Created by
+      zh_cn: 创建者
+    display_name:
+      en_us: Created By
+      zh_cn: 创建者
+    filterable: true
+    name: created_by
+    orderable: true
+    short_description:
+      en_us: Created By
+      zh_cn: 创建者
+    type: string
+  keep_alive_seconds: 86400
+  name_fields:
+  - name
+  - artifact_id
+  - version
+  primary_key_fields:
+  - artifact_id
+  time_field: __time__
+  type: entity_set

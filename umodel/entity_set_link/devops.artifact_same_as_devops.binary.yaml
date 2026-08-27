@@ -1,25 +1,25 @@
 kind: entity_set_link
 metadata:
-    description:
-        en_us: Artifact same_as Binary.
-        zh_cn: Artifact same_as Binary。
-    display_name:
-        en_us: Artifact Same_As Binary
-        zh_cn: Artifact same_as Binary
-    domain: devops
-    kind: entity_set_link
-    name: devops.artifact_same_as_devops.binary
+  description:
+    en_us: Artifact same_as Binary.
+    zh_cn: Artifact same_as Binary。
+  display_name:
+    en_us: Artifact Same_As Binary
+    zh_cn: Artifact same_as Binary
+  domain: devops
+  kind: entity_set_link
+  name: devops.artifact_same_as_devops.binary
 schema:
-    url: umodel.aliyun.com
-    version: v0.1.0
+  url: umodel.aliyun.com
+  version: v0.1.0
 spec:
-    dest:
-        domain: devops
-        kind: entity_set
-        name: devops.binary
-    entity_link_type: same_as
-    priority: 5
-    src:
-        domain: devops
-        kind: entity_set
-        name: devops.artifact
+  dest:
+    domain: devops
+    kind: entity_set
+    name: devops.binary
+  entity_link_type: same_as
+  priority: 5
+  src:
+    domain: devops
+    kind: entity_set
+    name: devops.artifact

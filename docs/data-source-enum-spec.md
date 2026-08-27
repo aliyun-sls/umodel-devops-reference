@@ -21,6 +21,7 @@
 | `yunxiao` | 云效 Projman | project/work_item/milestone | 云效项目管理 | |
 | `yunxiao_flow` | 云效 Flow | pipeline/pipeline_run | 云效流水线 | CI 类 |
 | `yunxiao_appstack` | 云效 AppStack | deployment | 云效应用交付 | |
+| `argocd` | Argo CD | deployment | Argo CD（GitOps 持续交付） | CD/GitOps 类，与 CI 类区分 |
 | `jira` | Jira | project/work_item/milestone | Atlassian Jira | Issue tracker |
 | `aone` | Aone | unit_testcase/deployment | 内部 Aone 测试/部署 | |
 | `harbor` | Harbor | artifact/docker_image | Harbor | 制品库 |

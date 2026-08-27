@@ -1,312 +1,312 @@
 kind: entity_set
 metadata:
-    description:
-        en_us: Deployment instance of publishing changes to a specific environment.
-        zh_cn: 部署实体代表将代码变更发布到特定环境的部署实例。
-    display_name:
-        en_us: Deployment
-        zh_cn: 部署
-    domain: devops
-    kind: entity_set
-    name: devops.deployment
+  description:
+    en_us: Deployment instance of publishing changes to a specific environment.
+    zh_cn: 部署实体代表将代码变更发布到特定环境的部署实例。
+  display_name:
+    en_us: Deployment
+    zh_cn: 部署
+  domain: devops
+  kind: entity_set
+  name: devops.deployment
 schema:
-    url: umodel.aliyun.com
-    version: v0.1.0
+  url: umodel.aliyun.com
+  version: v0.1.0
 spec:
-    dynamic: false
-    fields:
-        - description:
-            en_us: Deployment unique identifier
-            zh_cn: 部署唯一标识
-          display_name:
-            en_us: Deployment Id
-            zh_cn: 部署唯一标识
-          filterable: true
-          name: deployment_id
-          orderable: true
-          short_description:
-            en_us: Deployment Id
-            zh_cn: 部署唯一标识
-          type: string
-        - description:
-            en_us: Deployment title
-            zh_cn: 部署标题
-          display_name:
-            en_us: Title
-            zh_cn: 部署标题
-          filterable: true
-          name: title
-          orderable: true
-          short_description:
-            en_us: Title
-            zh_cn: 部署标题
-          type: string
-        - description:
-            en_us: Deployment description
-            zh_cn: 部署描述
-          display_name:
-            en_us: Description
-            zh_cn: 部署描述
-          filterable: true
-          name: description
-          orderable: true
-          short_description:
-            en_us: Description
-            zh_cn: 部署描述
-          type: string
-        - description:
-            en_us: Source repository ID
-            zh_cn: 代码仓库
-          display_name:
-            en_us: Repository Id
-            zh_cn: 代码仓库
-          filterable: true
-          name: repository_id
-          orderable: true
-          short_description:
-            en_us: Repository Id
-            zh_cn: 代码仓库
-          type: string
-        - description:
-            en_us: Linked pipeline run ID
-            zh_cn: 关联流水线运行
-          display_name:
-            en_us: Run Id
-            zh_cn: 关联流水线运行
-          filterable: true
-          name: run_id
-          orderable: true
-          short_description:
-            en_us: Run Id
-            zh_cn: 关联流水线运行
-          type: string
-        - description:
-            en_us: Deployment environment ID
-            zh_cn: 部署环境ID
-          display_name:
-            en_us: Environment Id
-            zh_cn: 部署环境ID
-          filterable: true
-          name: environment_id
-          orderable: true
-          short_description:
-            en_us: Environment Id
-            zh_cn: 部署环境ID
-          type: string
-        - description:
-            en_us: Deployed commit SHA
-            zh_cn: 部署版本
-          display_name:
-            en_us: Commit Sha
-            zh_cn: 部署版本
-          filterable: true
-          name: commit_sha
-          orderable: true
-          short_description:
-            en_us: Commit Sha
-            zh_cn: 部署版本
-          type: string
-        - description:
-            en_us: Application version
-            zh_cn: 应用版本号
-          display_name:
-            en_us: Version
-            zh_cn: 应用版本号
-          filterable: true
-          name: version
-          orderable: true
-          short_description:
-            en_us: Version
-            zh_cn: 应用版本号
-          type: string
-        - description:
-            en_us: Deployment status: queued/in_progress/success/failure/cancelled
-            zh_cn: 部署状态 queued/in_progress/success/failure/cancelled
-          display_name:
-            en_us: Status
-            zh_cn: 部署状态 queued/in_progress/success/failure/cancelled
-          filterable: true
-          name: status
-          orderable: true
-          short_description:
-            en_us: Status
-            zh_cn: 部署状态 queued/in_progress/success/failure/cancelled
-          type: enum
-        - description:
-            en_us: Deployment conclusion: success/failure/rolled_back
-            zh_cn: 部署结论 success/failure/rolled_back
-          display_name:
-            en_us: Conclusion
-            zh_cn: 部署结论 success/failure/rolled_back
-          filterable: true
-          name: conclusion
-          orderable: true
-          short_description:
-            en_us: Conclusion
-            zh_cn: 部署结论 success/failure/rolled_back
-          type: enum
-        - description:
-            en_us: Data source: yunxiao_appstack/aone/github
-            zh_cn: 数据来源 yunxiao_appstack/aone/github
-          display_name:
-            en_us: Data Source
-            zh_cn: 数据来源 yunxiao_appstack/aone/github
-          filterable: true
-          name: data_source
-          orderable: true
-          short_description:
-            en_us: Data Source
-            zh_cn: 数据来源 yunxiao_appstack/aone/github
-          type: string
-        - description:
-            en_us: Platform deployment ID
-            zh_cn: 平台部署ID
-          display_name:
-            en_us: Platform Deployment Id
-            zh_cn: 平台部署ID
-          filterable: true
-          name: platform_deployment_id
-          orderable: true
-          short_description:
-            en_us: Platform Deployment Id
-            zh_cn: 平台部署ID
-          type: string
-        - description:
-            en_us: Deployment URL
-            zh_cn: 部署URL
-          display_name:
-            en_us: Url
-            zh_cn: 部署URL
-          filterable: true
-          name: url
-          orderable: true
-          short_description:
-            en_us: Url
-            zh_cn: 部署URL
-          type: string
-        - description:
-            en_us: Deployed by
-            zh_cn: 部署人
-          display_name:
-            en_us: Deployed By
-            zh_cn: 部署人
-          filterable: true
-          name: deployed_by
-          orderable: true
-          short_description:
-            en_us: Deployed By
-            zh_cn: 部署人
-          type: string
-        - description:
-            en_us: Owning release ID
-            zh_cn: 所属发布
-          display_name:
-            en_us: Release Id
-            zh_cn: 所属发布
-          filterable: true
-          name: release_id
-          orderable: true
-          short_description:
-            en_us: Release Id
-            zh_cn: 所属发布
-          type: string
-        - description:
-            en_us: Deployed artifacts
-            zh_cn: 部署产物
-          display_name:
-            en_us: Artifacts
-            zh_cn: 部署产物
-          filterable: false
-          name: artifacts
-          orderable: false
-          short_description:
-            en_us: Artifacts
-            zh_cn: 部署产物
-          type: json
-        - description:
-            en_us: Creation time
-            zh_cn: 创建时间
-          display_name:
-            en_us: Created At
-            zh_cn: 创建时间
-          filterable: true
-          name: created_at
-          orderable: true
-          short_description:
-            en_us: Created At
-            zh_cn: 创建时间
-          type: datetime
-        - description:
-            en_us: Start time
-            zh_cn: 开始时间
-          display_name:
-            en_us: Started At
-            zh_cn: 开始时间
-          filterable: true
-          name: started_at
-          orderable: true
-          short_description:
-            en_us: Started At
-            zh_cn: 开始时间
-          type: datetime
-        - description:
-            en_us: Completion time
-            zh_cn: 完成时间
-          display_name:
-            en_us: Completed At
-            zh_cn: 完成时间
-          filterable: true
-          name: completed_at
-          orderable: true
-          short_description:
-            en_us: Completed At
-            zh_cn: 完成时间
-          type: datetime
-        - description:
-            en_us: Rollback start time
-            zh_cn: 回滚开始时间
-          display_name:
-            en_us: Rollback Started At
-            zh_cn: 回滚开始时间
-          filterable: true
-          name: rollback_started_at
-          orderable: true
-          short_description:
-            en_us: Rollback Started At
-            zh_cn: 回滚开始时间
-          type: datetime
-        - description:
-            en_us: Rollback completion time
-            zh_cn: 回滚完成时间
-          display_name:
-            en_us: Rollback Completed At
-            zh_cn: 回滚完成时间
-          filterable: true
-          name: rollback_completed_at
-          orderable: true
-          short_description:
-            en_us: Rollback Completed At
-            zh_cn: 回滚完成时间
-          type: datetime
-        - description:
-            en_us: Deployment duration (seconds)
-            zh_cn: 部署时长(秒)
-          display_name:
-            en_us: Duration Seconds
-            zh_cn: 部署时长(秒)
-          filterable: true
-          name: duration_seconds
-          orderable: true
-          short_description:
-            en_us: Duration Seconds
-            zh_cn: 部署时长(秒)
-          type: integer
-    keep_alive_seconds: 86400
-    name_fields:
-        - deployment_id
-        - version
-        - status
-    primary_key_fields:
-        - deployment_id
-    time_field: __time__
-    type: entity_set
+  dynamic: false
+  fields:
+  - description:
+      en_us: Deployment unique identifier
+      zh_cn: 部署唯一标识
+    display_name:
+      en_us: Deployment Id
+      zh_cn: 部署唯一标识
+    filterable: true
+    name: deployment_id
+    orderable: true
+    short_description:
+      en_us: Deployment Id
+      zh_cn: 部署唯一标识
+    type: string
+  - description:
+      en_us: Deployment title
+      zh_cn: 部署标题
+    display_name:
+      en_us: Title
+      zh_cn: 部署标题
+    filterable: true
+    name: title
+    orderable: true
+    short_description:
+      en_us: Title
+      zh_cn: 部署标题
+    type: string
+  - description:
+      en_us: Deployment description
+      zh_cn: 部署描述
+    display_name:
+      en_us: Description
+      zh_cn: 部署描述
+    filterable: true
+    name: description
+    orderable: true
+    short_description:
+      en_us: Description
+      zh_cn: 部署描述
+    type: string
+  - description:
+      en_us: Source repository ID
+      zh_cn: 代码仓库
+    display_name:
+      en_us: Repository Id
+      zh_cn: 代码仓库
+    filterable: true
+    name: repository_id
+    orderable: true
+    short_description:
+      en_us: Repository Id
+      zh_cn: 代码仓库
+    type: string
+  - description:
+      en_us: Linked pipeline run ID
+      zh_cn: 关联流水线运行
+    display_name:
+      en_us: Run Id
+      zh_cn: 关联流水线运行
+    filterable: true
+    name: run_id
+    orderable: true
+    short_description:
+      en_us: Run Id
+      zh_cn: 关联流水线运行
+    type: string
+  - description:
+      en_us: Deployment environment ID
+      zh_cn: 部署环境ID
+    display_name:
+      en_us: Environment Id
+      zh_cn: 部署环境ID
+    filterable: true
+    name: environment_id
+    orderable: true
+    short_description:
+      en_us: Environment Id
+      zh_cn: 部署环境ID
+    type: string
+  - description:
+      en_us: Deployed commit SHA
+      zh_cn: 部署版本
+    display_name:
+      en_us: Commit Sha
+      zh_cn: 部署版本
+    filterable: true
+    name: commit_sha
+    orderable: true
+    short_description:
+      en_us: Commit Sha
+      zh_cn: 部署版本
+    type: string
+  - description:
+      en_us: Application version
+      zh_cn: 应用版本号
+    display_name:
+      en_us: Version
+      zh_cn: 应用版本号
+    filterable: true
+    name: version
+    orderable: true
+    short_description:
+      en_us: Version
+      zh_cn: 应用版本号
+    type: string
+  - description:
+      en_us: 'Deployment status: queued/in_progress/success/failure/cancelled'
+      zh_cn: 部署状态 queued/in_progress/success/failure/cancelled
+    display_name:
+      en_us: Status
+      zh_cn: 部署状态 queued/in_progress/success/failure/cancelled
+    filterable: true
+    name: status
+    orderable: true
+    short_description:
+      en_us: Status
+      zh_cn: 部署状态 queued/in_progress/success/failure/cancelled
+    type: enum
+  - description:
+      en_us: 'Deployment conclusion: success/failure/rolled_back'
+      zh_cn: 部署结论 success/failure/rolled_back
+    display_name:
+      en_us: Conclusion
+      zh_cn: 部署结论 success/failure/rolled_back
+    filterable: true
+    name: conclusion
+    orderable: true
+    short_description:
+      en_us: Conclusion
+      zh_cn: 部署结论 success/failure/rolled_back
+    type: enum
+  - description:
+      en_us: 'Data source: yunxiao_appstack/aone/github/argocd'
+      zh_cn: 数据来源 yunxiao_appstack/aone/github/argocd
+    display_name:
+      en_us: Data Source
+      zh_cn: 数据来源 yunxiao_appstack/aone/github/argocd
+    filterable: true
+    name: data_source
+    orderable: true
+    short_description:
+      en_us: Data Source
+      zh_cn: 数据来源 yunxiao_appstack/aone/github/argocd
+    type: string
+  - description:
+      en_us: Platform deployment ID
+      zh_cn: 平台部署ID
+    display_name:
+      en_us: Platform Deployment Id
+      zh_cn: 平台部署ID
+    filterable: true
+    name: platform_deployment_id
+    orderable: true
+    short_description:
+      en_us: Platform Deployment Id
+      zh_cn: 平台部署ID
+    type: string
+  - description:
+      en_us: Deployment URL
+      zh_cn: 部署URL
+    display_name:
+      en_us: Url
+      zh_cn: 部署URL
+    filterable: true
+    name: url
+    orderable: true
+    short_description:
+      en_us: Url
+      zh_cn: 部署URL
+    type: string
+  - description:
+      en_us: Deployed by
+      zh_cn: 部署人
+    display_name:
+      en_us: Deployed By
+      zh_cn: 部署人
+    filterable: true
+    name: deployed_by
+    orderable: true
+    short_description:
+      en_us: Deployed By
+      zh_cn: 部署人
+    type: string
+  - description:
+      en_us: Owning release ID
+      zh_cn: 所属发布
+    display_name:
+      en_us: Release Id
+      zh_cn: 所属发布
+    filterable: true
+    name: release_id
+    orderable: true
+    short_description:
+      en_us: Release Id
+      zh_cn: 所属发布
+    type: string
+  - description:
+      en_us: Deployed artifacts
+      zh_cn: 部署产物
+    display_name:
+      en_us: Artifacts
+      zh_cn: 部署产物
+    filterable: false
+    name: artifacts
+    orderable: false
+    short_description:
+      en_us: Artifacts
+      zh_cn: 部署产物
+    type: json
+  - description:
+      en_us: Creation time
+      zh_cn: 创建时间
+    display_name:
+      en_us: Created At
+      zh_cn: 创建时间
+    filterable: true
+    name: created_at
+    orderable: true
+    short_description:
+      en_us: Created At
+      zh_cn: 创建时间
+    type: datetime
+  - description:
+      en_us: Start time
+      zh_cn: 开始时间
+    display_name:
+      en_us: Started At
+      zh_cn: 开始时间
+    filterable: true
+    name: started_at
+    orderable: true
+    short_description:
+      en_us: Started At
+      zh_cn: 开始时间
+    type: datetime
+  - description:
+      en_us: Completion time
+      zh_cn: 完成时间
+    display_name:
+      en_us: Completed At
+      zh_cn: 完成时间
+    filterable: true
+    name: completed_at
+    orderable: true
+    short_description:
+      en_us: Completed At
+      zh_cn: 完成时间
+    type: datetime
+  - description:
+      en_us: Rollback start time
+      zh_cn: 回滚开始时间
+    display_name:
+      en_us: Rollback Started At
+      zh_cn: 回滚开始时间
+    filterable: true
+    name: rollback_started_at
+    orderable: true
+    short_description:
+      en_us: Rollback Started At
+      zh_cn: 回滚开始时间
+    type: datetime
+  - description:
+      en_us: Rollback completion time
+      zh_cn: 回滚完成时间
+    display_name:
+      en_us: Rollback Completed At
+      zh_cn: 回滚完成时间
+    filterable: true
+    name: rollback_completed_at
+    orderable: true
+    short_description:
+      en_us: Rollback Completed At
+      zh_cn: 回滚完成时间
+    type: datetime
+  - description:
+      en_us: Deployment duration (seconds)
+      zh_cn: 部署时长(秒)
+    display_name:
+      en_us: Duration Seconds
+      zh_cn: 部署时长(秒)
+    filterable: true
+    name: duration_seconds
+    orderable: true
+    short_description:
+      en_us: Duration Seconds
+      zh_cn: 部署时长(秒)
+    type: integer
+  keep_alive_seconds: 86400
+  name_fields:
+  - deployment_id
+  - version
+  - status
+  primary_key_fields:
+  - deployment_id
+  time_field: __time__
+  type: entity_set

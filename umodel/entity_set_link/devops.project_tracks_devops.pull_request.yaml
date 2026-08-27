@@ -1,25 +1,25 @@
 kind: entity_set_link
 metadata:
-    description:
-        en_us: Project tracks Pull Request.
-        zh_cn: Project tracks Pull Request。
-    display_name:
-        en_us: Project Tracks Pull Request
-        zh_cn: Project tracks Pull Request
-    domain: devops
-    kind: entity_set_link
-    name: devops.project_tracks_devops.pull_request
+  description:
+    en_us: Project tracks Pull Request.
+    zh_cn: Project tracks Pull Request。
+  display_name:
+    en_us: Project Tracks Pull Request
+    zh_cn: Project tracks Pull Request
+  domain: devops
+  kind: entity_set_link
+  name: devops.project_tracks_devops.pull_request
 schema:
-    url: umodel.aliyun.com
-    version: v0.1.0
+  url: umodel.aliyun.com
+  version: v0.1.0
 spec:
-    dest:
-        domain: devops
-        kind: entity_set
-        name: devops.pull_request
-    entity_link_type: tracks
-    priority: 5
-    src:
-        domain: devops
-        kind: entity_set
-        name: devops.project
+  dest:
+    domain: devops
+    kind: entity_set
+    name: devops.pull_request
+  entity_link_type: tracks
+  priority: 5
+  src:
+    domain: devops
+    kind: entity_set
+    name: devops.project

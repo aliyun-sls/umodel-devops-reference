@@ -151,6 +151,36 @@ entity:
     __domain__: k8s
     __entity_type__: k8s.pod
 
+  deployment:
+    # CD 系统（argocd 等）写入的部署实体；字段对齐 umodel/entity_set/devops_devops.deployment.yaml
+    fields:
+      - deployment_id
+      - title
+      - description
+      - repository_id
+      - run_id
+      - environment_id
+      - commit_sha
+      - version
+      - status
+      - conclusion
+      - data_source
+      - platform_deployment_id
+      - url
+      - deployed_by
+      - release_id
+      - artifacts
+      - created_at
+      - started_at
+      - completed_at
+      - rollback_started_at
+      - rollback_completed_at
+      - duration_seconds
+    primaryKeys:
+      - deployment_id
+    __domain__: devops
+    __entity_type__: devops.deployment
+
 topo:
   # --- git/ACR producer 可派生的关系（决策 G-2：设计文档动词原样落地） ---
   user_owns_repository:
@@ -241,4 +271,18 @@ topo:
       - docker_image_id
     fixed_fields:
       __link_type__: "uses"
+      priority: 5
+
+  # --- CD 系统（argocd 等）派生 ---
+  release_relates_to_deployment:
+    __src_domain__: devops
+    __src_entity_type__: devops.release
+    __dest_domain__: devops
+    __dest_entity_type__: devops.deployment
+    src_entity_primarykeys:
+      - release_id
+    dest_entity_primarykeys:
+      - deployment_id
+    fixed_fields:
+      __link_type__: "relates_to"
       priority: 5

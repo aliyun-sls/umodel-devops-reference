@@ -9,20 +9,20 @@ Ingest developer, repository, release, image, and topology data from your git pr
 ## Architecture
 
 ```
-┌─────────────┐     ┌─────────────┐
-│   GitLab    │     │   Codeup    │
-│  (self/SaaS)│     │ (China SaaS)│
-└──────┬──────┘     └──────┬──────┘
-       │ python-gitlab      │ alibabacloud SDK
-       └────────┬───────────┘
-                │ IGitAdapter
-                ▼
-      ┌──────────────────────┐
-      │  devops_data_generator│
-      │  ├─ 15 tasks          │
-      │  ├─ SLS sender        │
-      │  └─ orchestrator      │
-      └──────────┬───────────┘
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   GitLab    │     │   Codeup    │     │   Argo CD   │
+│  (self/SaaS)│     │ (China SaaS)│     │ (GitOps CD) │
+└──────┬──────┘     └──────┬──────┘     └──────┬──────┘
+       │ python-gitlab      │ alibabacloud SDK │ REST API
+       └────────┬───────────┘                  │
+                │ IGitAdapter                  │ IDeployAdapter
+                ▼                              ▼
+      ┌──────────────────────────────────────────┐
+      │  devops_data_generator                   │
+      │  ├─ 17 tasks                             │
+      │  ├─ SLS sender                           │
+      │  └─ orchestrator                         │
+      └──────────┬───────────────────────────────┘
                  │ SLS / CMS write
                  ▼
       ┌──────────────────────┐
@@ -77,13 +77,37 @@ The generator ships two entry points — pick the one that matches your run mode
 Both share the same orchestrator and config; select by entry point rather than reimplementing
 scheduling.
 
+### Argo CD (optional CD source)
+
+Add an `argocd` section to `app_config.yaml` (see the commented block in
+`app_config.gitlab.yaml.sample`), then enable the two CD tasks:
+
+```yaml
+argocd:
+  server: "https://<argocd-server>"     # API base URL, no trailing slash
+  token: "<bearer token>"               # session/account token
+  insecure: true                        # skip TLS verify (self-signed certs)
+  app_filter: []                        # optional allowlist of application names
+  repo_mapping:                         # repoURL → git repository_id
+    "https://<git-host>/group/app.git": "1"
+
+tasks:
+  enabled:
+    - deployment                        # devops.deployment entities
+    - release_relates_to_deployment     # release → deployment edges
+```
+
+The CD tasks are provider-independent: they layer on top of either git provider's
+run. Without an `argocd` section the producer behaves exactly as before.
+
 ## UModel Schema
 
 17 EntitySets span the full DevOps lifecycle (org → project → code → CI/CD → release → deployment).
-Producer-backed entities (git + ACR derived): `devops.user`, `devops.repository`, `devops.release`,
-`devops.pull_request`, `devops.artifact`, `devops.docker_image`. The remaining 11
+Producer-backed entities (git + ACR + Argo CD derived): `devops.user`, `devops.repository`,
+`devops.release`, `devops.pull_request`, `devops.artifact`, `devops.docker_image`,
+`devops.deployment`. The remaining 10
 (organization, project, work_item, milestone, pipeline, pipeline_run, helm_chart, binary,
-npm_package, unit_testcase, deployment) are schema-only pending their data-source adapters
+npm_package, unit_testcase) are schema-only pending their data-source adapters
 (Jira/CI/appstack/artifact-registry/org) — see `docs/umodel-entity-field-contract.md`.
 
 | Domain | EntitySet | Producer-backed |
@@ -94,7 +118,8 @@ npm_package, unit_testcase, deployment) are schema-only pending their data-sourc
 | devops | `devops.pull_request` | ✓ (git) |
 | devops | `devops.artifact` | ✓ (derived, ACR) |
 | devops | `devops.docker_image` | ✓ (ACR) |
-| devops | + 11 schema-only | pending adapters |
+| devops | `devops.deployment` | ✓ (Argo CD) |
+| devops | + 10 schema-only | pending adapters |
 
 36 EntitySetLinks connect these entities (29 design-doc relations + cross-domain links to
 `apm.service` and `k8s.{pod,deployment,daemonset,statefulset}`).
@@ -136,8 +161,8 @@ umodel-devops-reference/
 ├── umodel/                          # 17 EntitySet + 36 EntitySetLink
 ├── umodel_uploader/                 # Batch upload tool
 ├── devops_data_generator/
-│   ├── adapters/{gitlab,codeup}/    # IGitAdapter implementations
-│   ├── tasks/                       # 15 data ingestion tasks
+│   ├── adapters/{gitlab,codeup,argocd}/ # IGitAdapter + IDeployAdapter implementations
+│   ├── tasks/                       # 17 data ingestion tasks
 │   ├── config/                      # Sample configs per provider
 │   ├── orchestrator.py              # Task scheduling + structured results
 │   └── scripts/                     # Verification + deployment scripts
