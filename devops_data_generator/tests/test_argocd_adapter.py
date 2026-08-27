@@ -9,9 +9,13 @@ serving canned REST responses, and the task tests use a fake adapter plus the
 in-memory FakeSharedContext pattern from test_phase1_regressions.
 """
 
+import io
+import json
 import sys
 import unittest
+import urllib.error
 from pathlib import Path
+from unittest import mock
 
 _PKG = Path(__file__).resolve().parent.parent          # devops_data_generator/
 sys.path.insert(0, str(_PKG))
@@ -293,6 +297,90 @@ def _deployment(commit_sha="96f2914c0000000000000000000000000000abcd",
         "conclusion": "success",
         "data_source": "argocd",
     }
+
+
+class _FakeResponse:
+    def __init__(self, payload):
+        self._payload = payload
+
+    def read(self):
+        return json.dumps(self._payload).encode()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
+def _http_error(code, body="{}"):
+    return urllib.error.HTTPError(
+        "http://x", code, "err", {}, io.BytesIO(body.encode()))
+
+
+class ArgoCDAuthTests(unittest.TestCase):
+    """Auth lifecycle: login-on-demand and 401 re-login + single retry."""
+
+    def _adapter(self):
+        return ArgoCDAdapter({
+            "server": "http://argocd.example.com",
+            "username": "admin",
+            "password": "pw",
+            "insecure": True,
+        })
+
+    def test_login_on_demand_when_no_static_token(self):
+        adapter = self._adapter()
+        calls = []
+
+        def fake_urlopen(req, **kw):
+            calls.append(req)
+            if req.full_url.endswith("/api/v1/session"):
+                return _FakeResponse({"token": "t-1"})
+            return _FakeResponse({"items": []})
+
+        with mock.patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            adapter.list_applications()
+
+        # session login happened first, then the API call carried the token
+        self.assertTrue(calls[0].full_url.endswith("/api/v1/session"))
+        self.assertEqual(calls[1].headers.get("Authorization"), "Bearer t-1")
+
+    def test_401_relogin_and_retry_once(self):
+        adapter = self._adapter()
+        adapter.token = "expired"
+        logins = {"n": 0}
+
+        def fake_urlopen(req, **kw):
+            if req.full_url.endswith("/api/v1/session"):
+                logins["n"] += 1
+                return _FakeResponse({"token": f"t-{logins['n']}"})
+            if req.headers.get("Authorization") == "Bearer expired":
+                raise _http_error(401)
+            return _FakeResponse({"items": []})
+
+        with mock.patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            data = adapter.list_applications()
+
+        self.assertEqual(data, [])
+        self.assertEqual(logins["n"], 1)          # re-login happened exactly once
+        self.assertEqual(adapter.token, "t-1")    # token refreshed in place
+
+    def test_403_does_not_retry(self):
+        adapter = self._adapter()
+        adapter.token = "valid-but-forbidden"
+        logins = {"n": 0}
+
+        def fake_urlopen(req, **kw):
+            if req.full_url.endswith("/api/v1/session"):
+                logins["n"] += 1
+                return _FakeResponse({"token": "t-x"})
+            raise _http_error(403, '{"error":"permission denied"}')
+
+        with mock.patch("urllib.request.urlopen", side_effect=fake_urlopen):
+            with self.assertRaises(RuntimeError):
+                adapter.list_applications()
+        self.assertEqual(logins["n"], 0)          # no re-login on 403
 
 
 class DeploymentTaskTests(unittest.TestCase):

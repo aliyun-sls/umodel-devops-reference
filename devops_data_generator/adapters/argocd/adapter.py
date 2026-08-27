@@ -9,7 +9,11 @@ Reads via Argo CD REST API (stdlib urllib, no extra dependency):
 
 Config (app_config.yaml section ``argocd``):
   server: "http://nlb-xxx:8080"        # Argo CD server base URL (no trailing /)
-  token: "<bearer token>"              # API token; empty = unauthenticated
+  token: "<bearer token>"              # API token; empty = fall back to login
+  username: "" / password: ""          # optional; used to mint (and on 401,
+                                       # re-mint) a session token — for
+                                       # long-running producers, since session
+                                       # tokens expire (default 24h)
   insecure: true                       # skip TLS verify for self-signed certs
   app_filter: []                       # optional allowlist of application names
   repo_mapping:                        # repoURL → GitLab project id（归一 repository_id）
@@ -39,6 +43,8 @@ class ArgoCDAdapter(IDeployAdapter):
     def __init__(self, config: Dict[str, Any]):
         self.server = (config.get("server") or "").rstrip("/")
         self.token = config.get("token") or ""
+        self.username = config.get("username") or ""
+        self.password = config.get("password") or ""
         self.insecure = bool(config.get("insecure", True))
         self.app_filter = set(config.get("app_filter") or [])
         self.repo_mapping = dict(config.get("repo_mapping") or {})
@@ -185,18 +191,40 @@ class ArgoCDAdapter(IDeployAdapter):
 
     # ---- HTTP ------------------------------------------------------------
 
-    def _get(self, path: str) -> Dict[str, Any]:
+    def _ssl_ctx(self):
+        if not self.insecure:
+            return None
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        return ctx
+
+    def _login(self) -> str:
+        """POST /api/v1/session with username/password → session token."""
+        req = urllib.request.Request(
+            f"{self.server}/api/v1/session",
+            data=json.dumps({"username": self.username,
+                             "password": self.password}).encode(),
+            headers={"Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=30, context=self._ssl_ctx()) as resp:
+            return json.loads(resp.read().decode("utf-8"))["token"]
+
+    def _get(self, path: str, _retried: bool = False) -> Dict[str, Any]:
+        if not self.token and self.username and self.password:
+            self.token = self._login()
         url = f"{self.server}{path}"
         req = urllib.request.Request(url)
         if self.token:
             req.add_header("Authorization", f"Bearer {self.token}")
-        ctx = None
-        if self.insecure:
-            ctx = ssl.create_default_context()
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
         try:
-            with urllib.request.urlopen(req, timeout=30, context=ctx) as resp:
+            with urllib.request.urlopen(req, timeout=30, context=self._ssl_ctx()) as resp:
                 return json.loads(resp.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
+            # Session tokens expire (default 24h); with login credentials
+            # configured, mint a fresh token once and retry the request.
+            if e.code == 401 and self.username and self.password and not _retried:
+                logger.info("argocd: 401 — re-login and retry %s", path)
+                self.token = self._login()
+                return self._get(path, _retried=True)
             raise RuntimeError(f"argocd GET {path} → HTTP {e.code}: {e.read().decode('utf-8', 'replace')[:200]}")
