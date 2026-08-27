@@ -19,7 +19,7 @@
                 ▼                              ▼
      ┌───────────────────────────────────────────┐
      │  devops_data_generator                    │
-      │  ├─ 17 个采集任务                          │
+      │  ├─ 21 个采集任务                          │
       │  ├─ SLS 数据发送                           │
       │  └─ 编排调度器                              │
       └──────────┬────────────────────────────────┘
@@ -98,7 +98,7 @@ CD 任务与 git provider 无关，可叠加在任一 provider 之上；不配 `
 
 ## UModel 实体
 
-17 个 EntitySet 覆盖完整研发链路（组织→项目→代码→CI/CD→发布→部署）。有 producer 支撑的实体（git + ACR + Argo CD 派生）：`devops.user`、`devops.repository`、`devops.release`、`devops.pull_request`、`devops.artifact`、`devops.docker_image`、`devops.deployment`。其余 10 个（organization、project、work_item、milestone、pipeline、pipeline_run、helm_chart、binary、npm_package、unit_testcase）为 schema-only，待对应数据源 adapter（Jira/CI/appstack/制品库/组织系统）落地，详见 `docs/umodel-entity-field-contract.md`。
+17 个 EntitySet 覆盖完整研发链路（组织→项目→代码→CI/CD→发布→部署）。有 producer 支撑的实体（git + GitLab CI + ACR + Argo CD 派生）：`devops.user`、`devops.repository`、`devops.release`、`devops.pull_request`、`devops.artifact`、`devops.docker_image`、`devops.deployment`、`devops.pipeline`、`devops.pipeline_run`。其余 8 个（organization、project、work_item、milestone、helm_chart、binary、npm_package、unit_testcase）为 schema-only，待对应数据源 adapter（Jira/CI/appstack/制品库/组织系统）落地，详见 `docs/umodel-entity-field-contract.md`。
 
 | 域 | 实体 | 有 producer |
 |---|---|---|
@@ -109,7 +109,9 @@ CD 任务与 git provider 无关，可叠加在任一 provider 之上；不配 `
 | devops | `devops.artifact` | ✓（派生，ACR） |
 | devops | `devops.docker_image` | ✓（ACR） |
 | devops | `devops.deployment` | ✓（Argo CD） |
-| devops | + 10 个 schema-only | 待 adapter |
+| devops | `devops.pipeline` | ✓（GitLab CI） |
+| devops | `devops.pipeline_run` | ✓（GitLab CI） |
+| devops | + 8 个 schema-only | 待 adapter |
 
 36 条 EntitySetLink 连接上述实体（29 条设计文档关系 + 跨域链接到 `apm.service` 和 `k8s.{pod,deployment,daemonset,statefulset}`）。
 

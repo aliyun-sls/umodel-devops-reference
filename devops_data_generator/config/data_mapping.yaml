@@ -92,6 +92,53 @@ entity:
     __domain__: devops
     __entity_type__: devops.pull_request
 
+  pipeline:
+    # CI 流水线定义（git adapter list_pipelines()；GitLab=项目 CI 配置文件）
+    fields:
+      - pipeline_id
+      - repository_id
+      - name
+      - file_path
+      - description
+      - data_source
+      - platform_pipeline_id
+      - url
+      - is_active
+      - created_at
+      - updated_at
+    primaryKeys:
+      - pipeline_id
+    __domain__: devops
+    __entity_type__: devops.pipeline
+
+  pipeline_run:
+    # CI 流水线执行（git adapter list_pipeline_runs()）
+    fields:
+      - run_id
+      - pipeline_id
+      - repository_id
+      - number
+      - pr_id
+      - commit_sha
+      - branch
+      - trigger_type
+      - status
+      - conclusion
+      - data_source
+      - platform_run_id
+      - url
+      - triggered_by
+      - stages
+      - created_at
+      - started_at
+      - completed_at
+      - duration_seconds
+      - queue_duration_seconds
+    primaryKeys:
+      - run_id
+    __domain__: devops
+    __entity_type__: devops.pipeline_run
+
   artifact:
     # 派生实体（决策 B）：docker_image_task 一次 ACR fetch 同生 artifact + docker_image
     fields:
@@ -285,4 +332,31 @@ topo:
       - deployment_id
     fixed_fields:
       __link_type__: "relates_to"
+      priority: 5
+
+  # --- CI 流水线（C-1）---
+  repository_contains_pipeline:
+    __src_domain__: devops
+    __src_entity_type__: devops.repository
+    __dest_domain__: devops
+    __dest_entity_type__: devops.pipeline
+    src_entity_primarykeys:
+      - repository_id
+    dest_entity_primarykeys:
+      - pipeline_id
+    fixed_fields:
+      __link_type__: "contains"
+      priority: 5
+
+  pull_request_triggers_pipeline_run:
+    __src_domain__: devops
+    __src_entity_type__: devops.pull_request
+    __dest_domain__: devops
+    __dest_entity_type__: devops.pipeline_run
+    src_entity_primarykeys:
+      - pr_id
+    dest_entity_primarykeys:
+      - run_id
+    fixed_fields:
+      __link_type__: "triggers"
       priority: 5

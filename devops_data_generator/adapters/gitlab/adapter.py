@@ -152,6 +152,99 @@ class GitLabAdapter(IGitAdapter):
         return pull_requests
 
     # ------------------------------------------------------------------
+    # CI pipeline (IGitAdapter optional capability)
+    # ------------------------------------------------------------------
+    def list_pipelines(self, repo_id: str) -> List[Dict[str, Any]]:
+        """Pipeline definitions = the project's CI config file.
+
+        GitLab has no pipeline-definition API object; a project with CI
+        enabled has exactly one definition at its ci_config_path (default
+        .gitlab-ci.yml). Projects with CI disabled yield no record.
+        """
+        project = self.client.projects.get(int(repo_id))
+        ci_path = getattr(project, "ci_config_path", "") or ".gitlab-ci.yml"
+        if not getattr(project, "jobs_enabled", True):
+            return []
+        platform_id = f"{repo_id}:{ci_path}"
+        web_url = getattr(project, "web_url", "") or ""
+        return [{
+            "pipeline_id": f"{self.PROVIDER_NAME}:{platform_id}",
+            "repository_id": repo_id,
+            "name": f"{getattr(project, 'path_with_namespace', '') or repo_id} CI",
+            "file_path": ci_path,
+            "description": "",
+            "data_source": self.PROVIDER_NAME,
+            "platform_pipeline_id": platform_id,
+            "url": f"{web_url}/-/pipelines" if web_url else "",
+            "is_active": True,
+            "created_at": self._safe_dt(getattr(project, "created_at", "")),
+            "updated_at": self._safe_dt(getattr(project, "last_activity_at", "")),
+        }]
+
+    def list_pipeline_runs(self, repo_id: str) -> List[Dict[str, Any]]:
+        """Pipeline executions (project.pipelines.list)."""
+        project = self.client.projects.get(int(repo_id))
+        ci_path = getattr(project, "ci_config_path", "") or ".gitlab-ci.yml"
+        pipeline_id = f"{self.PROVIDER_NAME}:{repo_id}:{ci_path}"
+        runs: List[Dict[str, Any]] = []
+        for p in project.pipelines.list(all=True):
+            status = self._map_pipeline_status(getattr(p, "status", ""))
+            user = getattr(p, "user", None) or {}
+            username = user.get("username", "") if isinstance(user, dict) else ""
+            runs.append({
+                "run_id": f"{self.PROVIDER_NAME}:{repo_id}:{getattr(p, 'id', '')}",
+                "pipeline_id": pipeline_id,
+                "repository_id": repo_id,
+                "number": getattr(p, "iid", 0) or 0,
+                "pr_id": "",
+                "commit_sha": getattr(p, "sha", "") or "",
+                "branch": getattr(p, "ref", "") or "",
+                "trigger_type": self._map_pipeline_source(getattr(p, "source", "")),
+                "status": status,
+                "conclusion": self._map_pipeline_conclusion(status),
+                "data_source": self.PROVIDER_NAME,
+                "platform_run_id": str(getattr(p, "id", "") or ""),
+                "url": getattr(p, "web_url", "") or "",
+                "triggered_by": f"{self.PROVIDER_NAME}:{username}" if username else "",
+                "stages": "",
+                "created_at": self._safe_dt(getattr(p, "created_at", "")),
+                "started_at": self._safe_dt(getattr(p, "started_at", "")),
+                "completed_at": self._safe_dt(getattr(p, "finished_at", "")),
+                "duration_seconds": int(getattr(p, "duration", 0) or 0),
+                "queue_duration_seconds": int(getattr(p, "queued_duration", 0) or 0),
+            })
+        return runs
+
+    @staticmethod
+    def _map_pipeline_status(status: str) -> str:
+        """GitLab pipeline status → contract enum."""
+        return {
+            "created": "queued", "waiting_for_resource": "queued",
+            "preparing": "queued", "pending": "queued", "scheduled": "queued",
+            "manual": "queued",
+            "running": "in_progress",
+            "success": "success",
+            "failed": "failure",
+            "canceled": "cancelled",
+            "skipped": "skipped",
+        }.get(status, "queued")
+
+    @staticmethod
+    def _map_pipeline_conclusion(status: str) -> str:
+        return {"success": "success", "failure": "failure",
+                "cancelled": "cancelled"}.get(status, "")
+
+    @staticmethod
+    def _map_pipeline_source(source: str) -> str:
+        """GitLab pipeline source → contract trigger_type enum."""
+        return {
+            "push": "push",
+            "merge_request_event": "pull_request",
+            "schedule": "schedule",
+            "web": "manual", "api": "manual", "trigger": "manual",
+        }.get(source, "manual")
+
+    # ------------------------------------------------------------------
     # GitLab-specific helpers
     # ------------------------------------------------------------------
     def _iter_projects(self) -> List[Any]:
