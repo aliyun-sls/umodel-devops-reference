@@ -9,6 +9,7 @@ from config.config_loader import ConfigLoader
 from generator.sls_data_generator import SlsDataGenerator
 from sender.sls_data_sender import SlsDataSender
 from shared.data_context import SharedDataContext
+from tasks.apm_service_link_task import ApmServiceSourcedFromRepositoryTask
 from tasks.artifact_same_as_docker_image_task import ArtifactSameAsDockerImageTask
 from tasks.artifact_task import ArtifactTask
 from tasks.deployment_task import DeploymentTask
@@ -149,6 +150,25 @@ class DevOpsDataOrchestrator:
             deploy_adapter = create_deploy_adapter("argocd", argocd_config)
             self.tasks["deployment"] = DeploymentTask(argocd_config, deploy_adapter)
             self.tasks["release_relates_to_deployment"] = ReleaseRelatesToDeploymentTask(argocd_config)
+
+        # Optional APM→repo RCA-entry edge: only wired when apm_service_link.links
+        # is configured. The task reads the workspace __entity logstore via the
+        # sls credentials to resolve CMS-native apm.service ids verbatim.
+        apm_link_config = dict(self.config_loader.app_config.get("apm_service_link", {}) or {})
+        if apm_link_config.get("links"):
+            entity_logstore = ""
+            for value in (sls_config.get("logstore_mapping", {}).get("entities", {}) or {}).values():
+                entity_logstore = value
+                break
+            apm_link_config["sls"] = {
+                "endpoint": sls_config.get("endpoint", ""),
+                "access_key_id": sls_config.get("access_key_id", ""),
+                "access_key_secret": sls_config.get("access_key_secret", ""),
+                "project": sls_config.get("project", ""),
+                "entity_logstore": entity_logstore,
+            }
+            self.tasks["apm_service_sourced_from_repository"] = \
+                ApmServiceSourcedFromRepositoryTask(apm_link_config)
 
         if self.shared_context:
             for task_name, task in self.tasks.items():
