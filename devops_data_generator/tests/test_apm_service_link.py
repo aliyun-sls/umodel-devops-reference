@@ -20,6 +20,7 @@ _REPO = _PKG.parent
 sys.path.insert(0, str(_PKG))
 
 from tasks.apm_service_link_task import ApmServiceSourcedFromRepositoryTask  # noqa: E402
+import tasks.apm_service_link_task as apm_task_mod  # noqa: E402
 from generator.sls_data_generator import SlsDataGenerator  # noqa: E402
 
 
@@ -56,6 +57,14 @@ def _make_task(links):
 
 
 class ApmServiceLinkTaskTests(unittest.TestCase):
+    def setUp(self):
+        # CI runners have no aliyun-log SDK; the task gates on the module's
+        # SLS_SDK_AVAILABLE flag. Tests mock _load_apm_services (no real SLS
+        # calls), so force the flag on for the duration of each test.
+        self._patcher = mock.patch.object(apm_task_mod, "SLS_SDK_AVAILABLE", True)
+        self._patcher.start()
+        self.addCleanup(self._patcher.stop)
+
     def test_edge_shape_with_resolved_service(self):
         task = _make_task([{"service": "sae-order-processor",
                             "repository_id": "7069710"}])
