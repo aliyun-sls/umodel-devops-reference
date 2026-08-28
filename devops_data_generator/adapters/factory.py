@@ -4,12 +4,14 @@ import logging
 from typing import Any, Dict
 
 from .base import IGitAdapter
+from .ci_base import ICIAdapter
 from .deploy_base import IDeployAdapter
 
 logger = logging.getLogger(__name__)
 
 _SUPPORTED_PROVIDERS = ("gitlab", "codeup")
 _SUPPORTED_DEPLOY_PROVIDERS = ("argocd",)
+_SUPPORTED_CI_PROVIDERS = ("jenkins",)
 
 
 def create_git_adapter(provider_type: str, config: Dict[str, Any]) -> IGitAdapter:
@@ -48,4 +50,21 @@ def create_deploy_adapter(provider_type: str, config: Dict[str, Any]) -> IDeploy
     raise ValueError(
         f"Unsupported deploy_provider type '{provider_type}'. "
         f"Supported: {_SUPPORTED_DEPLOY_PROVIDERS}"
+    )
+
+
+def create_ci_adapter(provider_type: str, config: Dict[str, Any]) -> ICIAdapter:
+    """Return an ICIAdapter implementation for ``provider_type``.
+
+    Supported values:
+        - "jenkins" → JenkinsAdapter (Jenkins REST API)
+    """
+    provider_type = (provider_type or "").lower()
+    if provider_type == "jenkins":
+        from .jenkins.adapter import JenkinsAdapter
+
+        return JenkinsAdapter(config)
+    raise ValueError(
+        f"Unsupported ci_provider type '{provider_type}'. "
+        f"Supported: {_SUPPORTED_CI_PROVIDERS}"
     )

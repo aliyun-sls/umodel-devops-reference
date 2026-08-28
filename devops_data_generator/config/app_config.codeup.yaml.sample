@@ -141,3 +141,13 @@ logging:
   level: INFO
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
   file: "logs/devops_data_generator.log"
+
+# 独立 CI 系统（可选，与 GitLab CI 并存；配置后 pipeline/pipeline_run 任务自动多源采集）
+# jenkins:
+#   url: "http://<jenkins-host>:8081"
+#   user: "admin"
+#   token: "<api-token-or-password>"   # 实例匿名可读时可留空
+#   job_filter: []                      # 可选：job 白名单
+#   repo_mapping:                       # 可选：job 名 → git repository_id（用于 repository_contains_pipeline 边）
+#     "demo-app-build": "1"
+

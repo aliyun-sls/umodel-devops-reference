@@ -154,6 +154,10 @@ class GitLabAdapter(IGitAdapter):
     # ------------------------------------------------------------------
     # CI pipeline (IGitAdapter optional capability)
     # ------------------------------------------------------------------
+    # data-source-enum-spec: CI 数据源与 git 平台分开取值（gitlab_ci vs gitlab），
+    # 即便同一厂商——便于区分「代码托管」与「流水线」两类数据源。
+    CI_DATA_SOURCE = "gitlab_ci"
+
     def list_pipelines(self, repo_id: str) -> List[Dict[str, Any]]:
         """Pipeline definitions = the project's CI config file.
 
@@ -168,11 +172,11 @@ class GitLabAdapter(IGitAdapter):
         # jobs_enabled is the GitLab default even for repos with NO CI config;
         # the definition only exists if the config file is actually there.
         # (Otherwise every repo would claim a phantom pipeline entity.)
+        # NOTE: python-gitlab's files.head takes the file path as the
+        # POSITIONAL `id` arg — `head(file_path=...)` silently HEADs the
+        # collection URL and 404s even when the file exists.
         default_branch = getattr(project, "default_branch", "") or self.DEFAULT_BRANCH_FALLBACK
         try:
-            # NOTE: python-gitlab's files.head takes the file path as the
-            # POSITIONAL `id` arg — `head(file_path=...)` silently HEADs the
-            # collection URL and 404s even when the file exists.
             project.files.head(ci_path, ref=default_branch)
         except Exception as exc:  # noqa: BLE001 — 404 means no CI config
             logger.info("repo %s: no CI config at %s (%s); no pipeline entity",
@@ -181,12 +185,12 @@ class GitLabAdapter(IGitAdapter):
         platform_id = f"{repo_id}:{ci_path}"
         web_url = getattr(project, "web_url", "") or ""
         return [{
-            "pipeline_id": f"{self.PROVIDER_NAME}:{platform_id}",
+            "pipeline_id": f"{self.CI_DATA_SOURCE}:{platform_id}",
             "repository_id": repo_id,
             "name": f"{getattr(project, 'path_with_namespace', '') or repo_id} CI",
             "file_path": ci_path,
             "description": "",
-            "data_source": self.PROVIDER_NAME,
+            "data_source": self.CI_DATA_SOURCE,
             "platform_pipeline_id": platform_id,
             "url": f"{web_url}/-/pipelines" if web_url else "",
             "is_active": True,
@@ -198,14 +202,14 @@ class GitLabAdapter(IGitAdapter):
         """Pipeline executions (project.pipelines.list)."""
         project = self.client.projects.get(int(repo_id))
         ci_path = getattr(project, "ci_config_path", "") or ".gitlab-ci.yml"
-        pipeline_id = f"{self.PROVIDER_NAME}:{repo_id}:{ci_path}"
+        pipeline_id = f"{self.CI_DATA_SOURCE}:{repo_id}:{ci_path}"
         runs: List[Dict[str, Any]] = []
         for p in project.pipelines.list(all=True):
             status = self._map_pipeline_status(getattr(p, "status", ""))
             user = getattr(p, "user", None) or {}
             username = user.get("username", "") if isinstance(user, dict) else ""
             runs.append({
-                "run_id": f"{self.PROVIDER_NAME}:{repo_id}:{getattr(p, 'id', '')}",
+                "run_id": f"{self.CI_DATA_SOURCE}:{repo_id}:{getattr(p, 'id', '')}",
                 "pipeline_id": pipeline_id,
                 "repository_id": repo_id,
                 "number": getattr(p, "iid", 0) or 0,
@@ -215,7 +219,7 @@ class GitLabAdapter(IGitAdapter):
                 "trigger_type": self._map_pipeline_source(getattr(p, "source", "")),
                 "status": status,
                 "conclusion": self._map_pipeline_conclusion(status),
-                "data_source": self.PROVIDER_NAME,
+                "data_source": self.CI_DATA_SOURCE,
                 "platform_run_id": str(getattr(p, "id", "") or ""),
                 "url": getattr(p, "web_url", "") or "",
                 "triggered_by": f"{self.PROVIDER_NAME}:{username}" if username else "",
