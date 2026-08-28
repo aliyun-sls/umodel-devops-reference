@@ -109,8 +109,8 @@ CD 任务与 git provider 无关，可叠加在任一 provider 之上；不配 `
 | devops | `devops.artifact` | ✓（派生，ACR） |
 | devops | `devops.docker_image` | ✓（ACR） |
 | devops | `devops.deployment` | ✓（Argo CD） |
-| devops | `devops.pipeline` | ✓（GitLab CI / Jenkins） |
-| devops | `devops.pipeline_run` | ✓（GitLab CI / Jenkins） |
+| devops | `devops.pipeline` | ✓（GitLab CI / Jenkins / 云效 Flow） |
+| devops | `devops.pipeline_run` | ✓（GitLab CI / Jenkins / 云效 Flow） |
 | devops | + 8 个 schema-only | 待 adapter |
 
 36 条 EntitySetLink 连接上述实体（29 条设计文档关系 + 跨域链接到 `apm.service` 和 `k8s.{pod,deployment,daemonset,statefulset}`）。

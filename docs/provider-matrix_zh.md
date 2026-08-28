@@ -15,7 +15,7 @@
 | `data_source` 字段值（写入 SLS）| `"gitlab"` | `"codeup"` |
 | CI 流水线（`pipeline` / `pipeline_run`） | ✓（GitLab CI，内建） | 未实现（adapter 默认返回 `[]`） |
 
-独立 CI 系统（非 git provider）实现 `ICIAdapter` 并汇入同一对 pipeline 任务：**Jenkins** 已支持（`jenkins:` 配置段，`url`/`user`/`token`，可选 `job_filter` 与 `repo_mapping`）。GitLab CI 记录用 `data_source="gitlab_ci"`（CI 与代码托管源按枚举规范分开）。
+独立 CI 系统（非 git provider）实现 `ICIAdapter` 并汇入同一对 pipeline 任务：**Jenkins** 已支持（`jenkins:` 配置段，`url`/`user`/`token`，可选 `job_filter` 与 `repo_mapping`）；**云效 Flow** 已支持（`yunxiao_flow:` 配置段，`organization_id` + `personal_access_token` 个人访问令牌，调新版标准 API `openapi-rdc.aliyuncs.com`；注意 RAM AK/SK 对从未登录过云效 console 的账号调不通 Flow 业务 API，必须用 PAT）。GitLab CI 记录用 `data_source="gitlab_ci"`（CI 与代码托管源按枚举规范分开）。
 | Docker Compose | `docker compose up --build` | `docker compose up --build` |
 | 配置样例 | `app_config.gitlab.yaml.sample` | `app_config.codeup.yaml.sample` |
 

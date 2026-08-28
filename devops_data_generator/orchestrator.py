@@ -115,12 +115,17 @@ class DevOpsDataOrchestrator:
         self.data_sender = SlsDataSender(sls_config)
         self.skip_sls_upload = set(self.config_loader.get_tasks_config().get("skip_sls_upload", []))
 
-        # Optional standalone CI adapters (Jenkins, ...): wired when their
-        # config section has a real url. GitLab CI stays on the git adapter.
+        # Optional standalone CI adapters (Jenkins, Yunxiao Flow, ...): wired
+        # when their config section has real credentials. GitLab CI stays on
+        # the git adapter.
         ci_adapters = []
         jenkins_config = self.config_loader.app_config.get("jenkins", {}) or {}
         if _has_real_value(jenkins_config.get("url")):
             ci_adapters.append(create_ci_adapter("jenkins", jenkins_config))
+        yunxiao_flow_config = self.config_loader.app_config.get("yunxiao_flow", {}) or {}
+        if (_has_real_value(yunxiao_flow_config.get("organization_id"))
+                and _has_real_value(yunxiao_flow_config.get("personal_access_token"))):
+            ci_adapters.append(create_ci_adapter("yunxiao_flow", yunxiao_flow_config))
 
         self.tasks = {
             # Git-provider-aware tasks: inject adapter + carry provider_config

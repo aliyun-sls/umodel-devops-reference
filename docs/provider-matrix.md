@@ -17,7 +17,10 @@ The `git_provider.type` field in `app_config.yaml` selects which git adapter to 
 
 Standalone CI systems (not git providers) implement `ICIAdapter` and merge into the same
 pipeline tasks: **Jenkins** is supported via a `jenkins:` config section (`url`/`user`/`token`,
-optional `job_filter` and `repo_mapping` for repository_contains_pipeline edges). GitLab CI
+optional `job_filter` and `repo_mapping` for repository_contains_pipeline edges); **Yunxiao
+Flow** via a `yunxiao_flow:` section (`organization_id` + `personal_access_token` PAT against
+the standard REST API `openapi-rdc.aliyuncs.com`; RAM AK/SK cannot call Flow APIs for accounts
+that never logged into the Yunxiao console, so PAT is required). GitLab CI
 records use `data_source="gitlab_ci"` (CI vs git-hosting sources are distinct per the enum spec).
 | Docker Compose | `docker compose up --build` | `docker compose up --build` |
 | Config sample | `app_config.gitlab.yaml.sample` | `app_config.codeup.yaml.sample` |

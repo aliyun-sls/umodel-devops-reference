@@ -146,17 +146,17 @@ spec:
       zh_cn: 运行结论 success/failure/cancelled/timeout
     type: enum
   - description:
-      en_us: 'Data source: github_actions/gitlab_ci/jenkins'
-      zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
+      en_us: 'Data source: github_actions/gitlab_ci/jenkins/yunxiao_flow'
+      zh_cn: 数据来源 github_actions/gitlab_ci/jenkins/yunxiao_flow
     display_name:
       en_us: Data Source
-      zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
+      zh_cn: 数据来源 github_actions/gitlab_ci/jenkins/yunxiao_flow
     filterable: true
     name: data_source
     orderable: true
     short_description:
       en_us: Data Source
-      zh_cn: 数据来源 github_actions/gitlab_ci/jenkins
+      zh_cn: 数据来源 github_actions/gitlab_ci/jenkins/yunxiao_flow
     type: string
   - description:
       en_us: Platform run ID

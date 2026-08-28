@@ -205,7 +205,7 @@
 
 | 字段 | 类型 | 必填 | 主键 | 说明 |
 |---|---|---|---|---|
-| `pipeline_id` | string | ✓ | ✓ | 格式 `<data_source>:<platform_pipeline_id>`（GitLab 无流水线定义对象——定义即 CI 配置文件，platform_pipeline_id 合成 `{repo_id}:{ci_config_path}`，如 `gitlab:1:.gitlab-ci.yml`） |
+| `pipeline_id` | string | ✓ | ✓ | 格式 `<data_source>:<platform_pipeline_id>`（GitLab 无流水线定义对象——定义即 CI 配置文件，platform_pipeline_id 合成 `{repo_id}:{ci_config_path}`，如 `gitlab:1:.gitlab-ci.yml`；云效 Flow 为 console 编排对象，platform_pipeline_id 直接用数字 pipelineId，如 `yunxiao_flow:910002`） |
 | `repository_id` | string | ✓ | | 关联 repository.repository_id |
 | `name` | string | ✓ | | 流水线名称 |
 | `file_path` | string | | | 如 .github/workflows/ci.yml |
@@ -223,7 +223,7 @@
 
 | 字段 | 类型 | 必填 | 主键 | 说明 |
 |---|---|---|---|---|
-| `run_id` | string | ✓ | ✓ | 格式 `<data_source>:<platform_run_id>` |
+| `run_id` | string | ✓ | ✓ | 格式 `<data_source>:<platform_run_id>`（云效 Flow 为 `yunxiao_flow:{pipelineId}:{pipelineRunId}`——pipelineRunId 只在流水线内唯一，故中间带 pipelineId） |
 | `pipeline_id` | string | ✓ | | 关联 pipeline.pipeline_id |
 | `repository_id` | string | ✓ | | 关联 repository.repository_id |
 | `number` | integer | | | 仓库内递增编号 |

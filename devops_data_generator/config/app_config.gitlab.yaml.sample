@@ -168,4 +168,16 @@ logging:
 #   job_filter: []                      # 可选：job 白名单
 #   repo_mapping:                       # 可选：job 名 → git repository_id（用于 repository_contains_pipeline 边）
 #     "demo-app-build": "1"
+#
+# 云效 Flow（可选，独立 CI；用云效个人访问令牌 PAT 调新版标准 API openapi-rdc.aliyuncs.com。
+# 注意：RAM AK/SK 对从未登录过云效 console 的服务账号调不通 Flow 业务 API，必须用 PAT。
+# PAT 获取：云效 → 右上角头像 → 个人设置 → 个人访问令牌，勾选流水线只读权限）
+# yunxiao_flow:
+#   organization_id: "<云效组织ID>"
+#   personal_access_token: "<pt-...>"
+#   endpoint: ""                        # 默认 https://openapi-rdc.aliyuncs.com
+#   max_runs_per_pipeline: 20           # 每条流水线采集最近 N 次运行
+#   fetch_run_detail: false             # 逐 run 拉详情以回填 commit_sha/branch/repository_id
+#   repo_mapping:                       # 可选：流水线名 → git repository_id（用于 repository_contains_pipeline 边）
+#     "demo-deploy-hk": "90001"
 
