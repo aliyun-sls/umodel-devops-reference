@@ -160,6 +160,7 @@ logging:
 #   endpoint: ""                        # 默认 https://openapi-rdc.aliyuncs.com
 #   max_runs_per_pipeline: 20           # 每条流水线采集最近 N 次运行
 #   fetch_run_detail: false             # 逐 run 拉详情以回填 commit_sha/branch/repository_id
-#   repo_mapping:                       # 可选：流水线名 → git repository_id（用于 repository_contains_pipeline 边）
+#   auto_discover_repo: true            # 从最新一次运行的代码源自动反推流水线归属仓库（contains 边靠它）
+#   repo_mapping:                       # 可选人工覆盖：流水线名 → git repository_id（优先级高于自动发现）
 #     "demo-deploy-hk": "90001"
 

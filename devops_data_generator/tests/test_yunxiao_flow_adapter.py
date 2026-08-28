@@ -219,5 +219,46 @@ class YunxiaoFlowAdapterContractTests(unittest.TestCase):
                 self.assertEqual((runs[0]["status"], runs[0]["conclusion"]), expected)
 
 
+def _detail_with_project(project_id):
+    return {"stages": [{"stageInfo": {"jobs": [{"params": json.dumps({
+        "sources": [{"data": {"commitId": "c0ffee", "projectId": project_id,
+                              "branch": "main"}}]})}]}}]}
+
+
+class RepoAutoDiscoveryTests(unittest.TestCase):
+    """auto_discover_repo: learn definition->repo from the latest run's source."""
+
+    def test_discovers_repository_from_latest_run(self):
+        # 910001 无 repo_mapping；其最新 run(9) 详情带 projectId=777000
+        adapter = _make_adapter(details={"9": _detail_with_project(777000)})
+        pipes = {p["pipeline_id"]: p for p in adapter.list_pipelines()}
+        self.assertEqual(pipes["yunxiao_flow:910001"]["repository_id"], "777000")
+
+    def test_repo_mapping_wins_over_discovery(self):
+        # 910002 配了映射 90001；即使最新 run 详情说别的，也以映射为准且不探测
+        adapter = _make_adapter(details={"4": _detail_with_project(999999)})
+        pipes = {p["pipeline_id"]: p for p in adapter.list_pipelines()}
+        self.assertEqual(pipes["yunxiao_flow:910002"]["repository_id"], "90001")
+        self.assertFalse(any("/pipelines/910002/runs" in p for p in adapter._paths))
+
+    def test_discovery_disabled_means_no_probes(self):
+        adapter = _make_adapter(auto_discover_repo=False,
+                                details={"9": _detail_with_project(777000)})
+        pipes = {p["pipeline_id"]: p for p in adapter.list_pipelines()}
+        self.assertEqual(pipes["yunxiao_flow:910001"]["repository_id"], "")
+        self.assertFalse(any("/runs" in p for p in adapter._paths))
+
+    def test_pipeline_without_runs_stays_empty(self):
+        adapter = _make_adapter(runs={})   # 任何流水线都没有 run
+        pipes = adapter.list_pipelines()
+        unmapped = [p for p in pipes if p["name"] != "demo-deploy-hk"]
+        self.assertTrue(all(p["repository_id"] == "" for p in unmapped))
+
+    def test_discovery_api_failure_is_tolerated(self):
+        adapter = _make_adapter(details={})  # detail 全 500
+        pipes = {p["pipeline_id"]: p for p in adapter.list_pipelines()}
+        self.assertEqual(pipes["yunxiao_flow:910001"]["repository_id"], "")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -17,11 +17,16 @@ Config (app_config.yaml section ``yunxiao_flow``):
   organization_id: "<云效组织ID>"
   personal_access_token: "<pt-...>"   # 云效个人访问令牌（流水线读权限）
   endpoint: ""                        # default https://openapi-rdc.aliyuncs.com
-  repo_mapping:                       # optional: pipeline name → git repository_id
-    "demo-deploy-hk": "90001"
+  repo_mapping:                       # optional override: pipeline name → git repository_id
+    "demo-deploy-hk": "90001"         #   (wins over auto-discovery; for name collisions)
   max_runs_per_pipeline: 20           # recent runs collected per pipeline
   fetch_run_detail: false             # per-run detail call to fill commit_sha/
                                       # branch/repository_id from job sources (N+1)
+  auto_discover_repo: true            # learn each definition's repository_id from its
+                                      # latest run's code source (sources[].data.projectId);
+                                      # Flow's list API carries no repo info on definitions.
+                                      # Probes 2 calls per pipeline per list_pipelines() —
+                                      # no cache, so source-repo changes self-correct.
 
 Field notes (observed from the live API):
   - ListPipelines returns a bare JSON array (no total); paginate until a short page.
@@ -29,9 +34,10 @@ Field notes (observed from the live API):
     endTime, triggerMode, creatorAccountId}. status ∈ SUCCESS/RUNNING/FAIL/
     CANCELED/WAITING; triggerMode: 1 manual, 2 schedule, 3 push, 5 pipeline,
     6 webhook.
-  - Run detail carries job ``params`` (JSON string) whose ``sources[0].data``
+  - Run detail carries job ``params`` (JSON string) whose ``sources[].data``
     has commitId/branch/projectId/repo for Codeup-sourced pipelines — the
-    run → commit/repository link.
+    run → commit/repository link. sources[] may mix plain-string entries
+    (git URLs) with objects; non-dict entries are skipped.
 """
 
 import json
@@ -78,6 +84,7 @@ class YunxiaoFlowAdapter(ICIAdapter):
         self.repo_mapping = dict(config.get("repo_mapping") or {})
         self.max_runs_per_pipeline = int(config.get("max_runs_per_pipeline") or 20)
         self.fetch_run_detail = bool(config.get("fetch_run_detail", False))
+        self.auto_discover_repo = bool(config.get("auto_discover_repo", True))
 
     # ---- ICIAdapter ---------------------------------------------------
 
@@ -107,9 +114,12 @@ class YunxiaoFlowAdapter(ICIAdapter):
             name = item.get("pipelineName") or ""
             if pid is None:
                 continue
+            repository_id = self.repo_mapping.get(name, "")
+            if not repository_id and self.auto_discover_repo:
+                repository_id = self._discover_repository_id(pid)
             out.append({
                 "pipeline_id": f"{PROVIDER_NAME}:{pid}",
-                "repository_id": self.repo_mapping.get(name, ""),
+                "repository_id": repository_id,
                 "name": name,
                 "file_path": "",          # Flow pipelines are console-orchestrated
                 "description": "",
@@ -214,6 +224,32 @@ class YunxiaoFlowAdapter(ICIAdapter):
                     if data.get("commitId") or data.get("projectId"):
                         return data
         return None
+
+    def _discover_repository_id(self, pid: Any) -> str:
+        """Learn a pipeline definition's repository from its latest run's source.
+
+        Flow's ListPipelines carries no repo info on definitions, but every run
+        records its code source (projectId) in job params — so the latest run
+        reveals which repo the pipeline currently builds from. Returns "" when
+        the pipeline has no runs or no code source (manual-only pipelines).
+        """
+        try:
+            runs = self._get(f"/oapi/v1/flow/organizations/{self.organization_id}"
+                             f"/pipelines/{pid}/runs?page=1&perPage=1")
+            if not isinstance(runs, list) or not runs:
+                return ""
+            run_id = runs[0].get("pipelineRunId")
+            if run_id is None:
+                return ""
+            detail = self._get(f"/oapi/v1/flow/organizations/{self.organization_id}"
+                               f"/pipelines/{pid}/runs/{run_id}")
+            source = self._extract_source(detail)
+            project_id = (source or {}).get("projectId")
+            return str(project_id) if project_id else ""
+        except Exception as e:  # noqa: BLE001
+            logger.debug("yunxiao_flow: repo discovery for pipeline %s failed: %s",
+                         pid, e)
+            return ""
 
     @staticmethod
     def _pipeline_url(pid: Any) -> str:
