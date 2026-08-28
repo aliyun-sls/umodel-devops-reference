@@ -25,3 +25,5 @@ jobs:
       - run: python3 -m unittest devops_data_generator.tests.test_apm_service_link -v
       # Jenkins CI adapter 契约测试（mock REST）+ 多源任务合并
       - run: python3 -m unittest devops_data_generator.tests.test_jenkins_adapter -v
+      # 云效 Flow adapter 契约测试（mock REST，真实响应形态 fixture）
+      - run: python3 -m unittest devops_data_generator.tests.test_yunxiao_flow_adapter -v
