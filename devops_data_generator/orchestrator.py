@@ -155,13 +155,24 @@ class DevOpsDataOrchestrator:
             "static_topo": StaticTopoTask(static_topo_config),
         }
 
-        # Optional CD/deploy task: only wired when the argocd config section
-        # has a real server value (keeps the producer inert otherwise).
+        # CD/deploy task: wired when at least one deploy source has real
+        # config. GitLab CD rides on the gitlab git-provider section
+        # (first-class platform capability, like GitLab CI — zero extra
+        # credentials); Argo CD has its own section. Multiple sources merge
+        # into the same deployment task (same pattern as the CI adapters).
+        deploy_adapters = []
+        if self.git_provider_type == "gitlab":
+            gitlab_deploy_config = self.config_loader.get_git_provider_config()
+            if (_has_real_value(gitlab_deploy_config.get("url"))
+                    and _has_real_value(gitlab_deploy_config.get("access_token"))):
+                deploy_adapters.append(
+                    create_deploy_adapter("gitlab", gitlab_deploy_config))
         argocd_config = self.config_loader.app_config.get("argocd", {}) or {}
         if _has_real_value(argocd_config.get("server")):
-            deploy_adapter = create_deploy_adapter("argocd", argocd_config)
-            self.tasks["deployment"] = DeploymentTask(argocd_config, deploy_adapter)
-            self.tasks["release_relates_to_deployment"] = ReleaseRelatesToDeploymentTask(argocd_config)
+            deploy_adapters.append(create_deploy_adapter("argocd", argocd_config))
+        if deploy_adapters:
+            self.tasks["deployment"] = DeploymentTask({}, deploy_adapters)
+            self.tasks["release_relates_to_deployment"] = ReleaseRelatesToDeploymentTask({})
 
         # Optional APM→repo RCA-entry edge: only wired when apm_service_link.links
         # is configured. The task reads the workspace __entity logstore via the

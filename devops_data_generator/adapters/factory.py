@@ -10,7 +10,7 @@ from .deploy_base import IDeployAdapter
 logger = logging.getLogger(__name__)
 
 _SUPPORTED_PROVIDERS = ("gitlab", "codeup")
-_SUPPORTED_DEPLOY_PROVIDERS = ("argocd",)
+_SUPPORTED_DEPLOY_PROVIDERS = ("argocd", "gitlab")
 _SUPPORTED_CI_PROVIDERS = ("jenkins", "yunxiao_flow")
 
 
@@ -41,12 +41,18 @@ def create_deploy_adapter(provider_type: str, config: Dict[str, Any]) -> IDeploy
 
     Supported values:
         - "argocd" → ArgoCDAdapter (Argo CD REST API)
+        - "gitlab" → GitLabDeployAdapter (GitLab Environments/Deployments API;
+          rides on the same `gitlab:` config section as the git provider)
     """
     provider_type = (provider_type or "").lower()
     if provider_type == "argocd":
         from .argocd.adapter import ArgoCDAdapter
 
         return ArgoCDAdapter(config)
+    if provider_type == "gitlab":
+        from .gitlab.deploy_adapter import GitLabDeployAdapter
+
+        return GitLabDeployAdapter(config)
     raise ValueError(
         f"Unsupported deploy_provider type '{provider_type}'. "
         f"Supported: {_SUPPORTED_DEPLOY_PROVIDERS}"

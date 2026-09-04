@@ -103,16 +103,19 @@ Each entity needs an explicit SLS logstore (entity name) configured under `sls.l
 ## Deploy Providers (separate axis)
 
 CD/deploy systems are **not** git providers — they implement `IDeployAdapter` and layer on top of
-any git provider's run. They are wired only when their config section is present.
+any git provider's run. Standalone CD systems are wired only when their config section is present;
+GitLab CD is the exception — it is a first-class platform capability that rides on the `gitlab:`
+git-provider section and is wired automatically when `git_provider.type: gitlab`. Multiple CD
+sources merge into the same `deployment` task (one failing source does not affect the others).
 
-| | Argo CD |
-|---|---|
-| Config section | `argocd:` in `app_config.yaml` |
-| SDK | none (stdlib `urllib`, REST API) |
-| Authentication | Bearer token (session token or account API key) |
-| Tasks enabled | `deployment`, `release_relates_to_deployment` |
-| `data_source` field value in SLS | `"argocd"` |
-| Notes | v3.5.x verified. Do **not** pass `fields` projections to list APIs — the gRPC field mask silently drops `metadata.name` |
+| | Argo CD | GitLab CD |
+|---|---|---|
+| Config section | `argocd:` in `app_config.yaml` | none — rides on the `gitlab:` git-provider section (auto-wired when `git_provider.type: gitlab`) |
+| SDK | none (stdlib `urllib`, REST API) | `python-gitlab` (Environments/Deployments API) |
+| Authentication | Bearer token (session token or account API key) | same `gitlab.access_token` as the git provider |
+| Tasks enabled | `deployment`, `release_relates_to_deployment` | `deployment`, `release_relates_to_deployment` |
+| `data_source` field value in SLS | `"argocd"` | `"gitlab_cd"` |
+| Notes | v3.5.x verified. Do **not** pass `fields` projections to list APIs — the gRPC field mask silently drops `metadata.name` | Deployment `run_id` back-references the `gitlab_ci` pipeline_run id. `gitlab.max_deployments_per_project` (default `20`, `0` = unlimited) caps per-project fetch volume |
 
 ## Providers Not Yet Implemented
 

@@ -51,6 +51,13 @@ All notable changes to this repository. Dates are YYYY-MM-DD.
 - D11：统一 `pipeline_run` 命名。
 - D12：`docker_image` 的 `architecture`/`os` 取值错配 bug 已修。
 
+### GitLab CD adapter（IDeployAdapter 第二实现，2026-09-03）
+
+- **新增 `GitLabDeployAdapter`**（`adapters/gitlab/deploy_adapter.py`）：GitLab Environments/Deployments API → `devops.deployment`，`data_source="gitlab_cd"`（已在 `docs/data-source-enum-spec.md` 登记）。与 GitLab CI 同一哲理——平台内建能力寄生在 `gitlab:` 配置段，`git_provider.type=gitlab` 时 orchestrator 自动接线，零新增凭据；可选开关 `gitlab.max_deployments_per_project`（默认 20，0=不限）控制每仓库每周期采集量。
+- **`DeploymentTask` 多源化**：构造函数由单 adapter 改为 adapter 列表（对齐 CI 的 `ci_adapters` 模式）；GitLab CD 与 Argo CD 可并存，单源异常只告警不拖垮其他源。
+- **联动**：deployment.run_id 回填 `gitlab_ci:{repo_id}:{pipeline_id}`（与 `GitLabAdapter.list_pipeline_runs` 的实体 id 同格式），部署记录指回产生它的流水线运行；`release_relates_to_deployment` 边逻辑不变（commit 匹配）。
+- 契约测试 `tests/test_gitlab_deploy_adapter.py` 16 条（字段契约/状态映射矩阵/run_id 联动/采集上限/单项目故障隔离/多源合并），全量 90 绿。
+
 ### 收尾修复（评审遗留）
 
 - **user.roles 聚合 bug**：`user_task.py` 之前把 `user.roles` 写死为 `[]` 从不填充，灌进 UModel 的 user 记录 roles 恒为空。现改为从该 user 的所有 repository 成员资格聚合 `role` 字段、去重排序。
@@ -129,9 +136,7 @@ All notable changes to this repository. Dates are YYYY-MM-DD.
 以下实体仅有 schema 定义（EntitySet + EntitySetLink），无 producer，待对应数据源 adapter：
 - `organization`（LDAP/钉钉/飞书）
 - `project` / `work_item` / `milestone`（Jira/云效）
-- `pipeline` / `pipeline_run`（gitlab-ci/云效flow/jenkins）
 - `helm_chart` / `binary` / `npm_package`（chartmuseum/artifactory/npm）
 - `unit_testcase`（aone）
-- `deployment`（云效 appstack/aone）
 
 凭据不可得时按 spec R1 交付 schema-only + mock 单测，不静默降级。

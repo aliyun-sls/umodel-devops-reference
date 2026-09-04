@@ -77,6 +77,19 @@ The generator ships two entry points — pick the one that matches your run mode
 Both share the same orchestrator and config; select by entry point rather than reimplementing
 scheduling.
 
+### GitLab CD (built-in when GitLab is the git provider)
+
+When `git_provider.type: gitlab`, the producer automatically collects GitLab
+Environments/Deployments into `devops.deployment` (`data_source="gitlab_cd"`)
+using the same `gitlab:` credentials — no extra config. Each deployment's
+`run_id` back-references the `pipeline_run` entity that produced it. One
+optional knob in the `gitlab:` section:
+
+```yaml
+gitlab:
+  max_deployments_per_project: 20   # recent N per project per cycle; 0 = unlimited
+```
+
 ### Argo CD (optional CD source)
 
 Add an `argocd` section to `app_config.yaml` (see the commented block in
@@ -97,8 +110,10 @@ tasks:
     - release_relates_to_deployment     # release → deployment edges
 ```
 
-The CD tasks are provider-independent: they layer on top of either git provider's
-run. Without an `argocd` section the producer behaves exactly as before.
+The CD tasks are provider-independent and multi-source: GitLab CD (auto-wired)
+and Argo CD can feed the same `deployment` task side by side, and one failing
+source does not affect the others. With no CD source configured the producer
+behaves exactly as before.
 
 ## UModel Schema
 
