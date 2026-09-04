@@ -74,6 +74,18 @@ producer 由 `app_config.yaml` 中的 `git_provider.type` 选择。同一次 Com
 
 两者共用同一 orchestrator 与配置；按入口选用即可，无需另行实现调度。
 
+### GitLab CD（gitlab 为 git provider 时内建）
+
+当 `git_provider.type: gitlab` 时，producer 自动采集 GitLab
+Environments/Deployments 生成 `devops.deployment`（`data_source="gitlab_cd"`），
+复用 `gitlab:` 段的同一套凭据——零新增配置。每条部署的 `run_id` 回指产生它的
+`pipeline_run` 实体。`gitlab:` 段下有一个可选开关：
+
+```yaml
+gitlab:
+  max_deployments_per_project: 20   # 每仓库每周期采集最近 N 条部署；0 = 不限
+```
+
 ### Argo CD（可选 CD 数据源）
 
 在 `app_config.yaml` 里加 `argocd` 段（`app_config.gitlab.yaml.sample` 里有注释好的样例），
@@ -94,7 +106,8 @@ tasks:
     - release_relates_to_deployment     # release → deployment 边
 ```
 
-CD 任务与 git provider 无关，可叠加在任一 provider 之上；不配 `argocd` 段时行为与之前完全一致。
+CD 任务与 git provider 无关且支持多源：GitLab CD（自动接入）与 Argo CD 可并行喂给
+同一个 `deployment` 任务，单源故障不影响其他源；不配任何 CD 源时行为与之前完全一致。
 
 ## UModel 实体
 

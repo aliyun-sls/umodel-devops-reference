@@ -21,6 +21,10 @@ gitlab:
   # instances at the cost of detail-level attributes.
   fetch_details: true
   release_tag: null
+  # --- GitLab CD（平台内建能力，自动并入 deployment 任务，无需额外凭据）-----
+  # 每仓库每周期最多采集最近 N 条部署记录（Environments/Deployments API）；
+  # 0 = 不限。缺省 20。
+  # max_deployments_per_project: 20
 
 acr:
   instance_id: "<YOUR_ACR_INSTANCE_ID>"
@@ -118,7 +122,9 @@ tasks:
     - repository_contains_pipeline
     - pull_request_triggers_pipeline_run
     - static_topo
-    # 可选：配置 argocd 段后取消注释
+    # 可选：CD 部署采集。git_provider=gitlab 时 GitLab CD（Environments/Deployments
+    # API）自动并入 deployment 任务，无需额外凭据；配置 argocd 段可再叠加 Argo CD
+    # （多源合并进同一任务，单源故障互不影响）。
     # - deployment
     # - release_relates_to_deployment
     # 可选：配置 apm_service_link 段后取消注释（RCA 入口：APM 服务→代码仓库）

@@ -1,9 +1,10 @@
 """Deploy/CD adapter abstract base.
 
 The deployment task calls into implementations of `IDeployAdapter`. Each
-CD system (Argo CD / Yunxiao AppStack / ...) supplies its own subclass
-mapping the provider-native API into the unified output schema documented
-below.
+CD system (Argo CD / GitLab CD / Yunxiao AppStack / ...) supplies its own
+subclass mapping the provider-native API into the unified output schema
+documented below. Multiple adapters merge into the same deployment task
+(see tasks/deployment_task.py), so several CD systems can coexist.
 
 This mirrors `adapters/base.py` (IGitAdapter) in style: the docstring is the
 contract; subclasses only translate provider APIs into it.
@@ -47,7 +48,7 @@ from typing import Any, Dict, List
 
 
 class IDeployAdapter(ABC):
-    """Unified interface for CD/deploy systems (Argo CD, Yunxiao AppStack, ...)."""
+    """Unified interface for CD/deploy systems (Argo CD, GitLab CD, ...)."""
 
     @abstractmethod
     def list_deployments(self) -> List[Dict[str, Any]]:

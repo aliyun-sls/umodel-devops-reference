@@ -386,7 +386,7 @@ class ArgoCDAuthTests(unittest.TestCase):
 class DeploymentTaskTests(unittest.TestCase):
     def test_task_returns_adapter_records_and_shares_them(self):
         adapter = _FakeDeployAdapter([_deployment()])
-        task = DeploymentTask({}, adapter)
+        task = DeploymentTask({}, [adapter])
         ctx = _FakeSharedContext()
         task.set_shared_context(ctx)
 
@@ -398,7 +398,7 @@ class DeploymentTaskTests(unittest.TestCase):
     def test_task_name_is_deployment(self):
         # orchestrator stores raw results under "{task_name}_raw_data";
         # release_relates_to_deployment depends on "deployment_raw_data".
-        self.assertEqual(DeploymentTask({}, _FakeDeployAdapter([])).task_name,
+        self.assertEqual(DeploymentTask({}, [_FakeDeployAdapter([])]).task_name,
                          "deployment")
 
 
