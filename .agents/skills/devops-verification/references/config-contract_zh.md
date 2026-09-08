@@ -6,7 +6,7 @@
 主配置：`devops_data_generator/config/app_config.yaml`
 
 ## 活动 Git 平台
-- `git_provider.type` 选择活动平台：`gitlab` 或 `codeup`
+- `git_provider.type` 选择活动平台：`gitlab`、`codeup` 或 `github`
 - 只有对应平台的配置块需要填写真实值
 
 ## 核心配置段

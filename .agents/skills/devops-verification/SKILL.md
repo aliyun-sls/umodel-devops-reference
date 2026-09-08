@@ -38,7 +38,8 @@ machine-readable flow, including `depends_on`, commands, and gate lists, is in
 
 1. **resource-readiness** — confirm config + external resources exist before anything else.
    No refresh, no CMS query. Provider-aware: read `git_provider.type` from
-   `devops_data_generator/config/app_config.yaml` and check gitlab token / codeup org+AK/SK +
+   `devops_data_generator/config/app_config.yaml` and check gitlab token / codeup org+AK/SK /
+   github repo scope (token optional for public repos) +
    acr instance + cms workspace + sls project. Required config files: `app_config.yaml`,
    `data_mapping.yaml`, `repo_image_mapping.yaml`, `static_topo.yaml`. See `references/prerequisites.md`.
 
@@ -64,7 +65,7 @@ machine-readable flow, including `depends_on`, commands, and gate lists, is in
 5. **cms-field-check** — inspect key entity fields and the `pod -> docker_image` topology evidence:
    `python3 devops_data_generator/scripts/verify_devops_details.py --config devops_data_generator/config`.
    Derive `git_provider.type` from `app_config.yaml` (never hardcode). Provider-aware assertions:
-   `data_source` is `gitlab` or `codeup` (not `aliyun`); repository/release/docker_image/user/
+   `data_source` is `gitlab`, `codeup` or `github` (not `aliyun`); repository/release/docker_image/user/
    artifact key fields; image alignment after registry alias normalization with namespace+repo+tag
    match. See `references/script-map.md`.
 

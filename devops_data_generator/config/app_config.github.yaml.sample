@@ -1,30 +1,36 @@
 # --- Active git provider ---------------------------------------------------
 git_provider:
-  type: gitlab          # gitlab | codeup
+  type: github        # gitlab | codeup | github
 
-# --- GitLab credentials ----------------------------------------------------
-# Verified against: GitLab CE 17.6.0 (docker image: gitlab/gitlab-ce:17.6.0-ce.0)
-# SDK: python-gitlab 4.8.0
+# --- GitHub credentials ----------------------------------------------------
+# Verified against: GitHub.com REST API (api.github.com, API version 2022-11-28).
+# SDK: none (stdlib urllib).
 #
-# Supported token types (all use the same `access_token` field):
-#   - Personal Access Token (PAT): user-level, scope: api
-#   - Project Access Token: project-level, not bound to a personal account
-#   - Group Access Token: group-level, covers all projects in the group
-# Generate at: GitLab → Settings → Access Tokens (user/project/group level).
-# Required scope: api (read_api is insufficient for member listing).
-gitlab:
-  url: "http://gitlab.local"
-  access_token: "<YOUR_GITLAB_TOKEN>"
-  group_id: null
-  project_id: null
-  # Fetch per-repo detail for richer fields. Set false to speed up large
-  # instances at the cost of detail-level attributes.
+# Token (optional but recommended):
+#   - classic PAT with `repo` scope, or fine-grained PAT with read access to
+#     the target repos (Actions + Contents + Metadata). GHES is supported via
+#     api_url. Anonymous access works for public repos but is capped at
+#     60 requests/hour/IP.
+#   - Token is read from this file — keep it out of version control.
+github:
+  token: "<YOUR_GITHUB_TOKEN>"
+  api_url: "https://api.github.com"   # override for GHES, e.g. https://ghes.corp/api/v3
+  # Repo scope — pick any combination; at least one must be non-empty.
+  repos: ["owner/name"]               # explicit allowlist (recommended start)
+  organization: ""                    # or discover all repos of an org
+  user: ""                            # or discover repos of a user
+  # Per-repo detail calls (languages breakdown, release tag→commit resolution).
+  # tag→commit results are cached in-process (a tag is immutable in practice).
   fetch_details: true
-  release_tag: null
-  # --- GitLab CD（平台内建能力，自动并入 deployment 任务，无需额外凭据）-----
-  # 每仓库每周期最多采集最近 N 条部署记录（Environments/Deployments API）；
-  # 0 = 不限。缺省 20。
-  # max_deployments_per_project: 20
+  # GitHub Actions CI (standalone ICIAdapter, data_source=github_actions):
+  # recent runs collected per workflow per cycle; 0 = unlimited.
+  max_runs_per_workflow: 20
+  # GitHub CD (IDeployAdapter, data_source=github_cd): deployments collected
+  # per repo per cycle (plus one statuses call per deployment); 0 = unlimited.
+  # Wired automatically when this section resolves any repo scope — merge the
+  # `deployment` / `release_relates_to_deployment` tasks into tasks.enabled
+  # (they are commented out below) to activate collection.
+  max_deployments_per_project: 20
 
 acr:
   instance_id: "<YOUR_ACR_INSTANCE_ID>"
@@ -60,14 +66,13 @@ kubernetes:
 static_topo:
   static_topo_config: "config/static_topo.yaml"
 
-# --- Argo CD（可选；server 有真实值才会启用 deployment 生产者） -------------
-argocd:
-  server: "<YOUR_ARGOCD_SERVER>"   # 如 http://nlb-xxx:8080（不带尾斜杠）
-  token: "<YOUR_ARGOCD_TOKEN>"     # Bearer token；留空则不启用
-  insecure: true                   # 自签证书跳过 TLS 校验
-  app_filter: []                   # 可选：只采集这些 application；空 = 全部
-  repo_mapping: {}                 # repoURL → GitLab 项目 id，用于归一 repository_id
-                                   # 如 "http://nlb-xxx:8080/starops-demo/demo-app.git": "1"
+# --- Argo CD（可选；server 有真实值才会并入 deployment 采集） ----------------
+# argocd:
+#   server: "<YOUR_ARGOCD_SERVER>"   # 如 http://nlb-xxx:8080（不带尾斜杠）
+#   token: "<YOUR_ARGOCD_TOKEN>"     # Bearer token；留空则不启用
+#   insecure: true                   # 自签证书跳过 TLS 校验
+#   app_filter: []                   # 可选：只采集这些 application；空 = 全部
+#   repo_mapping: {}                 # repoURL → git repository_id，用于归一 repository_id
 
 sls:
   endpoint: "cn-hongkong.log.aliyuncs.com"
@@ -116,13 +121,13 @@ tasks:
     - artifact_same_as_docker_image
     - kubernetes_pod
     - pod_uses_docker_image
-    # GitLab CI（GitLab 一等能力；无流水线的仓库自动为空）
+    # GitHub Actions CI（github 段有仓库范围即自动多源采集；无 workflow 的仓库自动为空）
     - pipeline
     - pipeline_run
     - repository_contains_pipeline
     - pull_request_triggers_pipeline_run
     - static_topo
-    # 可选：CD 部署采集。git_provider=gitlab 时 GitLab CD（Environments/Deployments
+    # 可选：CD 部署采集。github 段有仓库范围时 GitHub CD（Deployments/Environments
     # API）自动并入 deployment 任务，无需额外凭据；配置 argocd 段可再叠加 Argo CD
     # （多源合并进同一任务，单源故障互不影响）。
     # - deployment
@@ -157,7 +162,7 @@ tasks:
 logging:
   level: INFO
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-  file: "logs/gitlab_data_generator.log"
+  file: "logs/github_data_generator.log"
 
 # APM 服务 → 代码仓库（RCA 入口边，可选）。配置后启用同名任务。
 # service 精确匹配 apm.service 实体的 service 字段；repository_id 填仓库原始主键。
@@ -166,39 +171,11 @@ logging:
 #     - service: "<APM_SERVICE_NAME>"
 #       repository_id: "<REPOSITORY_ID>"
 
-# 独立 CI 系统（可选，与 GitLab CI 并存；配置后 pipeline/pipeline_run 任务自动多源采集）
+# 独立 CI 系统（可选，与 GitHub Actions 并存；配置后 pipeline/pipeline_run 任务自动多源采集）
 # jenkins:
 #   url: "http://<jenkins-host>:8081"
 #   user: "admin"
-#   token: "<api-token-or-password>"   # 实例匿名可读时可留空
-#   job_filter: []                      # 可选：job 白名单
-#   repo_mapping:                       # 可选：job 名 → git repository_id（用于 repository_contains_pipeline 边）
+#   token: "<api-token-or-password>"
+#   job_filter: []
+#   repo_mapping:
 #     "demo-app-build": "1"
-#
-# 云效 Flow（可选，独立 CI；用云效个人访问令牌 PAT 调新版标准 API openapi-rdc.aliyuncs.com。
-# 注意：RAM AK/SK 对从未登录过云效 console 的服务账号调不通 Flow 业务 API，必须用 PAT。
-# PAT 获取：云效 → 右上角头像 → 个人设置 → 个人访问令牌，勾选流水线只读权限）
-# yunxiao_flow:
-#   organization_id: "<云效组织ID>"
-#   personal_access_token: "<pt-...>"
-#   endpoint: ""                        # 默认 https://openapi-rdc.aliyuncs.com
-#   max_runs_per_pipeline: 20           # 每条流水线采集最近 N 次运行
-#   fetch_run_detail: false             # 逐 run 拉详情以回填 commit_sha/branch/repository_id
-#   auto_discover_repo: true            # 从最新一次运行的代码源自动反推流水线归属仓库（contains 边靠它）
-#   repo_mapping:                       # 可选人工覆盖：流水线名 → git repository_id（优先级高于自动发现）
-#     "demo-deploy-hk": "90001"
-#
-# GitHub（可选；同一配置段双用途：git_provider.type=github 时是 git provider，
-# 其他 provider 下作为 GitHub Actions 独立 CI 源（data_source=github_actions）。
-# token 留空可匿名读公开仓库，60 次/时/IP。注意：contains 边按 GitHub 仓库数字 id
-# 关联——该 id 对应的 repository 实体需在图中，git provider 是 gitlab/codeup 时通常对不上）
-# github:
-#   token: "<YOUR_GITHUB_TOKEN>"      # classic PAT repo scope，或细粒度 PAT 只读
-#   api_url: "https://api.github.com" # GHES 改成 https://<ghes-host>/api/v3
-#   repos: ["owner/name"]             # 仓库范围：显式名单（可组合 organization/user）
-#   organization: ""                  # 组织发现
-#   user: ""                          # 用户仓库发现
-#   fetch_details: true               # 语言细分 + release tag→commit 解析（进程内缓存）
-#   max_runs_per_workflow: 20         # Actions 每 workflow 每周期采集最近 N 条；0=不限
-#   max_deployments_per_project: 20   # GitHub CD：每仓库每周期采集最近 N 条部署（另每条 1 次 statuses 调用）；0=不限
-

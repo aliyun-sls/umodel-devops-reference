@@ -91,7 +91,9 @@ class ConfigLoader:
         """Validate config based on active git provider.
 
         GitLab requires ``url + access_token``; codeup requires
-        ``organization_id + access_key_id + access_key_secret``.
+        ``organization_id + access_key_id + access_key_secret``; GitHub
+        requires any repo scope (``repos`` / ``organization`` / ``user`` —
+        the token is optional, anonymous access works for public repos).
         """
         provider = self.get_git_provider_type()
         provider_config = self.get_git_provider_config()
@@ -108,6 +110,13 @@ class ConfigLoader:
             ]
             if missing:
                 logger.error("Missing codeup config keys under app_config['codeup']: %s", missing)
+                return False
+        elif provider == "github":
+            if not (provider_config.get("repos")
+                    or provider_config.get("organization")
+                    or provider_config.get("user")):
+                logger.error("Missing GitHub repo scope under app_config['github'] "
+                             "(repos / organization / user)")
                 return False
         else:
             logger.error("Unsupported git_provider type: %s", provider)

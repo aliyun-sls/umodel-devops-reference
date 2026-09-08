@@ -14,7 +14,7 @@ stages:
     canonical_command: null
     do:
       - "Read git_provider.type from devops_data_generator/config/app_config.yaml."
-      - "Check provider credentials (gitlab url+token, or codeup organization_id+AK/SK; pat adds access_token) are set and not placeholders."
+      - "Check provider credentials (gitlab url+token; codeup organization_id+AK/SK, pat adds access_token; github repos/organization/user scope, token optional for public repos) are set and not placeholders."
       - "Check acr.instance_id, cms.workspace, cms.endpoint, sls.project, sls.endpoint are set and not placeholders."
       - "Confirm required config files exist: app_config.yaml, data_mapping.yaml, repo_image_mapping.yaml, static_topo.yaml."
     do_not:
@@ -74,7 +74,7 @@ stages:
     canonical_command: "python3 devops_data_generator/scripts/verify_devops_details.py --config devops_data_generator/config"
     do:
       - "Derive git_provider.type from app_config.yaml; never hardcode it."
-      - "Assert provider-aware fields: data_source is gitlab|codeup (not aliyun); repository/release/docker_image/user/artifact key fields."
+      - "Assert provider-aware fields: data_source is gitlab|codeup|github (not aliyun); repository/release/docker_image/user/artifact key fields."
       - "Use the pod->docker_image topology evidence rows for edge correctness; normalize registry aliases; match namespace+repo+tag (or digest)."
     do_not:
       - "Use as the first proof that refresh worked."

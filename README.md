@@ -9,17 +9,19 @@ Ingest developer, repository, release, image, and topology data from your git pr
 ## Architecture
 
 ```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   GitLab    │     │   Codeup    │     │   Argo CD   │
-│  (self/SaaS)│     │ (China SaaS)│     │ (GitOps CD) │
-└──────┬──────┘     └──────┬──────┘     └──────┬──────┘
-       │ python-gitlab      │ alibabacloud SDK │ REST API
-       └────────┬───────────┘                  │
-                │ IGitAdapter                  │ IDeployAdapter
-                ▼                              ▼
+┌───────────────┐   ┌───────────────┐   ┌───────────────┐
+│ git providers │   │  CI systems   │   │  CD systems   │
+│  GitLab       │   │  GH Actions   │   │  Argo CD      │
+│  Codeup       │   │  Jenkins      │   │  GitLab CD    │
+│  GitHub       │   │  Yunxiao Flow │   │  GitHub CD    │
+└───────┬───────┘   └───────┬───────┘   └───────┬───────┘
+        │ IGitAdapter       │ ICIAdapter        │ IDeployAdapter
+        │ (GitLab CI lives inside the git provider)
+        └───────────────────┬───────────────────┘
+                            ▼
       ┌──────────────────────────────────────────┐
       │  devops_data_generator                   │
-      │  ├─ 21 tasks                             │
+      │  ├─ 19 core tasks + 3 optional           │
       │  ├─ SLS sender                           │
       │  └─ orchestrator                         │
       └──────────┬───────────────────────────────┘
@@ -27,8 +29,8 @@ Ingest developer, repository, release, image, and topology data from your git pr
                  ▼
       ┌──────────────────────┐
       │  UModel Explorer     │
-      │  17 EntitySet         │
-      │  36 EntitySetLink     │
+      │  17 EntitySet        │
+      │  36 EntitySetLink    │
       └──────────────────────┘
 ```
 
@@ -56,6 +58,19 @@ cp devops_data_generator/config/app_config.codeup.yaml.sample \
    devops_data_generator/config/app_config.yaml
 # Edit app_config.yaml — fill in organization_id, access_key, SLS/ACR/CMS credentials
 # Create .env for the schema uploader as shown above.
+
+docker compose up --build
+```
+
+### GitHub
+
+```bash
+cp devops_data_generator/config/app_config.github.yaml.sample \
+   devops_data_generator/config/app_config.yaml
+# Edit app_config.yaml — fill in repos (or organization/user), token (optional
+# for public repos), SLS/ACR/CMS credentials
+# Create .env for the schema uploader as shown above.
+# GitHub Actions CI is collected automatically from the same github: section.
 
 docker compose up --build
 ```
@@ -110,10 +125,11 @@ tasks:
     - release_relates_to_deployment     # release → deployment edges
 ```
 
-The CD tasks are provider-independent and multi-source: GitLab CD (auto-wired)
-and Argo CD can feed the same `deployment` task side by side, and one failing
-source does not affect the others. With no CD source configured the producer
-behaves exactly as before.
+The CD tasks are provider-independent and multi-source: GitLab CD (auto-wired),
+GitHub CD (auto-wired from the `github:` section), and Argo CD can feed the
+same `deployment` task side by side, and one failing source does not affect
+the others. With no CD source configured the producer behaves exactly as
+before.
 
 ## UModel Schema
 
@@ -178,7 +194,7 @@ umodel-devops-reference/
 ├── umodel/                          # 17 EntitySet + 36 EntitySetLink
 ├── umodel_uploader/                 # Batch upload tool
 ├── devops_data_generator/
-│   ├── adapters/{gitlab,codeup,argocd}/ # IGitAdapter + IDeployAdapter implementations
+│   ├── adapters/{gitlab,codeup,github,argocd,jenkins,yunxiao_flow}/ # IGitAdapter + IDeployAdapter + ICIAdapter implementations
 │   ├── tasks/                       # 17 data ingestion tasks
 │   ├── config/                      # Sample configs per provider
 │   ├── orchestrator.py              # Task scheduling + structured results

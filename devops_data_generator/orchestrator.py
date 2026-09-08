@@ -126,6 +126,15 @@ class DevOpsDataOrchestrator:
         if (_has_real_value(yunxiao_flow_config.get("organization_id"))
                 and _has_real_value(yunxiao_flow_config.get("personal_access_token"))):
             ci_adapters.append(create_ci_adapter("yunxiao_flow", yunxiao_flow_config))
+        # GitHub Actions: wired when the github: section resolves any repo
+        # scope (token optional — anonymous works for public repos). The same
+        # section also serves the git provider axis when
+        # git_provider.type == "github" (one token fills both axes).
+        github_config = self.config_loader.app_config.get("github", {}) or {}
+        if (github_config.get("repos")
+                or _has_real_value(github_config.get("organization"))
+                or _has_real_value(github_config.get("user"))):
+            ci_adapters.append(create_ci_adapter("github_actions", github_config))
 
         self.tasks = {
             # Git-provider-aware tasks: inject adapter + carry provider_config
@@ -170,6 +179,13 @@ class DevOpsDataOrchestrator:
         argocd_config = self.config_loader.app_config.get("argocd", {}) or {}
         if _has_real_value(argocd_config.get("server")):
             deploy_adapters.append(create_deploy_adapter("argocd", argocd_config))
+        # GitHub CD: wired when the github: section resolves any repo scope
+        # (same dual-use section as the GitHub Actions CI axis).
+        github_deploy_config = self.config_loader.app_config.get("github", {}) or {}
+        if (github_deploy_config.get("repos")
+                or _has_real_value(github_deploy_config.get("organization"))
+                or _has_real_value(github_deploy_config.get("user"))):
+            deploy_adapters.append(create_deploy_adapter("github", github_deploy_config))
         if deploy_adapters:
             self.tasks["deployment"] = DeploymentTask({}, deploy_adapters)
             self.tasks["release_relates_to_deployment"] = ReleaseRelatesToDeploymentTask({})
@@ -432,6 +448,14 @@ class DevOpsDataOrchestrator:
                     _has_real_value(provider_config.get("organization_id"))
                     and _has_real_value(provider_config.get("access_key_id"))
                     and _has_real_value(provider_config.get("access_key_secret"))
+                )
+            if self.git_provider_type == "github":
+                # Token is optional (anonymous works for public repos); any
+                # repo scope source counts.
+                return bool(
+                    provider_config.get("repos")
+                    or _has_real_value(provider_config.get("organization"))
+                    or _has_real_value(provider_config.get("user"))
                 )
             return False
         if task_name in {"docker_image"}:

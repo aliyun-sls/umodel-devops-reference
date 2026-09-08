@@ -9,9 +9,9 @@ from .deploy_base import IDeployAdapter
 
 logger = logging.getLogger(__name__)
 
-_SUPPORTED_PROVIDERS = ("gitlab", "codeup")
-_SUPPORTED_DEPLOY_PROVIDERS = ("argocd", "gitlab")
-_SUPPORTED_CI_PROVIDERS = ("jenkins", "yunxiao_flow")
+_SUPPORTED_PROVIDERS = ("gitlab", "codeup", "github")
+_SUPPORTED_DEPLOY_PROVIDERS = ("argocd", "gitlab", "github")
+_SUPPORTED_CI_PROVIDERS = ("jenkins", "yunxiao_flow", "github_actions")
 
 
 def create_git_adapter(provider_type: str, config: Dict[str, Any]) -> IGitAdapter:
@@ -20,6 +20,7 @@ def create_git_adapter(provider_type: str, config: Dict[str, Any]) -> IGitAdapte
     Supported values:
         - "gitlab" → GitLabAdapter (python-gitlab SDK)
         - "codeup" → CodeupAdapter (alibabacloud_devops20210625 SDK)
+        - "github" → GitHubAdapter (GitHub REST API, stdlib urllib)
     """
     provider_type = (provider_type or "").lower()
     if provider_type == "gitlab":
@@ -30,6 +31,10 @@ def create_git_adapter(provider_type: str, config: Dict[str, Any]) -> IGitAdapte
         from .codeup import CodeupAdapter
 
         return CodeupAdapter(config)
+    if provider_type == "github":
+        from .github import GitHubAdapter
+
+        return GitHubAdapter(config)
     raise ValueError(
         f"Unsupported git_provider type '{provider_type}'. "
         f"Supported: {_SUPPORTED_PROVIDERS}"
@@ -43,6 +48,8 @@ def create_deploy_adapter(provider_type: str, config: Dict[str, Any]) -> IDeploy
         - "argocd" → ArgoCDAdapter (Argo CD REST API)
         - "gitlab" → GitLabDeployAdapter (GitLab Environments/Deployments API;
           rides on the same `gitlab:` config section as the git provider)
+        - "github" → GitHubDeployAdapter (GitHub Deployments/Environments API;
+          rides on the same `github:` config section as the other GitHub axes)
     """
     provider_type = (provider_type or "").lower()
     if provider_type == "argocd":
@@ -53,6 +60,10 @@ def create_deploy_adapter(provider_type: str, config: Dict[str, Any]) -> IDeploy
         from .gitlab.deploy_adapter import GitLabDeployAdapter
 
         return GitLabDeployAdapter(config)
+    if provider_type == "github":
+        from .github.deploy_adapter import GitHubDeployAdapter
+
+        return GitHubDeployAdapter(config)
     raise ValueError(
         f"Unsupported deploy_provider type '{provider_type}'. "
         f"Supported: {_SUPPORTED_DEPLOY_PROVIDERS}"
@@ -65,6 +76,7 @@ def create_ci_adapter(provider_type: str, config: Dict[str, Any]) -> ICIAdapter:
     Supported values:
         - "jenkins" → JenkinsAdapter (Jenkins REST API)
         - "yunxiao_flow" → YunxiaoFlowAdapter (Yunxiao standard REST API, PAT auth)
+        - "github_actions" → GitHubActionsAdapter (GitHub REST API)
     """
     provider_type = (provider_type or "").lower()
     if provider_type == "jenkins":
@@ -75,6 +87,10 @@ def create_ci_adapter(provider_type: str, config: Dict[str, Any]) -> ICIAdapter:
         from .yunxiao_flow.adapter import YunxiaoFlowAdapter
 
         return YunxiaoFlowAdapter(config)
+    if provider_type == "github_actions":
+        from .github.actions_adapter import GitHubActionsAdapter
+
+        return GitHubActionsAdapter(config)
     raise ValueError(
         f"Unsupported ci_provider type '{provider_type}'. "
         f"Supported: {_SUPPORTED_CI_PROVIDERS}"

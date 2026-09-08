@@ -51,6 +51,15 @@ All notable changes to this repository. Dates are YYYY-MM-DD.
 - D11：统一 `pipeline_run` 命名。
 - D12：`docker_image` 的 `architecture`/`os` 取值错配 bug 已修。
 
+### GitHub git provider + GitHub Actions CI + GitHub CD（2026-09-08）
+
+- **新增 `GitHubAdapter`**（`adapters/github/adapter.py`，IGitAdapter）：stdlib urllib 直连 GitHub REST API（github.com/GHES），零 SDK 依赖。repository/collaborator/release/PR 四轴；仓库范围 = `repos` 显式名单 + `organization`/`user` 发现（可组合、按 repo id 去重、单库不可读只告警）；`token` 可留空（公开仓库匿名 60 req/h）。
+- **release tag→commit 解析**：GitHub release 只带 ref 名，经 `git/refs/tags`（annotated tag 再跳一跳）解析出 `commit_sha`，让 release↔deployment 的 commit 匹配边有形成的可能；解析结果进程内缓存（tag 事实上不可变），release 多的仓库（实测 229 条）每周期省约 300 次 API 调用。
+- **新增 `GitHubActionsAdapter`**（`adapters/github/actions_adapter.py`，ICIAdapter）：workflows → pipeline、workflow runs → pipeline_run（`data_source="github_actions"`）；run 天然 repo 作用域，commit_sha/branch/triggered_by/run→PR 回填全部零配置；`max_runs_per_workflow`（默认 20，0=不限）。同一 `github:` 配置段双用途——`git_provider.type=github` 时喂 git 轴，任何 provider 下都自动并入 CI 多源采集（对齐 Jenkins/云效 Flow 接线模式）。
+- **新增 `GitHubDeployAdapter`**（`adapters/github/deploy_adapter.py`，IDeployAdapter）：Deployments/Environments API → `devops.deployment`，`data_source="github_cd"`（枚举规范已登记）。deployment payload 没有 run 字段，但最新 status 的 `log_url`/`target_url` 通常指向部署它的 Actions job——`run_id` 从中用正则反解（真实数据验证命中）。`max_deployments_per_project`（默认 20，0=不限），github 段有仓库范围即自动并入 deployment 多源采集。
+- 契约测试 30 条（`tests/test_github_adapter.py`，scope 解析/分页/角色映射/tag 解析缓存/CI 状态矩阵/PR 回填/CD 状态矩阵/run 反解/故障隔离），全量 130 绿；对 `aliyun-sls/sls-doc` 真实 API 只读验证 39/39 PASS（git 30 + CD 9）。
+- 文档：provider-matrix 中英加 GitHub 列、README 中英 Quick Start、新增 `app_config.github.yaml.sample`、gitlab/codeup sample 补 github 段注释；「尚未实现」清单移除 GitHub/GitHub Actions/云效 Flow（历史遗留已清）。
+
 ### GitLab CD adapter（IDeployAdapter 第二实现，2026-09-03）
 
 - **新增 `GitLabDeployAdapter`**（`adapters/gitlab/deploy_adapter.py`）：GitLab Environments/Deployments API → `devops.deployment`，`data_source="gitlab_cd"`（已在 `docs/data-source-enum-spec.md` 登记）。与 GitLab CI 同一哲理——平台内建能力寄生在 `gitlab:` 配置段，`git_provider.type=gitlab` 时 orchestrator 自动接线，零新增凭据；可选开关 `gitlab.max_deployments_per_project`（默认 20，0=不限）控制每仓库每周期采集量。

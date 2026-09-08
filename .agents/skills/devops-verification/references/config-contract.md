@@ -12,8 +12,8 @@ Supporting mapping files:
 - `devops_data_generator/config/static_topo.yaml`
 
 ## Active Git Provider
-- `git_provider.type` selects the active git provider: `gitlab` or `codeup`.
-- Only the matching provider block (`gitlab` or `codeup`) needs real values; the other can stay empty or be omitted entirely.
+- `git_provider.type` selects the active git provider: `gitlab`, `codeup` or `github`.
+- Only the matching provider block (`gitlab`, `codeup` or `github`) needs real values; the others can stay empty or be omitted entirely.
 
 ## Core Sections
 ### `gitlab` (when `git_provider.type = gitlab`)
