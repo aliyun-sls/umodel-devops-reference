@@ -59,7 +59,9 @@ entity:
       - created_by
       - tag_name
       - target_commitish
+      - commit_sha
       - created_at
+      - published_at
     primaryKeys:
       - release_id
     __domain__: devops

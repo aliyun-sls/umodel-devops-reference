@@ -162,6 +162,9 @@ tasks:
 logging:
   level: INFO
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  # file: "stdout" disables the on-disk log file (recommended for containers —
+  # the container runtime's capped stdout log takes over); file: "" falls back
+  # to the default logs/devops_data_generator.log path.
   file: "logs/github_data_generator.log"
 
 # APM 服务 → 代码仓库（RCA 入口边，可选）。配置后启用同名任务。

@@ -72,6 +72,7 @@ class ReleaseTask(BaseTask):
                         "tag_name": tag_name,
                         "target_commitish": raw.get("target_commitish", ""),
                         "created_at": raw.get("release_time", ""),
+                        "published_at": raw.get("release_time", ""),
                         "commit_sha": raw.get("commit_sha", ""),
                         "tag_type": raw.get("tag_type", "release"),
                     }

@@ -18,13 +18,18 @@ def setup_logging(log_config: dict):
     # config must also fall back — FileHandler("") resolves to the cwd and
     # crashes with IsADirectoryError.
     log_file = log_config.get("file") or "logs/devops_data_generator.log"
-    log_dir = os.path.dirname(log_file)
-    if log_dir and not os.path.exists(log_dir):
-        os.makedirs(log_dir)
+    handlers = [logging.StreamHandler(sys.stdout)]
+    # "stdout" opts out of the file handler: container deployments rely on the
+    # container runtime's capped stdout log instead of an unrotated file.
+    if log_file != "stdout":
+        log_dir = os.path.dirname(log_file)
+        if log_dir and not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+        handlers.insert(0, logging.FileHandler(log_file, encoding="utf-8"))
     logging.basicConfig(
         level=getattr(logging, log_config.get("level", "INFO")),
         format=log_config.get("format", "%(asctime)s - %(name)s - %(levelname)s - %(message)s"),
-        handlers=[logging.FileHandler(log_file, encoding="utf-8"), logging.StreamHandler(sys.stdout)],
+        handlers=handlers,
     )
 
 
