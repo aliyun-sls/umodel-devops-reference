@@ -427,12 +427,13 @@
 | `description` | string | | | 发布说明（旧 `release_notes`→`description`） |
 | `release_type` | enum | | | major/minor/patch/hotfix |
 | `status` | enum | ✓ | | draft/planned/in_progress/completed/cancelled |
-| `data_source` | string | ✓ | | github/gitlab/yunxiao |
+| `data_source` | string | ✓ | | github/gitlab/codeup（release 仅由 git adapter 产出） |
 | `platform_release_id` | string | ✓ | | 平台发布 ID |
 | `url` | string | | | 发布 URL |
 | `created_by` | string | ✓ | | 创建者，关联 user.user_id（旧 `author`→`created_by`） |
 | `tag_name` | string | | | Git 标签（旧 `tag`→`tag_name`） |
 | `target_commitish` | string | | | 目标分支/提交 |
+| `commit_sha` | string | | | 发布指向的提交 SHA（tag 解析结果） |
 | `artifacts` | json | | | 包含的产物列表 |
 | `deployments` | json | | | 部署列表 |
 | `pull_requests` | json | | | 包含的 PR 列表 |

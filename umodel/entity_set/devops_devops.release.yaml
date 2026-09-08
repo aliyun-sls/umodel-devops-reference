@@ -107,17 +107,17 @@ spec:
       zh_cn: 发布状态 draft/planned/in_progress/completed/cancelled
     type: enum
   - description:
-      en_us: 'Data source: github/gitlab/yunxiao'
-      zh_cn: 数据来源 github/gitlab/yunxiao
+      en_us: 'Data source: github/gitlab/codeup'
+      zh_cn: 数据来源 github/gitlab/codeup
     display_name:
       en_us: Data Source
-      zh_cn: 数据来源 github/gitlab/yunxiao
+      zh_cn: 数据来源 github/gitlab/codeup
     filterable: true
     name: data_source
     orderable: true
     short_description:
       en_us: Data Source
-      zh_cn: 数据来源 github/gitlab/yunxiao
+      zh_cn: 数据来源 github/gitlab/codeup
     type: string
   - description:
       en_us: Platform release ID
@@ -183,6 +183,19 @@ spec:
     short_description:
       en_us: Target Commitish
       zh_cn: 目标分支/提交
+    type: string
+  - description:
+      en_us: Commit SHA the release points at (resolved from tag)
+      zh_cn: 发布指向的提交SHA（tag 解析结果）
+    display_name:
+      en_us: Commit Sha
+      zh_cn: 发布指向的提交SHA（tag 解析结果）
+    filterable: true
+    name: commit_sha
+    orderable: true
+    short_description:
+      en_us: Commit Sha
+      zh_cn: 发布指向的提交SHA（tag 解析结果）
     type: string
   - description:
       en_us: Included artifact list

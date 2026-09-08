@@ -70,23 +70,24 @@ def setup_logging(log_config: dict):
         log_config (dict): 日志配置
     """
     # 创建日志目录
-    log_file = log_config.get('file', 'logs/devops_data_generator.log')
-    log_dir = os.path.dirname(log_file)
-    if log_dir and not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-    
+    log_file = log_config.get('file') or 'logs/devops_data_generator.log'
+    handlers = [logging.StreamHandler(sys.stdout)]
+    # "stdout" 关闭文件日志：容器部署由容器运行时的 stdout 日志接管
+    if log_file != 'stdout':
+        log_dir = os.path.dirname(log_file)
+        if log_dir and not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+        handlers.insert(0, logging.FileHandler(log_file, encoding='utf-8'))
+
     # 设置日志格式
     log_format = log_config.get('format', '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     log_level = getattr(logging, log_config.get('level', 'INFO'))
-    
+
     # 配置根日志器
     logging.basicConfig(
         level=log_level,
         format=log_format,
-        handlers=[
-            logging.FileHandler(log_file, encoding='utf-8'),
-            logging.StreamHandler(sys.stdout)
-        ]
+        handlers=handlers
     )
 
 

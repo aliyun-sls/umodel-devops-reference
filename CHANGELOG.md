@@ -51,6 +51,14 @@ All notable changes to this repository. Dates are YYYY-MM-DD.
 - D11：统一 `pipeline_run` 命名。
 - D12：`docker_image` 的 `architecture`/`os` 取值错配 bug 已修。
 
+### release schema 缺口补齐 + 容器日志 stdout 模式（2026-09-08）
+
+- **release 实体补 `commit_sha` 字段**：git adapter 的归一化 release 一直产出 `commit_sha`（GitHub 侧经 tag→commit 解析），但 EntitySet schema、字段契约、`data_mapping.yaml` 三处都没有这个字段，入库即被丢弃。现三处对齐补齐（schema yaml + 契约文档 §3.16 + data_mapping release fields）。
+- **`ReleaseTask` 补 `published_at` 映射**：schema 与契约早有 `published_at`（正式发布时间），task shaping 只填了 `created_at`，导致该字段入库恒空。现 `created_at`/`published_at` 同由 adapter 归一化字段 `release_time` 填充。
+- **契约文档订正**：release 的 `data_source` 枚举说明 `github/gitlab/yunxiao` 改为 `github/gitlab/codeup`（release 仅由 git adapter 产出，云效 Flow 是 CI 源不产 release）。
+- **`logging.file: "stdout"` 模式**（`main.py` + `app.py`）：置为 `"stdout"` 时不再创建 FileHandler，应用日志只走 stdout，由容器运行时的日志轮转接管（podman json-file max-size/max-file），解决容器 overlay 可写层内日志文件无轮转无限增长打爆磁盘的问题；`file: ""` 仍回退默认路径（PR #11 语义不变）。
+- **CI 补漏**：`test_gitlab_deploy_adapter`、`test_github_adapter`、`test_release_fields`（新增，4 例）加入 `verify.yml`——前两者此前只在本地跑。
+
 ### GitHub git provider + GitHub Actions CI + GitHub CD（2026-09-08）
 
 - **新增 `GitHubAdapter`**（`adapters/github/adapter.py`，IGitAdapter）：stdlib urllib 直连 GitHub REST API（github.com/GHES），零 SDK 依赖。repository/collaborator/release/PR 四轴；仓库范围 = `repos` 显式名单 + `organization`/`user` 发现（可组合、按 repo id 去重、单库不可读只告警）；`token` 可留空（公开仓库匿名 60 req/h）。

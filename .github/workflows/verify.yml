@@ -27,3 +27,9 @@ jobs:
       - run: python3 -m unittest devops_data_generator.tests.test_jenkins_adapter -v
       # 云效 Flow adapter 契约测试（mock REST，真实响应形态 fixture）
       - run: python3 -m unittest devops_data_generator.tests.test_yunxiao_flow_adapter -v
+      # GitLab CD deploy adapter 契约测试
+      - run: python3 -m unittest devops_data_generator.tests.test_gitlab_deploy_adapter -v
+      # GitHub adapter（git + Actions CI + Deployments CD）契约测试
+      - run: python3 -m unittest devops_data_generator.tests.test_github_adapter -v
+      # release 字段 shaping + stdout 日志模式回归
+      - run: python3 -m unittest devops_data_generator.tests.test_release_fields -v

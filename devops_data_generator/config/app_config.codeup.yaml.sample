@@ -140,6 +140,9 @@ tasks:
 logging:
   level: INFO
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  # file: "stdout" disables the on-disk log file (recommended for containers —
+  # the container runtime's capped stdout log takes over); file: "" falls back
+  # to the default logs/devops_data_generator.log path.
   file: "logs/devops_data_generator.log"
 
 # 独立 CI 系统（可选，与 GitLab CI 并存；配置后 pipeline/pipeline_run 任务自动多源采集）
