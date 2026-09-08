@@ -1,8 +1,8 @@
 """Deploy/CD adapter abstract base.
 
 The deployment task calls into implementations of `IDeployAdapter`. Each
-CD system (Argo CD / GitLab CD / Yunxiao AppStack / ...) supplies its own
-subclass mapping the provider-native API into the unified output schema
+CD system (Argo CD / GitLab CD / GitHub CD / Yunxiao AppStack / ...) supplies
+its own subclass mapping the provider-native API into the unified output schema
 documented below. Multiple adapters merge into the same deployment task
 (see tasks/deployment_task.py), so several CD systems can coexist.
 

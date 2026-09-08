@@ -1,7 +1,7 @@
 # Prerequisites
 
 ## Required Resources
-- an existing git provider repository with the target project/release data — either a GitLab project (`git_provider.type = gitlab`) or an Alibaba Cloud Codeup repository (`git_provider.type = codeup`)
+- an existing git provider repository with the target project/release data — a GitLab project (`git_provider.type = gitlab`), an Alibaba Cloud Codeup repository (`git_provider.type = codeup`), or a GitHub repository (`git_provider.type = github`)
 - an existing ACR instance and namespace if image-related entities are expected
 - an existing ACK deployment or pods if k8s/image relationships are expected
 - an existing CMS workspace

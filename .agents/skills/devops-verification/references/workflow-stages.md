@@ -5,7 +5,7 @@ Goal:
 - confirm the required external resources already exist
 
 Checks:
-- the active git provider repository exists (GitLab project for `git_provider.type = gitlab`; Codeup repository for `git_provider.type = codeup`)
+- the active git provider repository exists (GitLab project for `git_provider.type = gitlab`; Codeup repository for `git_provider.type = codeup`; GitHub repository for `git_provider.type = github`)
 - ACR instance / namespace / repo exists
 - ACK deployment or pods exist
 - CMS workspace already exists

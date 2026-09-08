@@ -9,26 +9,28 @@
 ## 架构
 
 ```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   GitLab    │     │   Codeup    │     │   Argo CD   │
-│（自建/SaaS） │     │（阿里云 SaaS）│     │(GitOps CD)  │
-└──────┬──────┘     └──────┬──────┘     └──────┬──────┘
-       │ python-gitlab      │ alibabacloud SDK │ REST API
-       └────────┬───────────┘                  │
-                │ IGitAdapter                  │ IDeployAdapter
-                ▼                              ▼
+┌───────────────┐   ┌───────────────┐   ┌───────────────┐
+│ git provider  │   │  CI 系统      │   │  CD 系统      │
+│  GitLab       │   │  GH Actions   │   │  Argo CD      │
+│  Codeup       │   │  Jenkins      │   │  GitLab CD    │
+│  GitHub       │   │  Yunxiao Flow │   │  GitHub CD    │
+└───────┬───────┘   └───────┬───────┘   └───────┬───────┘
+        │ IGitAdapter       │ ICIAdapter        │ IDeployAdapter
+        │（GitLab CI 寄生在 git provider 内）
+        └───────────────────┬───────────────────┘
+                            ▼
      ┌───────────────────────────────────────────┐
      │  devops_data_generator                    │
-      │  ├─ 21 个采集任务                          │
-      │  ├─ SLS 数据发送                           │
-      │  └─ 编排调度器                              │
-      └──────────┬────────────────────────────────┘
+     │  ├─ 19 个核心任务 + 3 个可选              │
+     │  ├─ SLS 数据发送                          │
+     │  └─ 编排调度器                            │
+     └──────────┬────────────────────────────────┘
                  │ SLS / CMS 写入
                  ▼
       ┌──────────────────────┐
       │  UModel Explorer     │
-      │  17 个 EntitySet      │
-      │  36 条 EntitySetLink  │
+      │  17 个 EntitySet     │
+      │  36 条 EntitySetLink │
       └──────────────────────┘
 ```
 
@@ -56,6 +58,18 @@ cp devops_data_generator/config/app_config.codeup.yaml.sample \
    devops_data_generator/config/app_config.yaml
 # 编辑 app_config.yaml，填入 organization_id、access_key、SLS/ACR/CMS 凭据
 # 按上方说明创建供 schema uploader 使用的 .env。
+
+docker compose up --build
+```
+
+### GitHub
+
+```bash
+cp devops_data_generator/config/app_config.github.yaml.sample \
+   devops_data_generator/config/app_config.yaml
+# 编辑 app_config.yaml，填入 repos（或 organization/user）、token（公开仓库可留空）、
+# SLS/ACR/CMS 凭据；按上方说明创建供 schema uploader 使用的 .env。
+# GitHub Actions CI 会从同一个 github: 配置段自动采集。
 
 docker compose up --build
 ```
@@ -106,8 +120,9 @@ tasks:
     - release_relates_to_deployment     # release → deployment 边
 ```
 
-CD 任务与 git provider 无关且支持多源：GitLab CD（自动接入）与 Argo CD 可并行喂给
-同一个 `deployment` 任务，单源故障不影响其他源；不配任何 CD 源时行为与之前完全一致。
+CD 任务与 git provider 无关且支持多源：GitLab CD（自动接入）、GitHub CD（从
+`github:` 段自动接入）与 Argo CD 可并行喂给同一个 `deployment` 任务，单源故障
+不影响其他源；不配任何 CD 源时行为与之前完全一致。
 
 ## UModel 实体
 
@@ -164,7 +179,7 @@ umodel-devops-reference/
 ├── umodel/                          # 17 EntitySet + 36 EntitySetLink 定义
 ├── umodel_uploader/                 # 批量上传工具
 ├── devops_data_generator/
-│   ├── adapters/{gitlab,codeup,argocd}/ # IGitAdapter + IDeployAdapter 实现
+│   ├── adapters/{gitlab,codeup,github,argocd,jenkins,yunxiao_flow}/ # IGitAdapter + IDeployAdapter + ICIAdapter 实现
 │   ├── tasks/                       # 17 个数据采集任务
 │   ├── config/                      # 各平台配置样例
 │   ├── orchestrator.py              # 任务调度 + 结构化结果

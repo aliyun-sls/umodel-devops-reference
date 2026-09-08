@@ -23,6 +23,7 @@
 | `yunxiao_appstack` | 云效 AppStack | deployment | 云效应用交付 | |
 | `argocd` | Argo CD | deployment | Argo CD（GitOps 持续交付） | CD/GitOps 类，与 CI 类区分 |
 | `gitlab_cd` | GitLab CD | deployment | GitLab CI/CD（Environments/Deployments API） | CD 类；复用 gitlab git provider 的 access_token，无需独立凭据 |
+| `github_cd` | GitHub CD | deployment | GitHub（Deployments/Environments API） | CD 类；复用 `github:` 配置段 token，与 git/Actions 双轴同源 |
 | `jira` | Jira | project/work_item/milestone | Atlassian Jira | Issue tracker |
 | `aone` | Aone | unit_testcase/deployment | 内部 Aone 测试/部署 | |
 | `harbor` | Harbor | artifact/docker_image | Harbor | 制品库 |

@@ -5,7 +5,7 @@ contract; subclasses translate provider APIs into it.
 
 Why a separate axis: GitLab CI lives inside the git provider, so it stays on
 IGitAdapter as optional methods. Standalone CI systems (Jenkins, Yunxiao
-Flow, Tekton, GitHub Actions) are NOT git providers — they implement this
+Flow, GitHub Actions) are NOT git providers — they implement this
 interface instead. ("第一个寄生、第二个来临才抽基类"：GitLab CI 是第一个
 实例所以寄生在 IGitAdapter；Jenkins 的到来触发了这个基类。)
 

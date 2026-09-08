@@ -210,7 +210,7 @@
 | `name` | string | ✓ | | 流水线名称 |
 | `file_path` | string | | | 如 .github/workflows/ci.yml |
 | `description` | string | | | 流水线描述 |
-| `data_source` | string | ✓ | | github_actions/gitlab_ci/jenkins |
+| `data_source` | string | ✓ | | github_actions/gitlab_ci/jenkins/yunxiao_flow |
 | `platform_pipeline_id` | string | ✓ | | 平台流水线 ID |
 | `url` | string | | | 流水线 URL |
 | `is_active` | boolean | | | 是否启用 |
@@ -233,7 +233,7 @@
 | `trigger_type` | enum | ✓ | | push/pull_request/schedule/manual/tag |
 | `status` | enum | ✓ | | queued/in_progress/success/failure/cancelled/skipped |
 | `conclusion` | enum | | | success/failure/cancelled/timeout |
-| `data_source` | string | ✓ | | github_actions/gitlab_ci/jenkins |
+| `data_source` | string | ✓ | | github_actions/gitlab_ci/jenkins/yunxiao_flow |
 | `platform_run_id` | string | ✓ | | 平台运行 ID |
 | `url` | string | | | 运行 URL |
 | `triggered_by` | string | | | 触发者，关联 user.user_id |
@@ -457,7 +457,7 @@
 | `version` | string | | | 应用版本号 |
 | `status` | enum | ✓ | | queued/in_progress/success/failure/cancelled |
 | `conclusion` | enum | | | success/failure/rolled_back |
-| `data_source` | string | ✓ | | yunxiao_appstack/aone/github/argocd |
+| `data_source` | string | ✓ | | yunxiao_appstack/argocd/gitlab_cd/github_cd |
 | `platform_deployment_id` | string | ✓ | | 平台部署 ID |
 | `url` | string | | | 部署 URL |
 | `deployed_by` | string | | | 部署人，关联 user.user_id |

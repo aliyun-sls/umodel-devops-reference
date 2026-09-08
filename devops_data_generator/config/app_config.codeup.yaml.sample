@@ -163,4 +163,18 @@ logging:
 #   auto_discover_repo: true            # 从最新一次运行的代码源自动反推流水线归属仓库（contains 边靠它）
 #   repo_mapping:                       # 可选人工覆盖：流水线名 → git repository_id（优先级高于自动发现）
 #     "demo-deploy-hk": "90001"
+#
+# GitHub（可选；同一配置段双用途：git_provider.type=github 时是 git provider，
+# 其他 provider 下作为 GitHub Actions 独立 CI 源（data_source=github_actions）。
+# token 留空可匿名读公开仓库，60 次/时/IP。注意：contains 边按 GitHub 仓库数字 id
+# 关联——该 id 对应的 repository 实体需在图中，git provider 是 codeup/gitlab 时通常对不上）
+# github:
+#   token: "<YOUR_GITHUB_TOKEN>"      # classic PAT repo scope，或细粒度 PAT 只读
+#   api_url: "https://api.github.com" # GHES 改成 https://<ghes-host>/api/v3
+#   repos: ["owner/name"]             # 仓库范围：显式名单（可组合 organization/user）
+#   organization: ""                  # 组织发现
+#   user: ""                          # 用户仓库发现
+#   fetch_details: true               # 语言细分 + release tag→commit 解析（进程内缓存）
+#   max_runs_per_workflow: 20         # Actions 每 workflow 每周期采集最近 N 条；0=不限
+#   max_deployments_per_project: 20   # GitHub CD：每仓库每周期采集最近 N 条部署（另每条 1 次 statuses 调用）；0=不限
 
